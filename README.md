@@ -1,16 +1,8 @@
-## Mobile API tests
+## Sync Gateway REST API Functional Tests
 
-Since mobile is all about a ReST protocol for sync, we can test it at the ReST level.
+Since Couchbase Mobile relies on a REST protocol for sync, we can test it at the REST level.
 
-We can also drive the clients from a ReST interface, having them apply load to server components.
-
-## Install the servers under test
-
-You should be able to get away with, at a bare minimum, LiteServ and Sync Gateway. If you have both of those, you should be able to run all the topologies. But if you add more hosts or want to test Sync Gateway storage with CBGB or Couchbase Server you'll need to configure those.
-
-### Couchbase Lite
-
-To install LiteServ, download the latest stable build from the link [in the Couchbase Lite README](https://github.com/couchbase/couchbase-lite-ios) and find LiteServ in the MacOS directory. Edit `config/local.js` to link to it.
+We can also drive the clients from a REST interface, having them apply load to server components.
 
 ### Sync Gateway
 
