@@ -10,20 +10,22 @@
     "sync"
   ],
   "dependencies": {
-    "async": "0.2.x",
-    "coax": "0.4.x",
-    "express-pouchdb": "0.0.x",
+	"node-gyp": "1.0.3", 
+    "async": "0.9.x",
+    "coax": "0.4.2",
+    "express-pouchdb": "0.14.x",
     "fast-stats": "0.0.2",
-    "follow": "0.9.x",
+    "follow": "0.11.x",
     "ini": "1.1.x",
     "nodeload": "0.4.x",
     "request-json": "0.4.x",
-    "restify": "2.6.x",
+    "restify": "3.x.x",
     "scp2": "0.1.x",
     "ssh2": "0.2.x",
-    "tap": "0.4.x",
-    "winston": "0.7.x",
-    "couchbase": "2.x"
+    "couchbase": "2.0.6",
+    "tap": "0.7.x",
+    "winston": "0.7.x"
+
   },
   "scripts": {
     "test": "TAP_TIMEOUT=20000 tap --tap ./tests",
