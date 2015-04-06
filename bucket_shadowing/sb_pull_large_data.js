@@ -3,27 +3,36 @@ var launcher = require("../lib/launcher"),
   async = require("async"),
   common = require("../tests/common"),
   util =  require("util"),
+  cb_util = require("../tests/utils/cb_util"),
   test = require("tap").test,
   test_time = process.env.TAP_TIMEOUT || 60,
   test_conf = {timeout: test_time * 1000},
   couchbase = require('couchbase');
 
-var server, sg, gateway,
+var server, sg, app_bucket, shadow_bucket
 pulldb = "pull_db",
-bucketNames = ["app-bucket", "shadow-bucket"],
-app_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[0]}),
-shadow_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[1]});
+bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
 var urlCB = "http://localhost:8091"  
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
-var maxDataSize = 20000000; 
+var maxDataSize = 20000000;
+// var maxDataSize = 400
 
 
-test("create buckets", function (t) {
-    common.createShadowBuckets(t, bucketNames[0],bucketNames[1])
+test("delete buckets", test_conf, function (t) {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
+    t.end()
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, bucketNames[0])
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, bucketNames[1])
 });
 
 test("start test client", function(t){
@@ -31,14 +40,35 @@ test("start test client", function(t){
     server = _server
     setTimeout(function () {
         t.end()
-    }, 10000) 
+    }, timeoutReplication*3) 
   })
+})
+
+test("create app_bucket connection", function(t){
+	app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+		  if (err) {
+		    // Failed to make a connection to the Couchbase cluster.
+		    throw err;
+		  } else{
+			  t.end();
+		  }
+	})
+})
+
+test("create shadow_bucket connection", function(t){
+	shadow_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[1], function(err) {
+		  if (err) {
+		    // Failed to make a connection to the Couchbase cluster.
+		    throw err;
+		  } else{
+			  t.end();
+		  }
+	})
 })
 
 test("start sync_gateway", function(t){
   common.launchSGShadowing(t, function(_sg){
     sg  = _sg
-    gateway = sg.url
     t.end()
   })
 })
@@ -49,7 +79,9 @@ test("create test database " + pulldb, function(t){
 })
 
 test("Mobile client start continous replication", function(t) {
-    //console.log("===== Web client to start pull replication url:" + coax([server, "_replicate"]).pax().toString(), "source:", sgShadowBucketDb, ">>  target:", pulldb)
+    // console.log("===== Web client to start pull replication url:" +
+	// coax([server, "_replicate"]).pax().toString(), "source:",
+	// sgShadowBucketDb, ">> target:", pulldb)
     coax.post([server, "_replicate"], {
         source : sgShadowBucketDb,
         target : pulldb,
@@ -60,11 +92,15 @@ test("Mobile client start continous replication", function(t) {
     });    
 });
 
+
 test("Adding a document of maximum size to app-bucket and verify it is shadowed correctly", function(t) {
     var docId = "testdoc_max_size";
-    data = (new Array(maxDataSize - 321 )).join("x")  //321 is the size of additional data SG craeted for the doc
+    data = (new Array(maxDataSize - 321 )).join("x")  // 321 is the size of
+														// additional data SG
+														// craeted for the doc
     var value = {k : data};
-    //console.log("===== Creating doc in app bucket.  Doc id:" + docId + " with data size of " + maxDataSize);
+    // console.log("===== Creating doc in app bucket. Doc id:" + docId + " with
+	// data size of " + maxDataSize);
     app_bucket.upsert(docId, JSON.stringify( value ), function(err, result) {
         if (err) {
             t.fail("Fail to create document " + docId + " in app_bucket. err: " + JSON.stringify(err))
@@ -82,7 +118,8 @@ test("Adding a document of maximum size to app-bucket and verify it is shadowed 
                     } else {
                         t.equals(JSON.stringify(result.value.k), JSON.stringify(data), "Document " + docId + " shadowed successfully to shadow bucket - same data" )
                         setTimeout(function () {
-                            // Mobile client to check the doc replicated to lite db
+                            // Mobile client to check the doc replicated to lite
+							// db
                             var urlReadDoc = coax([server, pulldb, docId, {attachments: true}]).pax().toString()
                             coax([server, pulldb, docId], function (err, js) {
                                 if (err) {
@@ -93,19 +130,22 @@ test("Adding a document of maximum size to app-bucket and verify it is shadowed 
                                     t.end()
                                 }
                             })
-                        }, timeoutReplication  )
+                        }, timeoutReplication*4)
                     }
                 }); 
-            }, timeoutShadowing ) 
+            }, timeoutShadowing*4) 
         }
     });            
 });
 
 test("Verify updating a doc with maximum size in app-bucket and check shadowing is done properly", function(t) {
     var docId = "testdoc_max_size";
-    data = (new Array(maxDataSize - 368 )).join("y")   //With update, additional revision takes more space
+    data = (new Array(maxDataSize - 368 )).join("y")   // With update,
+														// additional revision
+														// takes more space
     var value = {k : data};
-    //console.log("===== Updating doc in app bucket.  Doc id:" + docId + " with data size of " + maxDataSize);
+    // console.log("===== Updating doc in app bucket. Doc id:" + docId + " with
+	// data size of " + maxDataSize);
     app_bucket.upsert(docId, JSON.stringify( value ), function(err, result) {
         if (err) {
             t.fail("Fail to create document " + docId + " in app_bucket. err: " + JSON.stringify(err))
@@ -123,7 +163,8 @@ test("Verify updating a doc with maximum size in app-bucket and check shadowing 
                     } else {
                         t.equals(JSON.stringify(result.value.k), JSON.stringify(data), "Document " + docId + " shadowed successfully to shadow bucket - same data" )
                         setTimeout(function () {
-                            // Mobile client to check the doc replicated to lite db
+                            // Mobile client to check the doc replicated to lite
+							// db
                             var urlReadDoc = coax([server, pulldb, docId, {attachments: true}]).pax().toString()
                             coax([server, pulldb, docId], function (err, js) {
                                 if (err) {
@@ -152,7 +193,8 @@ test("Verify removing a doc with maximum size in app-bucket and check the doc is
       } else {
           t.ok(!err, "Document " + docId + " created successfully on app_bucket")
           setTimeout(function () {
-              // Mobile client to check the doc not accessible from the lite db
+              // Mobile client to check the doc not accessible from the lite
+				// db
               var urlReadDoc = coax([server, pulldb, docId, {attachments: true}]).pax().toString()
               coax([server, pulldb, docId], function (err, result) {
                   if (err) {
@@ -176,8 +218,6 @@ test("delete buckets", function (t) {
 test("done", function(t){
   common.cleanup(t, function(json){
     sg.kill()
-    app_bucket.shutdown();
-    shadow_bucket.shutdown();
     t.end()
   })
 })
