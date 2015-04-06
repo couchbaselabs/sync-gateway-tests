@@ -22,31 +22,18 @@ var common = module.exports = {
 
   ee : new events.EventEmitter(),
 /*
-  // DEPRECIATED: use launchClient
-  launchLS : function(t, done){
-
-    serve = launcher.launchLiteServ({
-      port : port,
-      dir : __dirname+"/../tmp/single",
-      path : config.LiteServPath
-    })
-    serve.on("error", function(e){
-      console.log("error launching LiteServe", e)
-      t.fail("error launching LiteServe")
-      t.end()
-    })
-    serve.once("ready", function(err){
-      t.false(err, "no error, LiteServe running on our port")
-      coax(serve.url, function(err, ok){
-        t.false(err, "no error, LiteServe reachable")
-        // serve.url = "http://localhost:5984" // couchdb endpoint
-        this.server = serve.url
-
-        done(serve)
-      })
-    });
-  },
-*/
+ * // DEPRECIATED: use launchClient launchLS : function(t, done){
+ * 
+ * serve = launcher.launchLiteServ({ port : port, dir :
+ * __dirname+"/../tmp/single", path : config.LiteServPath }) serve.on("error",
+ * function(e){ console.log("error launching LiteServe", e) t.fail("error
+ * launching LiteServe") t.end() }) serve.once("ready", function(err){
+ * t.false(err, "no error, LiteServe running on our port") coax(serve.url,
+ * function(err, ok){ t.false(err, "no error, LiteServe reachable") // serve.url =
+ * "http://localhost:5984" // couchdb endpoint this.server = serve.url
+ * 
+ * done(serve) }) }); },
+ */
   launchClient : function(t, done){
 
     if(!this.listener){
@@ -126,9 +113,9 @@ var common = module.exports = {
       + "&parallelDBAndViewCompaction=false&autoCompactionDefined=false&threadsNumber=3&replicaIndex=0&replicaNumber=1&saslPassword=&authType=sasl&ramQuotaMB=200&bucketType=membase&flushEnabled=1";
 
     common.http_post_api(t, post_data0, options, "OK", function(callback) {
-    })
-    common.http_post_api(t, post_data1, options, "OK", function(callback) {
-      t.end();
+        common.http_post_api(t, post_data1, options, "OK", function(callback) {
+        	t.end();
+        })
     })
   },
 
@@ -154,7 +141,7 @@ var common = module.exports = {
           'Content-Type': 'text/html'
       }
     };
-    //console.log(options);
+    // console.log(options);
     common.http_post_api(t, post_data, options0, 200, function (callback) {
       common.http_post_api(t, post_data, options1, 200, function (callback) {
           t.end();
@@ -189,18 +176,20 @@ var common = module.exports = {
         port : 4984,
         dir : __dirname + "/../tmp/sg",
         path : config.SyncGatewayPath,
-	      configPath : __dirname+"/../config/gateway_config_shadow_localhost.json"
+	    configPath : __dirname+"/../config/gateway_config_shadow_localhost.json",
+	    verbose : true
+	    
       }
       )
       sg.once("ready", function(err){
         if(t);
           t.false(err, "no error, Sync Gateway running on our port", err);
-//        sg.db = coax([sg.url, "db"]);
-//        sg.db(function(err, ok){
-//          if(t);
-//            t.false(err, "no error, Sync Gateway reachable", err); why Login required?
+// sg.db = coax([sg.url, "db"]);
+// sg.db(function(err, ok){
+// if(t);
+// t.false(err, "no error, Sync Gateway reachable", err); why Login required?
           done(sg);
-//        });
+// });
       });
 
     },
@@ -360,12 +349,14 @@ var common = module.exports = {
     var dbs = params.dbs;
     var numdocs = params.numdocs;
     var localdocs = params.localdocs || "";
-    //for local documents id formed as _local/ID
+    // for local documents id formed as _local/ID
     if (localdocs) localdocs= localdocs + "/";
     async.map(dbs, function(db, nextdb){
 	async.timesSeries(numdocs, function(i, cb){
-		//with async.times cbl-replication-mismatch-2-gateways(restart-gateway).js failed on android:
-		//{"code":"EPIPE","errno":"EPIPE","syscall":"write"}
+		// with async.times
+		// cbl-replication-mismatch-2-gateways(restart-gateway).js failed on
+		// android:
+		// {"code":"EPIPE","errno":"EPIPE","syscall":"write"}
 	    var docid = db + "_" + i;
 	    var madeDoc = generators[docgen](i);
 	    madeDoc._id = docid;
@@ -581,17 +572,17 @@ var common = module.exports = {
 	              if (err) {
 	                  t.fail("unable to get doc " + url + " to delete conflicts", err)
 	              } else {
-                          //console.log(json)
+                          // console.log(json)
 	                  confls = json._conflicts
-	                  //delete conflicts
+	                  // delete conflicts
 	                  var docUrl = coax([server, db, localdocs + docid]).pax().toString()
-	                  //console.log(docUrl)
+	                  // console.log(docUrl)
 	                  async.mapSeries(confls, function (confl, nextConfl) {
 	                      coax.del([docUrl, {
 	                              rev: confl
 	                          }],
 	                          function (err, json) {
-                              //console.log(json)
+                              // console.log(json)
                                   t.equals(parseInt(confl.substring(0, 1)) + 1  + "-", json.rev.substring(0, 2),
                                   "Deleting a document adds a revision ('tombstone') that records the delete)")
                                   t.equals(json.ok, true, "all conflict revisons deleted")
@@ -637,7 +628,7 @@ var common = module.exports = {
 
             coax.del(rmurl, function(err, json){
               if(err){
-                //https://github.com/couchbase/couchbase-lite-java-core/issues/191
+                // https://github.com/couchbase/couchbase-lite-java-core/issues/191
                 t.fail("unable to delete attachments by " + rmurl + ": " + JSON.stringify(err))
               }
 
@@ -690,7 +681,7 @@ var common = module.exports = {
 	                  t.fail("unable to get doc " + url +" to verify conflicts", err)
 	                   cb(err, json)
 	              } else {
-	                  //console.log(json)
+	                  // console.log(json)
 	                  t.equals(json._conflicts.length, 0, "all conflict revisons deleted")
 	                   cb(err, json)
 	              }
@@ -1073,7 +1064,8 @@ function defaultHandler(err, oks){
 
 // multi-purpose helper for async methods
 //
-// primary purpose is to return a callback which complies with completion of async loops
+// primary purpose is to return a callback which complies with completion of
+// async loops
 // * can emit an event on completion
 // * can emit an event during innter loop completion and call it's callback
 function notifycaller(args){
@@ -1133,7 +1125,7 @@ module.exports.randomChannelName = function () {
   return module.exports.randomChannelNameGen(perfconfig.hotChannels)
 }
 
-//########## doc generators #########
+// ########## doc generators #########
 var generators = module.exports.generators = {
 
   bsize : 100,

@@ -2,23 +2,36 @@ var launcher = require("../lib/launcher"),
   coax = require("coax"),
   async = require("async"),
   common = require("../tests/common"),
+  cb_util = require("../tests/utils/cb_util"),
   util =  require("util"),
   test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 60,
+  test_time = process.env.TAP_TIMEOUT || 100,
   test_conf = {timeout: test_time * 1000},
   couchbase = require('couchbase');
 
-var server, sg, gateway
+
+var server, sg
 var pushdb = "push_db"
 var bucketNames = ["app-bucket", "shadow-bucket"]
-var app_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[0]})
-var shadow_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[1]})
+
+test("delete buckets", test_conf, function (t) {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
+    t.end()
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, bucketNames[0])
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, bucketNames[1])
+});
+
 
 var sgShadowBucketDb = "http://localhost:4985/db" 
 var urlCB = "http://localhost:8091" 
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 
-var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
 
 var docId = "testdoc";
@@ -27,24 +40,33 @@ var value_json = {_id : docId,
             data: value_data,   
             at: new Date()};
 var value = JSON.stringify( value_json );
+var app_bucket;
 
-test("create buckets", function (t) {
-    common.createShadowBuckets(t, bucketNames[0],bucketNames[1])
-});
 
 test("start test client", function(t){
   common.launchClient(t, function(_server){
     server = _server
     setTimeout(function () {
         t.end()
-    }, 10000) 
+    }, 12000) 
   })
 })
 
-test("start sync gateway", function(t){
+test("create app_bucket connection", function(t){
+	app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+		  if (err) {
+		    // Failed to make a connection to the Couchbase cluster.
+		    throw err;
+		  } else{
+			  t.end();
+		  }
+	})
+})
+
+
+test("start sync gateway", test_conf, function(t){
   common.launchSGShadowing(t, function(_sg){
     sg  = _sg
-    gateway = sg.url
     t.end()
   })
 })
@@ -80,6 +102,7 @@ test("Mobile client start continous push replication", function(t) {
     });
 });
 
+
 test("Verify that the doc is replicated to sync_gateway", test_conf, function(t) {
     setTimeout(function () {
         coax([sgShadowBucketDb, "_all_docs"],function(err, allDocs){
@@ -88,7 +111,7 @@ test("Verify that the doc is replicated to sync_gateway", test_conf, function(t)
             t.equals(allDocs.update_seq, 2, "sg sequence number correct")
             t.end();
         });
-    }, timeoutReplication);
+    }, timeoutReplication*2);
 });
 
 test("Verify that the doc is shadowed to app-bucket", test_conf, function(t) {
@@ -154,12 +177,12 @@ test("Mobile client remove the doc in lite and verify the change is shadowed to 
             t.fail("unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", json:" + doc);
             t.end();
         } else {
-            //delete doc
+            // delete doc
             coax.del([server, pushdb, docId, {rev : doc._rev}], function (err, json) {
                 t.equals(json.ok, true, "doc is deleted")
                 setTimeout(function () {
                     app_bucket.get(docId, function(err, result) {
-                        t.equals(JSON.stringify(err.message), "\"The key does not exist on the server\"", "The deleted document is removed at app bucket")
+                        t.equals(JSON.stringify(err), "{\"message\":\"The key does not exist on the server\",\"code\":13}", "The deleted document is removed at app bucket")
                         t.end()
                     });
                 }, timeoutReplication);
@@ -203,12 +226,10 @@ test("delete buckets", function (t) {
 test("done", function(t){
   common.cleanup(t, function(json){
     sg.kill()
-    app_bucket.shutdown();
-    shadow_bucket.shutdown();
+// app_bucket.shutdown();
+// shadow_bucket.shutdown();
+    //TODO stuck!
     t.end()
   })
 })
 
-
-
- 
