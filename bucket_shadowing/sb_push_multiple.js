@@ -23,8 +23,17 @@ var timeoutShadowing = 1000;
 var timeoutReplication = 3000;
 var updatedData = "updated data"; 
 
-test("create buckets", function (t) {
-    common.createShadowBuckets(t, bucketNames[0],bucketNames[1])
+test("delete buckets", test_conf, function (t) {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
+    t.end()
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, bucketNames[0])
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, bucketNames[1])
 });
 
 test("start test client", function(t){
@@ -32,14 +41,13 @@ test("start test client", function(t){
     server = _server
     setTimeout(function () {
         t.end()
-    }, 10000) 
+    }, timeoutReplication*3) 
   })
 })
 
 test("start sync gateway", function(t){
   common.launchSGShadowing(t, function(_sg){
     sg  = _sg
-    gateway = sg.url
     t.end()
   })
 })

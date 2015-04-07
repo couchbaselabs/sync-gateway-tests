@@ -53,7 +53,8 @@ test("start test client", function(t){
 })
 
 test("create app_bucket connection", function(t){
-	app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+	cluster = new couchbase.Cluster('127.0.0.1:8091')
+	app_bucket = cluster.openBucket(bucketNames[0], function(err) {
 		  if (err) {
 		    // Failed to make a connection to the Couchbase cluster.
 		    throw err;
@@ -220,16 +221,14 @@ test("Verify that the doc is shadowed to app-bucket", test_conf, function(t) {
 
 test("delete buckets", function (t) {
     common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
-    t.end()
 });
 
-test("done", function(t){
-  common.cleanup(t, function(json){
-    sg.kill()
-// app_bucket.shutdown();
-// shadow_bucket.shutdown();
-    //TODO stuck!
-    t.end()
-  })
-})
+test("done", function(t){setTimeout(function() {
+    common.cleanup(t, function(json) {
+        sg.kill()
+        app_bucket.disconnect()
+
+        t.end()
+    })
+}, timeoutReplication);})
 

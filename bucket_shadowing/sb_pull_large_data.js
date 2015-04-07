@@ -18,8 +18,8 @@ var urlCB = "http://localhost:8091"
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
-var maxDataSize = 20000000;
-// var maxDataSize = 400
+// var maxDataSize = 20000000;
+ var maxDataSize = 400
 
 
 test("delete buckets", test_conf, function (t) {
@@ -79,9 +79,9 @@ test("create test database " + pulldb, function(t){
 })
 
 test("Mobile client start continous replication", function(t) {
-    // console.log("===== Web client to start pull replication url:" +
-	// coax([server, "_replicate"]).pax().toString(), "source:",
-	// sgShadowBucketDb, ">> target:", pulldb)
+console.log("===== Web client to start pull replication url:" +
+coax([server, "_replicate"]).pax().toString(), "source:",
+sgShadowBucketDb, ">> target:", pulldb)
     coax.post([server, "_replicate"], {
         source : sgShadowBucketDb,
         target : pulldb,
@@ -210,17 +210,19 @@ test("Verify removing a doc with maximum size in app-bucket and check the doc is
   });            
 });
 
-
 test("delete buckets", function (t) {
     common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
 });
 
-test("done", function(t){
-  common.cleanup(t, function(json){
-    sg.kill()
-    t.end()
-  })
-})
+test("done", function(t){setTimeout(function() {
+    common.cleanup(t, function(json) {
+        sg.kill()
+        app_bucket.disconnect()
+        shadow_bucket.disconnect()
+        t.end()
+    })
+}, timeoutReplication);})
+
  
 
 
