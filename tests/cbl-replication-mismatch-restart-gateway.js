@@ -2,7 +2,8 @@ var launcher = require("../lib/launcher"),
   coax = require("coax"),
   common = require("../tests/common"),
   conf_file = process.env.CONF_FILE || 'local',
-  config = require('../config/' + conf_file);
+  config = require('../config/' + conf_file),
+  cb_util = require("./utils/cb_util"),
   test = require("tap").test,
   test_time = process.env.TAP_TIMEOUT || 30,
   test_conf = {timeout: test_time * 1000};
@@ -13,13 +14,28 @@ var server, sg1, sg2, sg2, sgdb,
   // local dbs
  dbs = ["mismatch-restart-one", "mismatch-restart-two"];
 
-// start client endpoint
-test("start test client", function(t){
-  common.launchClient(t, function(_server){
-    server = _server
+var timeoutReplication=0;
+if (config.DbUrl.indexOf("http") > -1){
+	timeoutReplication=5000;
+}
+
+test("delete buckets", test_conf, function (t) {
+	cb_util.deleteBucket(t, config.DbBucket)
     t.end()
-  })
-})
+});
+
+test("create buckets", test_conf, function (t) {
+	cb_util.createBucket(t, config.DbBucket)
+});
+
+test("start test client", function(t){
+	  common.launchClient(t, function(_server){
+	    server = _server
+	    setTimeout(function () {
+	        t.end()
+	    }, timeoutReplication*3) 
+	  })
+	})
 
 // start sync gateway
 test("start syncgateway", function(t){
@@ -73,7 +89,7 @@ sg1.kill()
 t.end()
 })
 
-//restart sync gateway
+// restart sync gateway
 test("restart syncgateway", function(t){
   common.launchSGWithParams(t, 9888, config.DbUrl, config.DbBucket, function(_sg1){
     sg1  = _sg1
