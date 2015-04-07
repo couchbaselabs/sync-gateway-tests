@@ -15,6 +15,7 @@ var server, sg, app_bucket, shadow_bucket
 var pushdb = "push_db"
 var bucketNames = ["app-bucket", "shadow-bucket"]
 
+
 var sgShadowBucketDb = "http://localhost:4985/db" 
 var urlCB = "http://localhost:8091" 
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
@@ -22,7 +23,7 @@ if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("loc
 var timeoutShadowing = 2000;
 var timeoutReplication = 4000;
 var maxDataSize = 20000000;
-//var maxDataSize = 4000;
+//var maxDataSize = 400;
 
 var docId = "testdoc";
 var data = (new Array(maxDataSize - 321 )).join("x");
@@ -84,7 +85,6 @@ test("create shadow_bucket connection", function(t){
 	})
 })
 
-
 /*
  * curl -H 'Content-Type: application/json' -X POST
  * http://localhost:5984/_replicate -d \ '{ "source":"sync_gateway",
@@ -138,6 +138,41 @@ test("Load one doc of maximum size into lite pushdb and verify the updated docum
     });
   }, timeoutReplication*4);  
 })
+
+test("Update the doc in lite pushdb and verify the updated document is shadowed to app-bucket", function(t){
+    // get the document revision and update the revision
+    coax([server, pushdb, docId], function (err, doc) {
+        if (err || (!doc) || doc == undefined) {
+            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docId]).pax().toString() + ", err:" + err + ", json:" + doc);
+            t.end();
+        } else {
+            // Change the date and data of the doc
+            doc.k = (new Array(maxDataSize - 368 )).join("y");
+            value.k = doc.k
+            // put updated doc
+            coax.put([server, pushdb, docId], doc, function(err, ok){
+                if (err){
+                    t.false(err, "error updating doc.  url: " + coax.put([server,pushdb, docId]).pax().toString() +" err: " + JSON.stringify(err));
+                    t.end()
+                } else {
+                    t.equals(docId, ok.id, "Doc " + docId + " updated");
+                    setTimeout(function () {
+                        app_bucket.get(docId, function(err, result) {
+                            if (err) {
+                                throw err;
+                                t.end();
+                            } else {
+                                t.equals(JSON.stringify(result.value.k), JSON.stringify(value.k), "Document shadowed successfully to app bucket - same data");
+                                t.end();
+                            }
+                        });
+                    }, timeoutReplication);
+                }
+            })
+        }
+    })
+})
+
 
  test("Mobile client remove the doc in lite and verify the change is shadowed to app-bucke", function(t) {
     // get the document revision and delete the revision
