@@ -8,9 +8,9 @@ var phalanx = require("../lib/phalanx"),
 
 var replicateClientServerClient = require("./subtests/replicate-client-server-client")
 
-//https://github.com/couchbaselabs/LiteServAndroid/issues/7
-//need the ability to run multiple instances
-//all android tests should be uncommented when the the issue will be resolved
+// https://github.com/couchbaselabs/LiteServAndroid/issues/7
+// need the ability to run multiple instances
+// all android tests should be uncommented when the the issue will be resolved
 
 var ph, port = 59810, size = 3;
 
@@ -64,7 +64,7 @@ test("setup test databases", function(t){
     db.del(function(err, ok){
       db.put(function(err, ok) {
         db(function(err,ok){
-          // console.log("get", db.pax, err)
+          console.log("get", db.pax, err)
           cb(err, ok)
         })
       })
@@ -89,7 +89,6 @@ test("replicate between all " + size +" servers", function(t){
   replicateClientServerClient(t, dbs, t.end.bind(t))
 		}
 })
-
 
 test("exit", function(t){
 	if (config.provides == "android") {

@@ -15,8 +15,6 @@ function(t) {
     };
     })
 
-
-
 test("create bucket",
     function(t) {
         if (config.DbUrl.indexOf("http") > -1) {

@@ -9,7 +9,7 @@ async = require("async")
 
 
 function loadDb(db, count, done) {
-    async.times(count, function (i, cb) {
+    async.timesSeries(count, function (i, cb) {
         db.post({
             _id: "i" + i
         }, cb)
@@ -17,7 +17,7 @@ function loadDb(db, count, done) {
 }
 
 function verifyDb(db, count, done) {
-    async.times(count, function (i, cb) {
+    async.timesSeries(count, function (i, cb) {
         db.get("i" + i, cb)
     }, done)
 }
@@ -33,7 +33,7 @@ module.exports = function (t, dbs, done, opts) {
 
     // create the database on each server
     t.test("create the database on each server", function (t) {
-        async.map(dbs, function (db, cb) {
+        async.mapSeries(dbs, function (db, cb) {
             db(cb)
         }, function (err, oks) {
             t.false(err, "all dbs reachable")
@@ -48,9 +48,8 @@ module.exports = function (t, dbs, done, opts) {
             dbs[0].get(function (err, ok) {
                 t.equals(0, ok.doc_count, "ready to load")
                 loadDb(dbs[0], 50, function (err, oks) {
-                    t.equals(err, null, "all ok")
+                    t.equals(err, undefined, "all ok")
                     t.end()
-
                 })
             })
         })
@@ -58,7 +57,7 @@ module.exports = function (t, dbs, done, opts) {
 
     t.test("verify the database", function (t) { // assumes "load a test database" just ran
         verifyDb(dbs[0], 50, function (err, ok) {
-            t.equals(err, null, "all ok")
+            t.equals(err, undefined, "all verified")
             t.end()
         })
     })
@@ -90,7 +89,7 @@ module.exports = function (t, dbs, done, opts) {
 
     t.test("verify the push target", function (t) { // assumes "can pull replicate LiteServ to LiteServ" just ran
         verifyDb(dbs[1], 50, function (err, ok) {
-            t.equals(err, null, "all replicated")
+            t.equals(err, undefined, "all replicated")
             t.end()
         })
     })
@@ -119,7 +118,7 @@ module.exports = function (t, dbs, done, opts) {
 
     t.test("verify the pull target", function (t) { // assumes "can pull replicate LiteServ to LiteServ" just ran
         verifyDb(dbs[2], 50, function (err, ok) {
-            t.equals(err, null, "all verified")
+            t.equals(err, undefined, "all verified")
             t.end()
         })
 
