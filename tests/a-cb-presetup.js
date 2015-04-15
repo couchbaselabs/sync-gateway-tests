@@ -7,12 +7,14 @@ var launcher = require("../lib/launcher"),
     config = require('../config/' + conf_file),
     test = require("tap").test;
 
-test("create bucket",
+test("delete bucket",
 function(t) {
     if (config.DbUrl.indexOf("http") > -1) {
         cb_util.deleteBucket(t, config.DbBucket)
         t.end()
-    };
+    }else{
+    	t.end()
+    	};
     })
 
 test("create bucket",

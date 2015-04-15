@@ -19,13 +19,21 @@ if (config.DbUrl.indexOf("http") > -1){
 	timeoutReplication=5000;
 }
 
-test("delete buckets", test_conf, function (t) {
-	cb_util.deleteBucket(t, config.DbBucket)
-    t.end()
+test("delete buckets", test_conf, function(t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.deleteBucket(t, config.DbBucket)
+        t.end()
+    } else {
+        t.end()
+    }
 });
 
-test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, config.DbBucket)
+test("create buckets", test_conf, function(t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, config.DbBucket)
+    } else {
+        t.end()
+    }
 });
 
 test("start test client", function(t){
