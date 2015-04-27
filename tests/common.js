@@ -555,13 +555,12 @@ var common = module.exports = {
 	          var docid = db + "_" + i
 	          var url = coax([server, db, localdocs + docid]).pax().toString()
 	          url += "?conflicts=true"
-
 	          // get document rev
 	          coax(url, function (err, json) {
 	              if (err) {
 	                  t.fail("unable to get doc " + url + " to delete conflicts", err)
 	              } else {
-                          // console.log(json)
+                      // console.log(url, " : ", json)
 	                  confls = json._conflicts
 	                  // delete conflicts
 	                  var docUrl = coax([server, db, localdocs + docid]).pax().toString()
@@ -571,8 +570,8 @@ var common = module.exports = {
 	                              rev: confl
 	                          }],
 	                          function (err, json) {
-                              // console.log(json)
-                                  t.equals(parseInt(confl.substring(0, 1)) + 1  + "-", json.rev.substring(0, 2),
+                                  // console.log(json)
+                                  t.equals(parseInt(confl.substring(0, confl.indexOf("-"))) + 1 + "", json.rev.substring(0, json.rev.indexOf("-")),
                                   "Deleting a document adds a revision ('tombstone') that records the delete)")
                                   t.equals(json.ok, true, "all conflict revisons deleted")
                                   cb(err, json)
@@ -695,7 +694,8 @@ var common = module.exports = {
 		                  t.fail("unable to get doc " + url + " to check revision", err)
 		                   cb(err, json)
 		              } else {
-		                  t.equals(json._rev.lastIndexOf(rev_prefix, 0), 0, "revision started from " + rev_prefix)
+                          // console.log(json, rev_prefix)
+		                  t.equals(json._rev.substring(0, json._rev.indexOf("-")) +"-", rev_prefix, "revision started from " + rev_prefix)
 		                  cb(err, json)
 		              }
 		          })
@@ -704,6 +704,43 @@ var common = module.exports = {
 
 		  }, notifycaller.call(t, emits))},
 
+
+		  verifyNumRevsLessRevsLimit: function(t, dbs, numdocs, expNumRevs, emits) {
+		      async.map(dbs, function(db, nextdb) {
+		          async.times(numdocs, function(i, cb) {
+		              // get doc revs info
+		              var docid = db + "_" + i
+		              var url = coax([server, db, docid]).pax().toString()
+		              url = url + "?revs_info=true"
+                      //console.log(url)
+		              coax(url, function(err, json) {
+
+		                  if (err) {
+		                      t.fail("unable to get doc rev_info", err)
+		                  }
+		                  if (json == undefined || json._revs_info == undefined) {
+		                      console.log("response of " + url + " doens't contain _revs_info:" + json)
+		                      t.fail("response of docid failed")
+		                  } else {
+		                      var num_avail = json._revs_info.filter(function(rev) {
+		                          if (rev.status == "available") {
+		                              return true
+		                          }
+		                      }).length
+
+		                      if (num_avail > expNumRevs) {
+		                          t.fail(num_avail + ' uncompacted revision(s) remain by ' + url, json)
+		                      }
+//		                      if (num_avail < expNumRevs) {
+//		                          t.fail(num_avail + ' doc revisions available', json)
+//		                      }
+		                  }
+		                  cb(err, json)
+		              })
+		          }, nextdb)
+
+		      }, notifycaller.call(t, emits))
+		  },
 
   verifyCompactDBs : function(t, dbs, numdocs, emits){
 
