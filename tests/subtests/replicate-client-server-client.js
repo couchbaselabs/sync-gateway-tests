@@ -118,7 +118,7 @@ module.exports = function (t, dbs, done, opts) {
 
     t.test("verify the pull target", function (t) { // assumes "can pull replicate LiteServ to LiteServ" just ran
         verifyDb(dbs[2], 50, function (err, ok) {
-            t.equals(err, undefined, "all verified")
+            t.equals(err, undefined, "all dbs verified")
             t.end()
         })
 
