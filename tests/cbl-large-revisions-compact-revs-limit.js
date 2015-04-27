@@ -189,7 +189,7 @@ test("delete conflicts in docs", test_conf, function (t) {
 test("verify conflicts deleted in docs", test_conf, function (t) {
     common.verifyNoConflictsDocs(t, dbs, numDocs)
 })
-
+/*
 test("verify doc revisions", test_conf, function (t) {
     //create, update on liteServ( delete & delete conflicts is not included)
     common.verifyDocsRevisions(t, dbs, numDocs, numRevs * 4 + 1 + "-")
@@ -258,4 +258,4 @@ test("done", function (t) {
         sg.kill()
         t.end()
     })
-})
+})*/
