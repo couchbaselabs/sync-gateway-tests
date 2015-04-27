@@ -14,14 +14,13 @@ var server, sg, gateway,
     dbs = ["large-revisions-revslimit"];
 
 
-config.SyncGatewayAdminParty= __dirname+"/../config/admin_party_cb_revslimit.json"
+config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_revslimit.json"
+if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_cb_revslimit.json"
 //module.exports.SyncGatewayAdminParty = __dirname+"/admin_party_cb_revslimit.json"
 
-var numDocs = parseInt(config.numDocsMaxRevs) || 2;
-var timeoutReplication = 10000;
+var numDocs = parseInt(config.numDocsMaxRevs) || 10;
+var timeoutReplication = 1000 * numDocs;
 var numRevs = parseInt(config.numRevs) || 20;
-
-if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = timeoutReplication * numDocs;
 
 test("cleanup cb bucket", function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
@@ -82,7 +81,7 @@ test("set push replication to gateway", function (t) {
                 coax([server, "_replicate"]).post({
                     source: db,
                     target: gatewayDB,
-                    continuous : true,
+                    continuous: true,
                 }, function (err, ok) {
                     t.equals(err, null,
                         util.inspect({_replicate: db + " -> " + gatewayDB}))
@@ -148,7 +147,7 @@ test("set pull replication from gateway", test_conf, function (t) {
                     coax([server, "_replicate"]).post({
                         source: gatewayDB,
                         target: db,
-                        continuous : true,
+                        continuous: true,
                     }, function (err, ok) {
                         t.equals(err, null,
                             util.inspect({_replicate: db + " <- " + gatewayDB}))
@@ -159,7 +158,7 @@ test("set pull replication from gateway", test_conf, function (t) {
             }]
         , function (err, info) {
             setTimeout(function () {
-//		  t.false(err, "replication created")
+                t.false(err, "replication created")
 //		  console.log("info", info)
 //		  gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
 //		  coax([gatewayDB, "_all_docs"],function(err, allDocs){
@@ -179,7 +178,7 @@ test("verify num Revs1", test_conf, function (t) {
     setTimeout(function () {
         console.log(timeoutReplication)
         common.verifyNumRevsLessRevsLimit(t, dbs, numDocs, 10)
-    }, timeoutReplication*4);
+    }, timeoutReplication * 4);
 })
 
 test("delete conflicts in docs", test_conf, function (t) {
@@ -189,7 +188,7 @@ test("delete conflicts in docs", test_conf, function (t) {
 test("verify conflicts deleted in docs", test_conf, function (t) {
     common.verifyNoConflictsDocs(t, dbs, numDocs)
 })
-/*
+
 test("verify doc revisions", test_conf, function (t) {
     //create, update on liteServ( delete & delete conflicts is not included)
     common.verifyDocsRevisions(t, dbs, numDocs, numRevs * 4 + 1 + "-")
@@ -258,4 +257,4 @@ test("done", function (t) {
         sg.kill()
         t.end()
     })
-})*/
+})
