@@ -1,32 +1,32 @@
 var launcher = require("../lib/launcher"),
-  coax = require("coax"),
-  async = require("async"),
-  common = require("../tests/common"),
-  conf_file = process.env.CONF_FILE || 'local',
-  config = require('../config/' + conf_file),
-  utils = common.utils,
-  ee = common.ee,
-  test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 30,
-  test_conf = {timeout: test_time * 1000},
-  port = config.LiteServPort;
+    coax = require("coax"),
+    async = require("async"),
+    common = require("../tests/common"),
+    conf_file = process.env.CONF_FILE || 'local',
+    config = require('../config/' + conf_file),
+    utils = common.utils,
+    ee = common.ee,
+    test = require("tap").test,
+    test_time = process.env.TAP_TIMEOUT || 30,
+    test_conf = {timeout: test_time * 1000},
+    port = config.LiteServPort;
 
 
 var server,
- dbs = ["cbl-document1", "cbl-document2", "cbl-document3"];
+    dbs = ["cbl-document1", "cbl-document2", "cbl-document3"];
 
-var numDocs=parseInt(config.numDocs) || 100;
+var numDocs = parseInt(config.numDocs) || 100;
 
 // start client endpoint
-test("start test client", function(t){
-  common.launchClient(t, function(_server){
-    server = _server
-    t.end()
-  })
+test("start test client", function (t) {
+    common.launchClient(t, function (_server) {
+        server = _server
+        t.end()
+    })
 })
 
-test("create test databases", function(t){
-  common.createDBs(t, dbs)
+test("create test databases", function (t) {
+    common.createDBs(t, dbs)
 })
 
 //https://github.com/couchbaselabs/cblite-tests/issues/13 ->
@@ -40,7 +40,7 @@ test("create docs with inline text attachments", test_conf, function (t) {
 
     ee.once('emits-created', function (e, js) {
         t.false(e, "created docs with inline text attachments")
-        console.log((port + "")|| config.LiteServPort)
+        console.log((port + "") || config.LiteServPort)
         // get doc
         coax([server, dbs[0], "_all_docs", {limit: 1}], function (e, js) {
             if (e) {
@@ -89,30 +89,30 @@ test("create docs with inline text attachments", test_conf, function (t) {
 
 //https://github.com/couchbase/couchbase-lite-java-core/issues/98
 test("verify post on doc without data. negative case", test_conf, function (t) {
-        coax([server, dbs[0], "_all_docs", {
-            limit: 1
+    coax([server, dbs[0], "_all_docs", {
+        limit: 1
+    }], function (e, js) {
+        if (e) {
+            t.fail("unable to retrieve doc from all_docs", e)
+        }
+        // get doc with attachment info
+        var docid = js.rows[0].id
+        coax([server, dbs[0], docid, {
+            attachments: true
         }], function (e, js) {
+
             if (e) {
-                t.fail("unable to retrieve doc from all_docs", e)
+                var urlWithAtt = coax([server, dbs[0], docid, {attachments: true}]).pax().toString()
+                t.fail("read doc failed " + urlWithAtt + ": " + e)
             }
-            // get doc with attachment info
-            var docid = js.rows[0].id
-            coax([server, dbs[0], docid, {
-                attachments: true
-            }], function (e, js) {
+            var attchid = Object.keys(js._attachments)[0]
 
-                if (e) {
-                    var urlWithAtt = coax([server, dbs[0], docid, {attachments: true}]).pax().toString()
-                    t.fail("read doc failed " + urlWithAtt + ": " + e)
-                }
-                var attchid = Object.keys(js._attachments)[0]
-
-                        var options = {
-                            host: config.LocalListenerIP,
-                            port: port,
-                            path: dbs[0] + '/' + docid,
-                            method: 'POST',
-                        }
+            var options = {
+                host: config.LocalListenerIP,
+                port: port,
+                path: dbs[0] + '/' + docid,
+                method: 'POST',
+            }
 //                https://github.com/couchbase/couchbase-lite-ios/issues/499 ->
 //                https://github.com/couchbase/couchbase-lite-java-core/issues/310
 //                curl -X POST -d "" http://127.0.0.1:59851/cbl-document1/cbl-document1_0
@@ -120,20 +120,20 @@ test("verify post on doc without data. negative case", test_conf, function (t) {
 //                  "status" : 405,
 //                  "error" : "method_not_allowed"
 //                }
-                        common.http_get_api(t, options, 405, function (callback) {
-                            t.equals(JSON.stringify(callback), JSON.stringify({"status": 405, "error": "method_not_allowed"}))
-                        })
-                })
+            common.http_get_api(t, options, 405, function (callback) {
+                t.equals(JSON.stringify(callback), JSON.stringify({"status": 405, "error": "method_not_allowed"}))
             })
+        })
+    })
 })
 
 // purge all dbs
-test("test purge", test_conf, function(t){
-  common.purgeDBDocs(t, dbs, numDocs)
+test("test purge", test_conf, function (t) {
+    common.purgeDBDocs(t, dbs, numDocs)
 })
 
-test("create test databases", function(t){
-  common.createDBs(t, dbs)
+test("create test databases", function (t) {
+    common.createDBs(t, dbs)
 })
 
 //note: 'test purge' should pass otherwise the first item in array _attachments will be inline.txt
@@ -203,77 +203,76 @@ test("create docs with image attachments", test_conf, function (t) {
     })
 })
 
-test("multi inline attachments", test_conf, function(t){
+test("multi inline attachments", test_conf, function (t) {
 
- common.updateDBDocs(t, {numdocs : numDocs, numrevs : 3, dbs : dbs, docgen : 'inlineTextAtt'}, 'emits-updated')
+    common.updateDBDocs(t, {numdocs: numDocs, numrevs: 3, dbs: dbs, docgen: 'inlineTextAtt'}, 'emits-updated')
 
-  ee.once('emits-updated', function(e, js){
+    ee.once('emits-updated', function (e, js) {
 
-    t.false(e, "added attachment to docs failed with exception:" + JSON.stringify(e))
+        t.false(e, "added attachment to docs failed with exception:" + JSON.stringify(e))
 
-    // get doc
-    coax([server, dbs[0], "_all_docs", {limit : 1}], function(e, js){
+        // get doc
+        coax([server, dbs[0], "_all_docs", {limit: 1}], function (e, js) {
 
-      if(e){
-        console.log(e)
-        var url = coax([server, dbs[0], "_all_docs", {limit : 1}]).pax().toString()
-        t.fail("unable to retrieve doc from all_docs via " + url +": " + JSON.stringify(e))
-      }
-
-      // get doc with attachment info
-      var docid = js.rows[0].id
-      coax([server, dbs[0], docid, { attachments : true }], function(e, js){
-        if(e){
-          t.fail("read doc failed with exception:" + JSON.stringify(e))
-        }
-
-        // verify text attachment
-        var attchid = Object.keys(js._attachments)[1] // we expect 2 attachments per doc here
-        coax([server, dbs[0], docid, attchid], function(err, response){
-            var url = coax([server, dbs[0], docid, attchid]).pax().toString()
-            if (err) {
-                t.equals(JSON.stringify(err), JSON.stringify({
-                        "status": 406,
-                        "error": "not_acceptable"
-                    }),
-                    "status is not correct: " + JSON.stringify(err))
-                var options = {
-                    host: config.LocalListenerIP,
-                    port: port,
-                    path: dbs[0] + '/' + docid + "/" + attchid,
-                    method: 'GET',
-                }
-                common.http_get_api(t, options, 200, function (callback) {
-                    t.equals(callback, "Inline text string created by cblite functional test");
-                    t.end()
-                })
-            } else {
-                t.fail("retrieved doc with attachment by " + url + " with Header 'Accept: applicatio/json' successfully")
-                t.end()
+            if (e) {
+                console.log(e)
+                var url = coax([server, dbs[0], "_all_docs", {limit: 1}]).pax().toString()
+                t.fail("unable to retrieve doc from all_docs via " + url + ": " + JSON.stringify(e))
             }
-        })
-      })
-    })
 
-  })
+            // get doc with attachment info
+            var docid = js.rows[0].id
+            coax([server, dbs[0], docid, {attachments: true}], function (e, js) {
+                if (e) {
+                    t.fail("read doc failed with exception:" + JSON.stringify(e))
+                }
+
+                // verify text attachment
+                var attchid = Object.keys(js._attachments)[1] // we expect 2 attachments per doc here
+                coax([server, dbs[0], docid, attchid], function (err, response) {
+                    var url = coax([server, dbs[0], docid, attchid]).pax().toString()
+                    if (err) {
+                        t.equals(JSON.stringify(err), JSON.stringify({
+                                "status": 406,
+                                "error": "not_acceptable"
+                            }),
+                            "status is not correct: " + JSON.stringify(err))
+                        var options = {
+                            host: config.LocalListenerIP,
+                            port: port,
+                            path: dbs[0] + '/' + docid + "/" + attchid,
+                            method: 'GET',
+                        }
+                        common.http_get_api(t, options, 200, function (callback) {
+                            t.equals(callback, "Inline text string created by cblite functional test");
+                            t.end()
+                        })
+                    } else {
+                        t.fail("retrieved doc with attachment by " + url + " with Header 'Accept: applicatio/json' successfully")
+                        t.end()
+                    }
+                })
+            })
+        })
+
+    })
 })
 
 // compact db
-test("compact db", test_conf, function(t){
-  common.compactDBs(t, dbs)
-
+test("compact db", test_conf, function (t) {
+    common.compactDBs(t, dbs)
 })
 
-test("verify compaction", test_conf, function(t){
-  common.verifyCompactDBs(t, dbs, numDocs)
+test("verify compaction", test_conf, function (t) {
+    common.verifyCompactDBs(t, dbs, numDocs)
 })
 
-test("delete doc attachments", test_conf, function(t){
-  common.deleteDBDocAttachments(t, dbs, numDocs)
+test("delete doc attachments", test_conf, function (t) {
+    common.deleteDBDocAttachments(t, dbs, numDocs)
 })
 
-test("delete db docs", test_conf, function(t){
-  common.deleteDBDocs(t, dbs, numDocs)
+test("delete db docs", test_conf, function (t) {
+    common.deleteDBDocs(t, dbs, numDocs)
 })
 
 
@@ -309,10 +308,12 @@ test("_all_docs handles keys request for non-existent document correctly", test_
     })
 })
 
-test("create attachments using bulk docs", test_conf, function(t){
-  common.createDBBulkDocs(t, {numdocs : numDocs*10,
-                              docgen : 'bulkInlineTextAtt',
-                              dbs : dbs})
+test("create attachments using bulk docs", test_conf, function (t) {
+    common.createDBBulkDocs(t, {
+        numdocs: numDocs * 10,
+        docgen: 'bulkInlineTextAtt',
+        dbs: dbs
+    })
 })
 
 test("verify db loaded", function (t) {
@@ -352,35 +353,35 @@ test("verify db loaded", function (t) {
     })
 })
 
-test("docs with bad fields", function(t) {
-  coax.post([server, dbs[0]], {"_foo" : "not cool"}, function(err, ok){
-    t.ok(err, "_underscore fields should not be allowed")
-    t.end()
-  })
+test("docs with bad fields", function (t) {
+    coax.post([server, dbs[0]], {"_foo": "not cool"}, function (err, ok) {
+        t.ok(err, "_underscore fields should not be allowed")
+        t.end()
+    })
 })
 
-test("delete doc with _delete", test_conf, function(t){
+test("delete doc with _delete", test_conf, function (t) {
 
-  var doc = { _id : "hello" }
-  coax.post([server, dbs[0]], doc, function(err, js){
-    doc = js
-    doc._rev = js.rev
-    doc._id = js.id
-    doc._deleted = true
-    coax.post([server, dbs[0]], doc, function(err, _js){
-      var dbUrl = coax([server, dbs[0]]).pax().toString()
-      t.false(err, "failed insert " + doc._id + " in " + dbUrl)
-      coax([server, dbs[0], "hello"], function(err, _js){
-	  if (typeof err.status == 'undefined'){
-	      console.log(err)
-	      t.fail("err.status code missed in error: " + JSON.stringify(err))
-	  }else{
-	      t.equals(err.status, 404, "doc missing, got error: " + JSON.stringify(err))
-	  }
-        t.end()
-      })
+    var doc = {_id: "hello"}
+    coax.post([server, dbs[0]], doc, function (err, js) {
+        doc = js
+        doc._rev = js.rev
+        doc._id = js.id
+        doc._deleted = true
+        coax.post([server, dbs[0]], doc, function (err, _js) {
+            var dbUrl = coax([server, dbs[0]]).pax().toString()
+            t.false(err, "failed insert " + doc._id + " in " + dbUrl)
+            coax([server, dbs[0], "hello"], function (err, _js) {
+                if (typeof err.status == 'undefined') {
+                    console.log(err)
+                    t.fail("err.status code missed in error: " + JSON.stringify(err))
+                } else {
+                    t.equals(err.status, 404, "doc missing, got error: " + JSON.stringify(err))
+                }
+                t.end()
+            })
+        })
     })
-  })
 })
 
 // X multi attachments (inline | external)
@@ -399,52 +400,54 @@ test("delete doc with _delete", test_conf, function(t){
 
 // X compact (inline | external)
 
-test("create basic local docs", test_conf, function(t){
+test("create basic local docs", test_conf, function (t) {
 
-  common.createDBDocs(t, {numdocs : numDocs,
-                          dbs : dbs,
-                          docgen : 'basic',
-                          localdocs : '_local'}, 'emits-created')
+    common.createDBDocs(t, {
+        numdocs: numDocs,
+        dbs: dbs,
+        docgen: 'basic',
+        localdocs: '_local'
+    }, 'emits-created')
 
-  ee.once('emits-created', function(e, js){
-    t.false(e, "created basic local docs")
+    ee.once('emits-created', function (e, js) {
+        t.false(e, "created basic local docs")
 
-    // get doc
-    coax([server, dbs[0], "_local", dbs[0]+"_0"], function(e, js){
+        // get doc
+        coax([server, dbs[0], "_local", dbs[0] + "_0"], function (e, js) {
 
 
-      if(e){
-        console.log(e)
-        t.fail("unable to retrieve local doc:"+ dbs[0] + "/_local/" + dbs[0]+"_0")
-      }
+            if (e) {
+                console.log(e)
+                t.fail("unable to retrieve local doc:" + dbs[0] + "/_local/" + dbs[0] + "_0")
+            }
 
-      // get doc with attachment info
-      var docid = js._id
-      coax([server, dbs[0], docid, { attachments : true }], function(e, js){
+            // get doc with attachment info
+            var docid = js._id
+            coax([server, dbs[0], docid, {attachments: true}], function (e, js) {
 
-        if(e){
-          console.log(e)
-          t.fail("read local doc with basic data")
-        }
+                if (e) {
+                    console.log(e)
+                    t.fail("read local doc with basic data")
+                }
 
-        if (typeof js._attachments != 'undefined') {
-        	t.fail("local doc " + js._id + " stores attachment", js)
-        	t.end()
-        	return
-        }
-        var docdata=js.data
-        if (typeof docdata == 'undefined'){
-            t.fail("js.data missed in js:" + js)
-        } else
-            t.ok(docdata.length == Math.random().toString(5).substring(4).length, "verify attachment data")
-        t.end()
+                if (typeof js._attachments != 'undefined') {
+                    t.fail("local doc " + js._id + " stores attachment", js)
+                    t.end()
+                    return
+                }
+                var docdata = js.data
+                if (typeof docdata == 'undefined') {
+                    t.fail("js.data missed in js:" + js)
+                } else
+                    t.ok(docdata.length == Math.random().toString(5).substring(4).length, "verify attachment data")
+                t.end()
+            })
         })
-      })
     })
-  })
+})
 
-test("delete local db docs",  test_conf, function(t){
-  common.deleteDBDocs(t, dbs, numDocs, "_local")
+test("delete local db docs", test_conf, function (t) {
+    common.deleteDBDocs(t, dbs, numDocs, "_local")
 })
 
 //local docs do not support attachments and an error needs to be thrown when try to store with attachments
@@ -457,8 +460,8 @@ test("delete local db docs",  test_conf, function(t){
 
 // doc expire
 
-test("done", function(t){
-  common.cleanup(t, function(json){
-    t.end()
-  })
+test("done", function (t) {
+    common.cleanup(t, function (json) {
+        t.end()
+    })
 })
