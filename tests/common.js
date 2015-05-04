@@ -302,7 +302,7 @@ var common = module.exports = {
               }
               logger.info(callback);
               callback(body);
-                                t.end();
+              //t.end();
           } else {
               if (response.statusCode == expectedStatus.toString()) {
                   console.log("got expected status " + options.path + ": ", expectedStatus);
@@ -311,18 +311,28 @@ var common = module.exports = {
                   } catch (err) {
                       logger.info("not json format of response body", options.path, body);
                   }
-                  callback(body);
+                  //callback(body);
               } else {
                   t.fail("wrong response status code " + response.statusCode + " from http://" +
                       options.host + ":" + options.port + options.path + " for :" + JSON.stringify(options) +
                       " with data: " + post_data);
 
-                  callback(body);
+                  //callback(body);
               }
-              t.end();
+              //t.end();
           };
       });
-  });
+  }).on('error', function (e) {
+      logger.error("Got error: " + e.message);
+      t.fail("ERROR ");
+      t.end();
+  }).on('socket', function (e) {
+      //tests/cbl-simple-requests.js stuck on android
+      req.socket.setTimeout(25000);
+      req.socket.on('timeout', function() {
+          req.abort();
+      });
+  })
   logger.info(post_data);
   req.write(post_data);
   req.end();
@@ -562,6 +572,7 @@ var common = module.exports = {
 	              } else {
                       // console.log(url, " : ", json)
 	                  confls = json._conflicts
+                      // console.log(url, confls)
 	                  // delete conflicts
 	                  var docUrl = coax([server, db, localdocs + docid]).pax().toString()
 	                  // console.log(docUrl)
