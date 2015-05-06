@@ -15,7 +15,7 @@ var server, sg, gateway,
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 5;
 var timeoutReplication = 5000;
-var numRevs = parseInt(config.numRevs) || 100;
+var numRevs = parseInt(config.numRevs) || 50;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 test("cleanup cb bucket", function (t) {

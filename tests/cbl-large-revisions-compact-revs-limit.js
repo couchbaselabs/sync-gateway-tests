@@ -16,7 +16,6 @@ var server, sg, gateway,
 
 config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_revslimit.json"
 if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_cb_revslimit.json"
-//module.exports.SyncGatewayAdminParty = __dirname+"/admin_party_cb_revslimit.json"
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 1000 * numDocs;
