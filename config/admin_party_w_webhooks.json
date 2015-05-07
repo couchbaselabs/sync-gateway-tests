@@ -1,0 +1,15 @@
+{
+	"log":["REST", "REST+", "HTTP", "HTTP+", "Access", "Cache", "Shadow", "Shadow+", "CRUD", "CRUD+", "Changes", "Changes+", "JSON", "JSON+"],
+	"verbose":true,
+	"facebook" : {
+	    "register" : true
+        },
+	"databases": {
+		"db": {
+			"server": "walrus:",
+			"sync": `function(doc){channel(doc.channels);}`,
+			"users": {"GUEST": {"disabled": false, "admin_channels": ["*"] }},
+			"event_handlers": {"document_changed":[{"handler":"webhook","max_processes" : 500,"wait_for_process" : "600000","url":"http://localhost:9091","timeout":60}] }
+		}
+	}
+}
