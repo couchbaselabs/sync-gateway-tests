@@ -302,7 +302,7 @@ var common = module.exports = {
               }
               logger.info(callback);
               callback(body);
-              //t.end();
+              t.end();
           } else {
               if (response.statusCode == expectedStatus.toString()) {
                   console.log("got expected status " + options.path + ": ", expectedStatus);
@@ -319,7 +319,7 @@ var common = module.exports = {
 
                   //callback(body);
               }
-              //t.end();
+              t.end();
           };
       });
   }).on('error', function (e) {
@@ -364,8 +364,11 @@ var common = module.exports = {
 	    var url = coax([server,db, localdocs + docid]).pax().toString();
 	    if (err){
 	        t.false(err, "error loading " + url +":" + JSON.stringify(err));
-	    } else
-	        t.equals(localdocs + docid, ok.id, "docid");
+	    } else {
+            if(localdocs + docid!=ok.id) {
+                t.equals(localdocs + docid, ok.id, "docid");
+            }
+        }
 	    cb(err, ok);
 	    });
 
