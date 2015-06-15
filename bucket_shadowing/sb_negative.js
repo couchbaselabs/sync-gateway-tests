@@ -6,24 +6,45 @@ var launcher = require("../lib/launcher"),
   test = require("tap").test,
   test_time = process.env.TAP_TIMEOUT || 60,
   test_conf = {timeout: test_time * 1000},
+  cb_util = require("../tests/utils/cb_util"),
   couchbase = require('couchbase');
 
-var server, sg, gateway,
+var server, sg, gateway, app_bucket, shadow_bucket
 pulldb = "pull_db",
 pushdb = "push_db",
-bucketNames = ["app-bucket", "shadow-bucket"],
-app_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[0]}),
-shadow_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[1]});
+bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
 var urlCB = "http://localhost:8091"  
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
-var maxDataSize = 20000000; 
+var maxDataSize = 20000000;
 
-test("create buckets", function (t) {
-    common.createShadowBuckets(t, bucketNames[0],bucketNames[1])
+test("delete buckets", test_conf, function (t) {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 8));
+});
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2));
+    } else {
+        t.end()
+    }
+});
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
 });
 
 test("start test client", function(t){
@@ -41,6 +62,28 @@ test("start sync_gateway", function(t){
     gateway = sg.url
     t.end()
   })
+})
+
+test("create app_bucket connection", function(t){
+    app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            throw err;
+        } else{
+            t.end();
+        }
+    })
+})
+
+test("create shadow_bucket connection", function(t){
+    shadow_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[1], function(err) {
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            throw err;
+        } else{
+            t.end();
+        }
+    })
 })
 
 test("create both pull lite db " , function(t){
@@ -98,7 +141,9 @@ test("Adding an over-sized document to app-bucket and verify it is not shadowed"
                         t.ok(!error, "over-sized doc was created in app-bucket.  error:" + JSON.stringify(error))
                         // Check the doc is not shadowed to shadow bucket 
                         shadow_bucket.get(docId, function(err, result) {
-                            t.ok(!err, "over-sized doc was not supposed to shadowed to shadow-bucket.  error:" + JSON.stringify(err))
+                            if (error) {
+                                t.fail(error, "over-sized doc was not supposed to shadowed to shadow-bucket.  error:" + JSON.stringify(err))
+                            }
                             t.end()
                         }); 
                     }    
@@ -169,14 +214,17 @@ test("Adding an non-json document to app-bucket and verify it is not shadowed", 
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
+    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 3));
 });
+
 
 test("done", function(t){
   common.cleanup(t, function(json){
     sg.kill()
-    app_bucket.shutdown();
-    shadow_bucket.shutdown();
+    app_bucket.disconnect();
+    shadow_bucket.disconnect();
     t.end()
   })
 })

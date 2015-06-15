@@ -30,16 +30,29 @@ var data = (new Array(maxDataSize - 321 )).join("x");
 var value = {k: data}   
 
 test("delete buckets", test_conf, function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
-    t.end()
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 5));
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[0])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2));
+    } else {
+        t.end()
+    }
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[1])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
 });
 
 test("start test client", function(t){
@@ -222,8 +235,9 @@ test("Verify that the doc is shadowed to app-bucket", test_conf, function(t) {
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
-    t.end()
+    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 3));
 });
 
 test("done", function(t){setTimeout(function() {

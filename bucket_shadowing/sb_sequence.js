@@ -21,14 +21,13 @@ var launcher = require("../lib/launcher"),
   test = require("tap").test,
   test_time = process.env.TAP_TIMEOUT || 60,
   test_conf = {timeout: test_time * 1000},
+  cb_util = require("../tests/utils/cb_util"),
   couchbase = require('couchbase');
 
-var server, sg, gateway,
+var server, sg, gateway, app_bucket, shadow_bucket
 pulldb = "pull_db",
 pushdb = "push_db",
-bucketNames = ["app-bucket", "shadow-bucket"],
-app_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[0]}),
-shadow_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[1]});
+bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
 var urlCB = "http://localhost:8091"  
@@ -41,8 +40,30 @@ var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
 
 
-test("create buckets", function (t) {
-    common.createShadowBuckets(t, bucketNames[0],bucketNames[1])
+test("delete buckets", test_conf, function (t) {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 5));
+});
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2));
+    } else {
+        t.end()
+    }
+});
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
 });
 
 test("start test client", function(t){
@@ -58,6 +79,29 @@ test("create test database " + pulldb + " and " + pulldb, function(t){
   common.createDBs(t, [ pulldb, pushdb ])
   t.end()
 })
+
+test("create app_bucket connection", function(t){
+    app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            throw err;
+        } else{
+            t.end();
+        }
+    })
+})
+
+test("create shadow_bucket connection", function(t){
+    shadow_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[1], function(err) {
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            throw err;
+        } else{
+            t.end();
+        }
+    })
+})
+
 
 test("Web client create docs in app-bucket before sync_gateway is started", function(t) {
     async.times(numDocs, function(i, cb){
@@ -228,12 +272,12 @@ test("Mobile client push one doc to shadow-bucket and verify that bucket shadowi
                         t.end()
                     }
                 })
-            }, timeoutShadowing); 
+            }, timeoutShadowing*2);
         } 
     })       
 })
 
-test("delete app_bucket while shadow bucket is going on ", function (t) {
+test("delete app_bucket while shadow bucket is going on ", test_conf, function (t) {
     var post_data = 'STR';
     var options = {
       host : "localhost",
@@ -246,7 +290,9 @@ test("delete app_bucket while shadow bucket is going on ", function (t) {
       }
     };
     common.http_post_api(t, post_data, options, 200, function (callback) {
-        //t.end();
+        setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2);
     });
 });
 
@@ -329,18 +375,18 @@ test("delete shadow_bucket while sync_gateway is running. Make sure sync_gateway
           'Content-Type': 'text/html'
       }
     };
-    common.http_post_api(t, post_data, options, 200, function (callback) {
+    common.http_post_api(t, post_data, options, 200, function (callback) { setTimeout(function () {
+        t.end();
+        }, timeoutReplication * 2);
     });
 });
 
-test("done", function(t){
-  common.cleanup(t, function(json){
-    sg.kill()
-    app_bucket.shutdown();
-    shadow_bucket.shutdown();
-    t.end()
-  })
-})
- 
 
-
+test("done", function(t){setTimeout(function() {
+    common.cleanup(t, function(json) {
+        sg.kill()
+        app_bucket.disconnect()
+        shadow_bucket.disconnect()
+        t.end()
+    })
+}, timeoutReplication);})
