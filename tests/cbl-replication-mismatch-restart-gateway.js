@@ -19,18 +19,22 @@ if (config.DbUrl.indexOf("http") > -1){
 	timeoutReplication=5000;
 }
 
-test("delete buckets", test_conf, function(t) {
+test("delete buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.deleteBucket(t, config.DbBucket)
-        t.end()
+        cb_util.deleteBucket(t, config.DbBucket,
+            setTimeout(function () {
+                t.end()
+            }, timeoutReplication * 10));
     } else {
         t.end()
     }
 });
 
-test("create buckets", test_conf, function(t) {
+test("create buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.createBucket(t, config.DbBucket)
+        cb_util.createBucket(t, config.DbBucket, setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
     } else {
         t.end()
     }
@@ -105,14 +109,11 @@ test("restart syncgateway", function(t){
   })
 })
 
-test("setup continuous push and pull from both client database", function(t) {
-  common.setupPushAndPull(server, dbs[0], sgdb1, function(err, ok){
-    t.false(err, 'replication one ok')
-    common.setupPushAndPull(server, dbs[1], sgdb1, function(err, ok){
-      t.false(err, 'replication two ok')
-      t.end()
-    })
-  })
+test("reload databases after restart", test_conf, function(t){
+    common.updateDBDocs(t, {dbs : [dbs[0]],
+        numrevs : 5,
+        numdocs : numDocs/2})
+
 })
 
 test("verify dbs have same number of docs", test_conf, function(t) {
@@ -127,7 +128,7 @@ test("cleanup cb bucket", function(t){
 	    },
 	    setTimeout(function(){
 		 t.end();
-	            }, 5000));
+	            }, test_time/10));
 	}else{
 	    t.end();
 	}
