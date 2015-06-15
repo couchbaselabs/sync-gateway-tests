@@ -24,7 +24,8 @@
     "ssh2": "0.2.x",
     "couchbase": "2.0.6",
     "tap": "0.7.x",
-    "winston": "0.7.x"
+    "winston": "0.7.x",
+    "sudo": "1.0.3"
 
   },
   "scripts": {
