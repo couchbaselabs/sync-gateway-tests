@@ -131,10 +131,12 @@ var common = module.exports = {
       }
     };
     // console.log(options);
-    common.http_post_api(t, post_data, options0, 200, function (callback) {
-      common.http_post_api(t, post_data, options1, 200, function (callback) {
-          t.end();
-      });
+    common.http_post_api(t, post_data, options0, undefined, function (callback) {
+        setTimeout(function () {
+            common.http_post_api(t, post_data, options1, undefined, function (callback) {
+            });
+        }, 5000);
+
     });
   },
 
@@ -292,8 +294,8 @@ var common = module.exports = {
           logger.info(response.statusCode + " from http://" + options.host + ":" + options.port + options.path);
 
           if (response.statusCode == '200' || response.statusCode == '201' || response.statusCode == '202') {
-              if (expectedStatus !== "OK"){
-        	  t.equals(response.statusCode, expectedStatus, "response status code " + options.path + ": " + response.statusCode + ". Expected: " + expectedStatus);
+              if (expectedStatus !== undefined && expectedStatus !== "OK"){
+        	    t.equals(response.statusCode, expectedStatus, "response status code " + options.path + ": " + response.statusCode + ". Expected: " + expectedStatus);
               }
               try {
                   body = JSON.parse(body);
@@ -302,24 +304,24 @@ var common = module.exports = {
               }
               logger.info(callback);
               callback(body);
-              t.end();
+              //t.end();
           } else {
-              if (response.statusCode == expectedStatus.toString()) {
+              if (expectedStatus === undefined || response.statusCode == expectedStatus.toString()) {
                   console.log("got expected status " + options.path + ": ", expectedStatus);
                   try {
                       body = JSON.stringify(JSON.parse(body));
                   } catch (err) {
                       logger.info("not json format of response body", options.path, body);
                   }
-                  //callback(body);
+                  callback(body);
               } else {
                   t.fail("wrong response status code " + response.statusCode + " from http://" +
                       options.host + ":" + options.port + options.path + " for :" + JSON.stringify(options) +
                       " with data: " + post_data);
 
-                  //callback(body);
+                  callback(body);
               }
-              t.end();
+              //t.end();
           };
       });
   }).on('error', function (e) {

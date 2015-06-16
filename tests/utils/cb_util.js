@@ -36,7 +36,7 @@ var cb_util = module.exports = {
 			}
 		};
 		// console.log(options);
-		common.http_post_api(t, post_data, options, 200, function(callback) {
+		common.http_post_api(t, post_data, options, undefined, function(callback) {
 		});
 	},
 

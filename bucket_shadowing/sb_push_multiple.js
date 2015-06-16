@@ -6,13 +6,12 @@ var launcher = require("../lib/launcher"),
   test = require("tap").test,
   test_time = process.env.TAP_TIMEOUT || 60,
   test_conf = {timeout: test_time * 1000},
+  cb_util = require("../tests/utils/cb_util"),
   couchbase = require('couchbase');
 
-var server, sg, gateway,
+var server, sg, gateway, app_bucket
 pushdb = "push_db",
-bucketNames = ["app-bucket", "shadow-bucket"],
-app_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[0]}),
-shadow_bucket = new couchbase.Connection({host: 'localhost:8091', bucket: bucketNames[1]});
+bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db" 
 var urlCB = "http://localhost:8091" 
@@ -20,20 +19,33 @@ if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("loc
 
 var numDocs= parseInt(config.numDocs) || 100;
 var timeoutShadowing = 1000;
-var timeoutReplication = 3000;
-var updatedData = "updated data"; 
+var timeoutReplication = 5000;
+var updatedData = "updated data";
 
 test("delete buckets", test_conf, function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
-    t.end()
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 10));
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[0])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2));
+    } else {
+        t.end()
+    }
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[1])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
 });
 
 test("start test client", function(t){
@@ -51,6 +63,18 @@ test("start sync gateway", function(t){
     t.end()
   })
 })
+
+test("create app_bucket connection", function(t){
+    app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            throw err;
+        } else{
+            t.end();
+        }
+    })
+})
+
 
 test("create test database " + pushdb, function(t){
   common.createDBs(t, [ pushdb ])
@@ -193,14 +217,15 @@ test("Web client verifies the deleted docs are no longer in app-bucke", function
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
+    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 5));
 });
 
-test("done", function(t){
-  common.cleanup(t, function(json){
-    sg.kill()
-    app_bucket.shutdown();
-    shadow_bucket.shutdown();
-    t.end()
-  })
-})
+test("done", function(t){setTimeout(function() {
+    common.cleanup(t, function(json) {
+        sg.kill()
+        app_bucket.disconnect()
+        t.end()
+    })
+}, timeoutReplication);})

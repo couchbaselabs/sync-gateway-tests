@@ -19,21 +19,35 @@ if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("loc
 var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
 // var maxDataSize = 20000000;
- var maxDataSize = 400
+var maxDataSize = 400
 
 
 test("delete buckets", test_conf, function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
-    t.end()
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 5));
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[0])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2));
+    } else {
+        t.end()
+    }
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[1])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
 });
+
 
 test("start test client", function(t){
   common.launchClient(t, function(_server){
@@ -211,7 +225,9 @@ test("Verify removing a doc with maximum size in app-bucket and check the doc is
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
+    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 3));
 });
 
 test("done", function(t){setTimeout(function() {

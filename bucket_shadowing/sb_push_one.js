@@ -7,6 +7,7 @@ var launcher = require("../lib/launcher"),
   test = require("tap").test,
   test_time = process.env.TAP_TIMEOUT || 100,
   test_conf = {timeout: test_time * 1000},
+  cb_util = require("../tests/utils/cb_util"),
   couchbase = require('couchbase');
 
 
@@ -15,22 +16,35 @@ var pushdb = "push_db"
 var bucketNames = ["app-bucket", "shadow-bucket"]
 
 test("delete buckets", test_conf, function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1])
-    t.end()
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 10));
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[0])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 2));
+    } else {
+        t.end()
+    }
 });
 
 test("create buckets", test_conf, function (t) {
-	cb_util.createBucket(t, bucketNames[1])
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
 });
 
-
-var sgShadowBucketDb = "http://localhost:4985/db" 
+var sgShadowBucketDbLH = "http://localhost:4985/db"
+var sgShadowBucketDb = "http://localhost:4985/db"
 var urlCB = "http://localhost:8091" 
-if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
+if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDbLH.replace("localhost", "10.0.2.2");
 
 var timeoutReplication = 5000;
 
@@ -52,25 +66,24 @@ test("start test client", function(t){
   })
 })
 
-test("create app_bucket connection", function(t){
-	cluster = new couchbase.Cluster('127.0.0.1:8091')
-	app_bucket = cluster.openBucket(bucketNames[0], function(err) {
-		  if (err) {
-		    // Failed to make a connection to the Couchbase cluster.
-		    throw err;
-		  } else{
-			  t.end();
-		  }
-	})
-})
-
-
 test("start sync gateway", test_conf, function(t){
   common.launchSGShadowing(t, function(_sg){
     sg  = _sg
     t.end()
   })
 })
+
+test("create app_bucket connection", function(t){
+    app_bucket = new couchbase.Cluster('127.0.0.1:8091').openBucket(bucketNames[0], function(err) {
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            throw err;
+        } else{
+            t.end();
+        }
+    })
+})
+
 
 test("create test database " + pushdb, function(t){
   common.createDBs(t, [ pushdb ])
@@ -106,7 +119,7 @@ test("Mobile client start continous push replication", function(t) {
 
 test("Verify that the doc is replicated to sync_gateway", test_conf, function(t) {
     setTimeout(function () {
-        coax([sgShadowBucketDb, "_all_docs"],function(err, allDocs){
+        coax([sgShadowBucketDbLH, "_all_docs"],function(err, allDocs){
             t.false(err, "sg database exists");
             t.ok(allDocs, "got _all_docs repsonse");
             t.equals(allDocs.update_seq, 2, "sg sequence number correct")
@@ -220,15 +233,15 @@ test("Verify that the doc is shadowed to app-bucket", test_conf, function(t) {
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1])
+    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 3));
 });
 
 test("done", function(t){setTimeout(function() {
     common.cleanup(t, function(json) {
         sg.kill()
         app_bucket.disconnect()
-
         t.end()
     })
 }, timeoutReplication);})
-
