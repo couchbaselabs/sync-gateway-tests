@@ -119,12 +119,88 @@ test("restart CB", test_conf, function(t){
     }
 })
 
-test("verify dbs have same number of docs", test_conf, function(t) {
+test("reload databases after restart", test_conf, function(t){
+    common.updateDBDocs(t, {dbs : [dbs[1]],
+        numrevs : 5,
+        numdocs : numDocs})
+
+})
+
+test("verify db[0] have same number of docs", test_conf, function(t) {
     common.verifyNumDocs(t, [dbs[0]], numDocs/2)
 })
 
-test("verify dbs have same number of docs", test_conf, function(t) {
+test("verify db[1] have same number of docs", test_conf, function(t) {
     common.verifyNumDocs(t, [dbs[1]], numDocs*3/2)
+})
+
+
+test("verify cbl changes on dbs[0]", function(t){
+    common.verifyChanges(coax([server, dbs[0]]), function(db_one_ids, db_one_dup_ids, db_one_seqs,db_one_dup_seqs) {
+        var one_ids_list = Object.keys(db_one_ids), db_one_seqs_list = Object.keys(db_one_seqs)
+        t.equals(one_ids_list.length, numDocs/2, "dbs[0] correct number of docs in _all_docs")
+        t.equals(db_one_seqs_list.length, numDocs/2, "dbs[0] correct number of docs in _changes")
+        t.equals(db_one_dup_ids.length, 0, "dbs[0] duplicate ids in changes "+db_one_dup_ids)
+        t.equals(db_one_dup_seqs.length, 0, "dbs[0] duplicate seqs in changes")
+
+        common.verifyChanges(coax([server, dbs[0]]), function(db_two_ids, db_two_dup_ids, db_two_seqs,db_two_dup_seqs) {
+            var db_two_idslist = Object.keys(db_two_ids), db_two_seqs_list = Object.keys(db_two_seqs)
+
+            t.equals(db_two_idslist.length, numDocs/2, "dbs[0] correct number of docs in _all_docs")
+            t.equals(db_two_seqs_list.length, numDocs/2, "dbs[0] correct number of docs in _changes")
+            t.equals(db_two_dup_ids.length, 0, "dbs[0] duplicate ids in changes")
+            t.equals(db_two_dup_seqs.length, 0, "dbs[0] duplicate seqs in changes")
+
+            var missing_from_one =[], missing_from_two=[]
+            for (var i = db_two_idslist.length - 1; i >= 0; i--) {
+                if (!db_one_ids[db_two_idslist[i]]) {
+                    missing_from_one.push(db_two_idslist[i])
+                }
+            };
+            for (var i = one_ids_list.length - 1; i >= 0; i--) {
+                if (!db_two_ids[one_ids_list[i]]) {
+                    missing_from_two.push(one_ids_list[i])
+                }
+            };
+            t.equals(0, missing_from_one.length, "dbs[0] missing changes in one "+missing_from_one.join())
+            t.equals(0, missing_from_two.length, "dbs[0] missing changes in two"+missing_from_two.join())
+            t.end()
+        })
+    })
+})
+
+test("verify cbl changes on dbs[1]", function(t){
+    common.verifyChanges(coax([server, dbs[1]]), function(db_one_ids, db_one_dup_ids, db_one_seqs,db_one_dup_seqs) {
+        var one_ids_list = Object.keys(db_one_ids), db_one_seqs_list = Object.keys(db_one_seqs)
+        t.equals(one_ids_list.length, 3*numDocs/2, "dbs[1] correct number of docs in _all_docs")
+        t.equals(db_one_seqs_list.length, 3*numDocs/2, "dbs[1] correct number of docs in _changes")
+        t.equals(db_one_dup_ids.length, 0, "dbs[1] duplicate ids in changes "+db_one_dup_ids)
+        t.equals(db_one_dup_seqs.length, 0, "dbs[1] duplicate seqs in changes")
+
+        common.verifyChanges(coax([server, dbs[1]]), function(db_two_ids, db_two_dup_ids, db_two_seqs,db_two_dup_seqs) {
+            var db_two_idslist = Object.keys(db_two_ids), db_two_seqs_list = Object.keys(db_two_seqs)
+
+            t.equals(db_two_idslist.length, 3*numDocs/2, "dbs[1] correct number of docs in _all_docs")
+            t.equals(db_two_seqs_list.length, 3*numDocs/2, "dbs[1] correct number of docs in _changes")
+            t.equals(db_two_dup_ids.length, 0, "dbs[1] duplicate ids in changes")
+            t.equals(db_two_dup_seqs.length, 0, "dbs[1] duplicate seqs in changes")
+
+            var missing_from_one =[], missing_from_two=[]
+            for (var i = db_two_idslist.length - 1; i >= 0; i--) {
+                if (!db_one_ids[db_two_idslist[i]]) {
+                    missing_from_one.push(db_two_idslist[i])
+                }
+            };
+            for (var i = one_ids_list.length - 1; i >= 0; i--) {
+                if (!db_two_ids[one_ids_list[i]]) {
+                    missing_from_two.push(one_ids_list[i])
+                }
+            };
+            t.equals(0, missing_from_one.length, "dbs[1] missing changes in one "+missing_from_one.join())
+            t.equals(0, missing_from_two.length, "dbs[1] missing changes in two"+missing_from_two.join())
+            t.end()
+        })
+    })
 })
 
 
