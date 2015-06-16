@@ -1,5 +1,5 @@
 {
-	"log": ["CRUD", "REST+"],
+    "log": ["CRUD", "REST+", "CHANGES"],
 	"databases": {
 		"db": {
 			"server": "http://10.3.4.144:8091",
