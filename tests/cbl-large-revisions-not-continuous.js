@@ -11,7 +11,7 @@ var launcher = require("../lib/launcher"),
 
 var server, sg, gateway,
 // local dbs
-    dbs = ["large-revisions"];
+    dbs = ["large-revisions-not-continues"];
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 5;
 var timeoutReplication = 5000;

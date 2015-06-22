@@ -11,7 +11,7 @@ var launcher = require("../lib/launcher"),
 
 var server, sg, gateway,
 // local dbs
-    dbs = ["api-revision1"];
+    dbs = ["api-revisions"];
 
 var numDocs = parseInt(config.numDocs) || 100;
 var timeoutReplication = 5000;
