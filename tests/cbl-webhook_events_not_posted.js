@@ -11,14 +11,11 @@ var launcher = require("../lib/launcher"),
 
 var server, sg, gateway,
  // local dbs
- dbs = ["api-revision1"];
+ dbs = ["webhook_events"];
 
-//var numDocs=parseInt(config.numDocs) || 10;
-var numDocs= 100;
+var numDocs=parseInt(config.numDocs) || 100;
 var timeoutReplication = 5000;
 if (config.provides=="android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 500 * numDocs;
-
-
 
 // start client endpoint
 test("start test client", function(t){
@@ -27,8 +24,6 @@ test("start test client", function(t){
     t.end()
   })
 })
-
-
 
 // start sync gateway
 test("start syncgateway", function(t){
@@ -39,13 +34,10 @@ test("start syncgateway", function(t){
   })
 })
 
-
-
 // create all dbs
 test("create test databases", function(t){
   common.createDBs(t, dbs)
 })
-
 
 // setup push replication to gateway
 test("set push replication to gateway", function(t){
@@ -74,7 +66,6 @@ test("set push replication to gateway", function(t){
       t.false(err, "setup push replication to gateway")
       t.end()
     })
-
 })
 
 test("load databases", test_conf, function(t){
@@ -90,37 +81,17 @@ test("doc update on SG", test_conf, function(t){
   common.updateSGDocs(t, {dbs : [sg],numrevs : 1})
 })
 
-
-
 test("doc update on liteServ", test_conf, function(t){
   // start updating docs
   //setInterval(common.updateDBDocs,5000,t,{dbs:dbs,numrevs:10,numdocs:numDocs})
-  
   common.updateDBDocs(t, {dbs : dbs,
                           numrevs : 10,
                           numdocs : numDocs})
-
-
 })
-
 
 test("done", function(t){
-  setTimeout(function() {
-    common.cleanup(t, function(json){
-      sg.kill()
-      t.end()
-    })  
-  }, 240000)
-  
-  
+  common.cleanup(t, function(json){
+    sg.kill()
+    t.end()
+  })
 })
-
-
-
-
-
-
-
-
-
-
