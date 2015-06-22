@@ -19,7 +19,7 @@ if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname 
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 1000 * numDocs;
-var numRevs = parseInt(config.numRevs) || 2;
+var numRevs = parseInt(config.numRevs) || 20;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
@@ -112,7 +112,6 @@ test("set push replication to gateway", function (t) {
         t.false(err, "setup push replication to gateway")
         t.end()
     })
-
 })
 
 test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
@@ -225,7 +224,6 @@ test("verify num Revs2", test_conf, function (t) {
     setTimeout(function () {
         common.verifyNumRevsLessRevsLimit(t, dbs, numDocs, 10)
     }, timeoutReplication);
-
 })
 
 test("delete db docs", test_conf, function (t) {
