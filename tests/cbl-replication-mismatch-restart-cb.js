@@ -88,12 +88,14 @@ test("verify dbs have same number of docs", test_conf, function(t) {
 })
 
 test("kill CB", test_conf, function(t) {
-    if (/^linux/.test(process.platform)) {
+    if (/^linux/.test(process.platform) && (config.DbUrl.indexOf("http") > -1)) {
         var child = sudo(['/etc/init.d/couchbase-server', 'stop']);
         child.stdout.on('data', function (data) {
             console.log(data.toString());
             t.end();
         });
+    } else {
+        t.end();
     }
 })
 
@@ -110,12 +112,14 @@ test("load databases", test_conf, function(t){
 
 // restart CB
 test("restart CB", test_conf, function(t){
-    if (/^linux/.test(process.platform)) {
+    if (/^linux/.test(process.platform) && (config.DbUrl.indexOf("http") > -1)) {
         var child = sudo(['/etc/init.d/couchbase-server', 'start']);
         child.stdout.on('data', function (data) {
             console.log(data.toString());
             t.end();
         });
+    } else {
+        t.end();
     }
 })
 
@@ -126,94 +130,99 @@ test("reload databases after restart", test_conf, function(t){
 
 })
 
-test("verify db[0] have same number of docs", test_conf, function(t) {
-    common.verifyNumDocs(t, [dbs[0]], numDocs/2)
+test("verify db[0] have same number of docs", test_conf, function (t) {
+    common.verifyNumDocs(t, [dbs[0]], numDocs * 3 / 2)
 })
 
-test("verify db[1] have same number of docs", test_conf, function(t) {
-    common.verifyNumDocs(t, [dbs[1]], numDocs*3/2)
+test("verify db[1] have same number of docs", test_conf, function (t) {
+    common.verifyNumDocs(t, [dbs[1]], numDocs * 3 / 2)
 })
 
-
-test("verify cbl changes on dbs[0]", function(t){
-    common.verifyChanges(coax([server, dbs[0]]), function(db_one_ids, db_one_dup_ids, db_one_seqs,db_one_dup_seqs) {
+test("verify cbl changes on dbs[0]", function (t) {
+    common.verifyChanges(coax([server, dbs[0]]), function (db_one_ids, db_one_dup_ids, db_one_seqs, db_one_dup_seqs) {
         var one_ids_list = Object.keys(db_one_ids), db_one_seqs_list = Object.keys(db_one_seqs)
-        t.equals(one_ids_list.length, numDocs/2, "dbs[0] correct number of docs in _all_docs")
-        t.equals(db_one_seqs_list.length, numDocs/2, "dbs[0] correct number of docs in _changes")
-        t.equals(db_one_dup_ids.length, 0, "dbs[0] duplicate ids in changes "+db_one_dup_ids)
+        t.equals(one_ids_list.length, numDocs * 3 / 2, "dbs[0] correct number of docs in _all_docs")
+        t.equals(db_one_seqs_list.length, numDocs * 3 / 2, "dbs[0] correct number of docs in _changes")
+        t.equals(db_one_dup_ids.length, 0, "dbs[0] duplicate ids in changes " + db_one_dup_ids)
         t.equals(db_one_dup_seqs.length, 0, "dbs[0] duplicate seqs in changes")
 
-        common.verifyChanges(coax([server, dbs[0]]), function(db_two_ids, db_two_dup_ids, db_two_seqs,db_two_dup_seqs) {
+        common.verifyChanges(coax([server, dbs[0]]), function (db_two_ids, db_two_dup_ids, db_two_seqs, db_two_dup_seqs) {
             var db_two_idslist = Object.keys(db_two_ids), db_two_seqs_list = Object.keys(db_two_seqs)
 
-            t.equals(db_two_idslist.length, numDocs/2, "dbs[0] correct number of docs in _all_docs")
-            t.equals(db_two_seqs_list.length, numDocs/2, "dbs[0] correct number of docs in _changes")
+            t.equals(db_two_idslist.length, numDocs * 3 / 2, "dbs[0] correct number of docs in _all_docs")
+            t.equals(db_two_seqs_list.length, numDocs * 3 / 2, "dbs[0] correct number of docs in _changes")
             t.equals(db_two_dup_ids.length, 0, "dbs[0] duplicate ids in changes")
             t.equals(db_two_dup_seqs.length, 0, "dbs[0] duplicate seqs in changes")
 
-            var missing_from_one =[], missing_from_two=[]
+            var missing_from_one = [], missing_from_two = []
             for (var i = db_two_idslist.length - 1; i >= 0; i--) {
                 if (!db_one_ids[db_two_idslist[i]]) {
                     missing_from_one.push(db_two_idslist[i])
                 }
-            };
+            }
+            ;
             for (var i = one_ids_list.length - 1; i >= 0; i--) {
                 if (!db_two_ids[one_ids_list[i]]) {
                     missing_from_two.push(one_ids_list[i])
                 }
-            };
-            t.equals(0, missing_from_one.length, "dbs[0] missing changes in one "+missing_from_one.join())
-            t.equals(0, missing_from_two.length, "dbs[0] missing changes in two"+missing_from_two.join())
+            }
+            ;
+            t.equals(0, missing_from_one.length, "dbs[0] missing changes in one " + missing_from_one.join())
+            t.equals(0, missing_from_two.length, "dbs[0] missing changes in two" + missing_from_two.join())
             t.end()
         })
     })
 })
 
-test("verify cbl changes on dbs[1]", function(t){
-    common.verifyChanges(coax([server, dbs[1]]), function(db_one_ids, db_one_dup_ids, db_one_seqs,db_one_dup_seqs) {
+test("verify cbl changes on dbs[1]", function (t) {
+    common.verifyChanges(coax([server, dbs[1]]), function (db_one_ids, db_one_dup_ids, db_one_seqs, db_one_dup_seqs) {
         var one_ids_list = Object.keys(db_one_ids), db_one_seqs_list = Object.keys(db_one_seqs)
-        t.equals(one_ids_list.length, 3*numDocs/2, "dbs[1] correct number of docs in _all_docs")
-        t.equals(db_one_seqs_list.length, 3*numDocs/2, "dbs[1] correct number of docs in _changes")
-        t.equals(db_one_dup_ids.length, 0, "dbs[1] duplicate ids in changes "+db_one_dup_ids)
+        t.equals(one_ids_list.length, 3 * numDocs / 2, "dbs[1] correct number of docs in _all_docs")
+        t.equals(db_one_seqs_list.length, 3 * numDocs / 2, "dbs[1] correct number of docs in _changes")
+        t.equals(db_one_dup_ids.length, 0, "dbs[1] duplicate ids in changes " + db_one_dup_ids)
         t.equals(db_one_dup_seqs.length, 0, "dbs[1] duplicate seqs in changes")
 
-        common.verifyChanges(coax([server, dbs[1]]), function(db_two_ids, db_two_dup_ids, db_two_seqs,db_two_dup_seqs) {
+        common.verifyChanges(coax([server, dbs[1]]), function (db_two_ids, db_two_dup_ids, db_two_seqs, db_two_dup_seqs) {
             var db_two_idslist = Object.keys(db_two_ids), db_two_seqs_list = Object.keys(db_two_seqs)
 
-            t.equals(db_two_idslist.length, 3*numDocs/2, "dbs[1] correct number of docs in _all_docs")
-            t.equals(db_two_seqs_list.length, 3*numDocs/2, "dbs[1] correct number of docs in _changes")
+            t.equals(db_two_idslist.length, 3 * numDocs / 2, "dbs[1] correct number of docs in _all_docs")
+            t.equals(db_two_seqs_list.length, 3 * numDocs / 2, "dbs[1] correct number of docs in _changes")
             t.equals(db_two_dup_ids.length, 0, "dbs[1] duplicate ids in changes")
             t.equals(db_two_dup_seqs.length, 0, "dbs[1] duplicate seqs in changes")
 
-            var missing_from_one =[], missing_from_two=[]
+            var missing_from_one = [], missing_from_two = []
             for (var i = db_two_idslist.length - 1; i >= 0; i--) {
                 if (!db_one_ids[db_two_idslist[i]]) {
                     missing_from_one.push(db_two_idslist[i])
                 }
-            };
+            }
+            ;
             for (var i = one_ids_list.length - 1; i >= 0; i--) {
                 if (!db_two_ids[one_ids_list[i]]) {
                     missing_from_two.push(one_ids_list[i])
                 }
-            };
-            t.equals(0, missing_from_one.length, "dbs[1] missing changes in one "+missing_from_one.join())
-            t.equals(0, missing_from_two.length, "dbs[1] missing changes in two"+missing_from_two.join())
+            }
+            ;
+            t.equals(0, missing_from_one.length, "dbs[1] missing changes in one " + missing_from_one.join())
+            t.equals(0, missing_from_two.length, "dbs[1] missing changes in two" + missing_from_two.join())
             t.end()
         })
     })
 })
 
-test("verify sync gateway changes feed has all docs in it", test_conf, function(t) {
+test("verify sync gateway changes feed has all docs in it", test_conf, function (t) {
     var db = coax(sg1.db.pax().toString())
 
     db("_changes", function (err, data) {
         console.log(data)
-        var changes = data.results.map(function(r){return r.id});
-        db("_all_docs", function(err, view){
+        var changes = data.results.map(function (r) {
+            return r.id
+        });
+        db("_all_docs", function (err, view) {
             var docs = view.rows;
             var missing = [];
 
-            docs.forEach(function(d){
+            docs.forEach(function (d) {
                 if (changes.indexOf(d.id) == -1) {
                     missing.push(d.id)
                 }
@@ -222,7 +231,7 @@ test("verify sync gateway changes feed has all docs in it", test_conf, function(
             var changeIds = {}, dupIds = [];
             var changeSeqs = {}, dupSeqs = [];
 
-            data.results.forEach(function(r){
+            data.results.forEach(function (r) {
                 if (changeIds[r.id]) {
                     dupIds.push(r.id)
                 }
@@ -234,13 +243,13 @@ test("verify sync gateway changes feed has all docs in it", test_conf, function(
                 changeSeqs[r.seq] = true
             })
 
-            t.equals(docs.length, numDocs*3/2, "correct number of docs in _all_docs:" + docs.length )
+            t.equals(docs.length, numDocs * 3 / 2, "correct number of docs in _all_docs:" + docs.length)
             //t.equals(changes.length, numDocs + 1, "correct number of docs in _changes:" + changes.length)
             console.log("missing " + missing.length + ", ids:", missing.join(', '))
-            console.log("duplicate change ids "+dupIds.length+", ids:", dupIds.join(', '))
-            console.log("duplicate change seqs "+dupSeqs.length+", seqs:", dupSeqs.join(', '))
+            console.log("duplicate change ids " + dupIds.length + ", ids:", dupIds.join(', '))
+            console.log("duplicate change seqs " + dupSeqs.length + ", seqs:", dupSeqs.join(', '))
 
-            t.equals(dupIds.length, 0, "duplicate ids in changes:"+ dupIds.length)
+            t.equals(dupIds.length, 0, "duplicate ids in changes:" + dupIds.length)
             t.equals(dupSeqs.length, 0, "duplicate seqs in changes:" + dupSeqs.length)
             t.equals(missing.length, 0, "missing changes:" + missing.length)
 
@@ -251,22 +260,29 @@ test("verify sync gateway changes feed has all docs in it", test_conf, function(
     })
 })
 
-test("cleanup cb bucket", function(t){
-    if (config.DbUrl.indexOf("http") > -1){
+test("cleanup cb bucket", function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
         coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
-            {"auth":{"passwordCredentials":{"username":"Administrator", "password":"password"}}}, function (err, js){
+            {
+                "auth": {
+                    "passwordCredentials": {
+                        "username": "Administrator",
+                        "password": "password"
+                    }
+                }
+            }, function (err, js) {
                 t.false(err, "flush cb bucket")
             },
-            setTimeout(function(){
+            setTimeout(function () {
                 t.end();
-            }, test_time/10));
-    }else{
+            }, test_time / 10));
+    } else {
         t.end();
     }
 })
 
-test("done", function(t){
-    common.cleanup(t, function(json){
+test("done", function (t) {
+    common.cleanup(t, function (json) {
         sg1.kill()
         t.end()
     })
