@@ -17,6 +17,7 @@ var server, sg, gateway,
 
 var numDocs=parseInt(config.numDocs) || 100;
 
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
 // start client endpoint
 test("start test client", function(t){
@@ -39,7 +40,6 @@ test("start syncgateway", function(t){
 test("create test databases", function(t){
   common.createDBs(t, dbs)
 })
-
 
 // setup push/pull replication to gateway
 test("set push/pull replication to gateway", function(t){
@@ -197,5 +197,5 @@ test("done", function(t){
   common.cleanup(t, function(json){
     sg.kill()
     t.end()
-  })
-})
+  }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+});

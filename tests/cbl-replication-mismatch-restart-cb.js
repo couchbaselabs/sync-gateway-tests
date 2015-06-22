@@ -21,6 +21,8 @@ if (config.DbUrl.indexOf("http") > -1){
     timeoutReplication=5000;
 }
 
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+
 test("delete buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
         cb_util.deleteBucket(t, config.DbBucket,
@@ -285,5 +287,5 @@ test("done", function (t) {
     common.cleanup(t, function (json) {
         sg1.kill()
         t.end()
-    })
-})
+    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+});

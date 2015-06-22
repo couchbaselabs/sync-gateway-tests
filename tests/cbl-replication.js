@@ -24,7 +24,7 @@ var numDocs=parseInt(config.numDocs) || 100;
 //support for shorthand target in local->local replication
 //all android tests should be uncommented when the the issue will be resolved
 
-
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
 // start client endpoint
 test("start test client", function(t){
@@ -266,5 +266,5 @@ test("done", function(t){
   common.cleanup(t, function(json){
     sg.kill();
     t.end();
-  });
+  }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
 });

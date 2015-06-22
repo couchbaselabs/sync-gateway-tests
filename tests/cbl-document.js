@@ -17,6 +17,8 @@ var server,
 
 var numDocs = parseInt(config.numDocs) || 100;
 
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+
 // start client endpoint
 test("start test client", function (t) {
     common.launchClient(t, function (_server) {
@@ -463,5 +465,5 @@ test("delete local db docs", test_conf, function (t) {
 test("done", function (t) {
     common.cleanup(t, function (json) {
         t.end()
-    })
-})
+    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+});

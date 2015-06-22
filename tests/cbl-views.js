@@ -9,6 +9,8 @@ var launcher = require("../lib/launcher"),
 
 var server, db;
 
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+
 // start client endpoint
 test("start test client", function(t) {
     common.launchClient(t, function(_server) {
@@ -16,7 +18,6 @@ test("start test client", function(t) {
         t.end();
     });
 });
-
 
 // create all dbs
 test("create test database", function(t) {
@@ -341,5 +342,5 @@ test("test array keys", function(t) {
 test("done", function(t) {
     common.cleanup(t, function(json) {
         t.end();
-    });
+    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
 });

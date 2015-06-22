@@ -19,7 +19,9 @@ if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname 
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 1000 * numDocs;
-var numRevs = parseInt(config.numRevs) || 20;
+var numRevs = parseInt(config.numRevs) || 2;
+
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
 test("cleanup cb bucket", function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
@@ -255,5 +257,6 @@ test("done", function (t) {
     common.cleanup(t, function (json) {
         sg.kill()
         t.end()
-    })
-})
+    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+});
+

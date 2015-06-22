@@ -15,6 +15,7 @@ var server, sg1, sg2, sgdb
   // local dbs
  dbs = ["mismatch-gateways-one", "mismatch-gateways-two"];
 
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
 // start client endpoint
 test("start test client", function(t){
@@ -188,5 +189,5 @@ test("done", function(t){
     sg1.kill()
     sg2.kill()
     t.end()
-  })
-})
+  }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+});
