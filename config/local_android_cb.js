@@ -10,6 +10,7 @@ var config = module.exports = {
   DbBucket          : "db",
   provides          : "android",  // ios, android, pouchdb, couchdb
   numDocs           : process.env.NUM_DOCS || 10,
+  numRevs           : process.env.NUM_REVS || 20,
   channelsPerDoc    : 1
 }
 

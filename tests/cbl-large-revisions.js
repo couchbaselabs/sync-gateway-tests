@@ -15,7 +15,7 @@ var server, sg, gateway,
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 5000;
-var numRevs = parseInt(config.numRevs) || 100;
+var numRevs = parseInt(config.numRevs)*5 || 100;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));

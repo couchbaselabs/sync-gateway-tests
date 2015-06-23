@@ -19,7 +19,7 @@ if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname 
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 1000 * numDocs;
-var numRevs = parseInt(config.numRevs) || 20;
+var numRevs = parseInt(config.numRevs)*2 || 20;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
@@ -202,7 +202,7 @@ test("delete db docs", test_conf, function (t) {
     common.deleteDBDocs(t, dbs, numDocs)
 })
 
-test("load databases", test_conf, function (t) {
+test("load databases 2", test_conf, function (t) {
     common.createDBDocs(t, {numdocs: numDocs, dbs: dbs})
 })
 
