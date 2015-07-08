@@ -696,6 +696,31 @@ var common = module.exports = {
 	  }, notifycaller.call(t, emits))},
 
 
+    verifySGDocsRevisions : function(t, dbs, numdocs, rev_prefix, server_url, emits){
+          var localdocs = localdocs || 'local_';
+      
+      async.mapSeries(dbs, function (db, nextdb) {
+
+          async.times(numdocs, function (i, cb) {
+              var docid = db + "_" + i
+              server = server_url
+              var url = coax([server, db, localdocs + docid]).pax().toString()
+              // get document rev
+              coax(url, function (err, json) {
+                  if (err) {
+                      t.fail("unable to get doc " + url + " to check revision", err)
+                       cb(err, json)
+                  } else {
+                          // console.log(json, rev_prefix)
+                      t.equals(json._rev.substring(0, json._rev.indexOf("-")) +"-", rev_prefix, "revision started from " + rev_prefix)
+                      cb(err, json)
+                  }
+              })
+
+          }, nextdb)
+
+      }, notifycaller.call(t, emits))},
+
 	  verifyDocsRevisions : function(t, dbs, numdocs, rev_prefix, localdocs, emits){
           var localdocs = localdocs || ''
 		  if (localdocs) localdocs = localdocs + "/"
