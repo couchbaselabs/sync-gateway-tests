@@ -1,0 +1,14 @@
+{
+    "log": ["REST", "REST+", "HTTP", "HTTP+", "Access", "Cache", "Shadow", "Shadow+", "CRUD", "CRUD+", "Changes", "Changes+", "JSON", "JSON+"],
+	"verbose": true,
+	"facebook" : {"register" : true },
+	"databases": {
+		"db": {
+			"server": "http://172.23.106.71:8091",
+			"bucket": "default",
+			"sync": `function(doc){ channel(doc.channels); }`,
+			"users": {"GUEST": {"disabled": false, "admin_channels": ["*"] }
+			}
+		}
+	}
+}
