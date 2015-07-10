@@ -6,7 +6,7 @@ var launcher = require("../lib/launcher"),
   conf_file = process.env.CONF_FILE || 'local',
   config = require('../config/' + conf_file),
   test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 3600,
+  test_time = process.env.TAP_TIMEOUT || 1800,
   test_conf = {autoend: true,timeout: test_time * 1000};
 
 var server, sg, gateway,
@@ -93,7 +93,7 @@ test("doc update on liteServ", test_conf, function(t){
       }, timer);
 
     console.log("timer value=",timer)
-    timer = timer + 5000;
+    timer = timer + 3000;
   }
   console.log("completed doc updates!")
 
@@ -109,7 +109,15 @@ test("verify doc revisions", test_conf, function (t) {
 test("verify SG doc revisions", test_conf, function (t) {
     //create, update on liteServ( delete & delete conflicts is not included)
     setTimeout(function(){ 
-      common.verifySGDocsRevisions(t, ['db'], numDocs, (count * numRevs) + 1 + "-",sg.url)},timer+10000)
+      common.verifySGDocsRevisions(t, ['db'], numDocs, (count * numRevs) + 1 + "-",sg.url)},timer+3000)
+
+})
+
+
+test("verify SG Num docs", test_conf, function (t) {
+    //create, update on liteServ( delete & delete conflicts is not included)
+    setTimeout(function(){ 
+      common.verifySGNumDocs(t, [sg], numDocs)},timer+5000)
 
 })
 
@@ -119,7 +127,7 @@ test("done",test_conf, function(t){
     
     common.cleanup(t, function(json){
       //sg.kill()
-      t.end()}, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3))); },timer+5000) }
+      t.end()}, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3))); },timer+7000) }
   );
 
 
