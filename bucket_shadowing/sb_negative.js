@@ -22,23 +22,14 @@ var timeoutReplication = 5000;
 var maxDataSize = 20000000;
 
 test("delete buckets", test_conf, function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
-        t.end();
-    }, timeoutReplication * 8));
-});
-
-test("create buckets", test_conf, function (t) {
-    if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
+        common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
             t.end();
-        }, timeoutReplication * 2));
-    } else {
-        t.end()
-    }
+        }, timeoutReplication * 10));
 });
 
 test("create buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0])
         cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
             t.end();
         }, timeoutReplication * 6));
@@ -97,7 +88,7 @@ test("create both push lite db " , function(t){
 })
 
 test("Mobile client start continous pull replication", function(t) {
-    //console.log("===== Web client to start pull replication url:" + coax([server, "_replicate"]).pax().toString(), "source:", sgShadowBucketDb, ">>  target:", pulldb)
+    console.log("===== Web client to start pull replication url:" + coax([server, "_replicate"]).pax().toString(), "source:", sgShadowBucketDb, ">>  target:", pulldb)
     coax.post([server, "_replicate"], {
         source : sgShadowBucketDb,
         target : pulldb,
@@ -109,7 +100,7 @@ test("Mobile client start continous pull replication", function(t) {
 });
 
 test("Mobile client start continous push replication", function(t) {
-    //console.log("===== Web client to start pull replication url:" + coax([server, "_replicate"]).pax().toString(), "source:", sgShadowBucketDb, ">>  target:", pulldb)
+    console.log("===== Web client to start pull replication url:" + coax([server, "_replicate"]).pax().toString(), "source:", sgShadowBucketDb, ">>  target:", pulldb)
     coax.post([server, "_replicate"], {
         source : pushdb,
         target : sgShadowBucketDb,
@@ -214,11 +205,10 @@ test("Adding an non-json document to app-bucket and verify it is not shadowed", 
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
-    }, timeoutReplication * 3));
+    }, timeoutReplication * 5));
 });
-
 
 test("done", function(t){
   common.cleanup(t, function(json){

@@ -17,17 +17,17 @@ var bucketNames = ["app-bucket", "shadow-bucket"]
 
 
 var sgShadowBucketDb = "http://localhost:4985/db" 
-var urlCB = "http://localhost:8091" 
+//var urlCB = "http://localhost:8091"
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 
-var timeoutShadowing = 2000;
+//var timeoutShadowing = 2000;
 var timeoutReplication = 4000;
-var maxDataSize = 20000000;
-//var maxDataSize = 400;
+var maxDataSize = 200000;
+//var maxDataSize = 2000000;
 
 var docId = "testdoc";
 var data = (new Array(maxDataSize - 321 )).join("x");
-var value = {k: data}   
+var value = {k: data}
 
 test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
@@ -37,16 +37,7 @@ test("delete buckets", test_conf, function (t) {
 
 test("create buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
-            t.end();
-        }, timeoutReplication * 2));
-    } else {
-        t.end()
-    }
-});
-
-test("create buckets", test_conf, function (t) {
-    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0])
         cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
             t.end();
         }, timeoutReplication * 6));

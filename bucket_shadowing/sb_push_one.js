@@ -23,16 +23,7 @@ test("delete buckets", test_conf, function (t) {
 
 test("create buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
-            t.end();
-        }, timeoutReplication * 2));
-    } else {
-        t.end()
-    }
-});
-
-test("create buckets", test_conf, function (t) {
-    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0])
         cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
             t.end();
         }, timeoutReplication * 6));

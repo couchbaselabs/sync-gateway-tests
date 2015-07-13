@@ -20,30 +20,21 @@ var timeStamps = [];
 var data = [];
 
 var numDocs= parseInt(config.numDocs) || 100;
-var timeoutShadowing = 2000;
-var timeoutReplication = 5000;
+var timeoutShadowing = 5000;
+var timeoutReplication = 8000;
 
 test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
-    }, timeoutReplication * 8));
+    }, timeoutReplication * 4));
 });
 
 test("create buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.createBucket(t, bucketNames[0], setTimeout(function () {
-            t.end();
-        }, timeoutReplication * 2));
-    } else {
-        t.end()
-    }
-});
-
-test("create buckets", test_conf, function (t) {
-    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, bucketNames[0])
         cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
             t.end();
-        }, timeoutReplication * 6));
+        }, timeoutReplication * 5));
     } else {
         t.end()
     }
@@ -155,7 +146,6 @@ test("Web client create docs in app-bucket and check the doc is shadowed to shad
     })  
 });
 
-
 test("Web client updating docs with large data in app-bucket and check the doc is shadowed to shadow bucket and replicated to lite db successfully", function(t) {
     async.times(numDocs, function(i, cb){
         var docId = "testdoc_" + i;
@@ -251,6 +241,3 @@ test("done", function(t){
     t.end()
   })
 })
- 
-
-

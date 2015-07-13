@@ -131,14 +131,12 @@ var common = module.exports = {
       }
     };
     // console.log(options);
-    common.http_post_api(t, post_data, options0, undefined, function (callback) {
-        setTimeout(function () {
-            common.http_post_api(t, post_data, options1, undefined, function (callback) {
-            });
-        }, 5000);
+          common.http_post_api(t, post_data, options0, undefined, function (callback) {
+          }, 20000);
 
-    });
-  },
+          common.http_post_api(t, post_data, options1, undefined, function (callback) {
+          }, 20000);
+},
 
   launchSG : function(t, done){
     sg = launcher.launchSyncGateway({
@@ -325,8 +323,8 @@ var common = module.exports = {
           };
       });
   }).on('error', function (e) {
-      logger.error("Got error: " + e.message);
-      t.fail("ERROR ");
+      //logger.error("Got error: " + e.message);
+      t.fail("ERROR " + e.message);
       t.end();
   }).on('socket', function (e) {
       //tests/cbl-simple-requests.js stuck on android
