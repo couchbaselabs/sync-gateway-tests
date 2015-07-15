@@ -30,7 +30,6 @@ pushdb = "push_db",
 bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
-var urlCB = "http://localhost:8091"  
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeStamps = [];
 var data = [];
@@ -39,11 +38,10 @@ var numDocs= parseInt(config.numDocs) || 100;
 var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
 
-
 test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
-    }, timeoutReplication * 5));
+    }, timeoutReplication * 6));
 });
 
 test("create buckets", test_conf, function (t) {
@@ -62,7 +60,7 @@ test("start test client", function(t){
     server = _server
     setTimeout(function () {
         t.end()
-    }, 10000) 
+    }, timeoutReplication * 2)
   })
 })
 
@@ -92,7 +90,6 @@ test("create shadow_bucket connection", function(t){
         }
     })
 })
-
 
 test("Web client create docs in app-bucket before sync_gateway is started", function(t) {
     async.times(numDocs, function(i, cb){
@@ -280,10 +277,10 @@ test("delete app_bucket while shadow bucket is going on ", test_conf, function (
           'Content-Type': 'text/html'
       }
     };
-    common.http_post_api(t, post_data, options, 200, function (callback) {
+    common.http_post_api(t, post_data, options, undefined, function (callback) {
         setTimeout(function () {
             t.end();
-        }, timeoutReplication * 2);
+        }, timeoutReplication * 5);
     });
 });
 
@@ -354,7 +351,7 @@ test("With app_bucket down, push one doc from lite db to shadow_bucket.  Verify 
     })       
 })
 
-test("delete shadow_bucket while sync_gateway is running. Make sure sync_gateway handle it gracefully ", function (t) {
+test("delete shadow_bucket while sync_gateway is running. Make sure sync_gateway handle it gracefully ", test_conf, function (t) {
     var post_data = 'STR';
     var options = {
       host : "localhost",
@@ -366,12 +363,11 @@ test("delete shadow_bucket while sync_gateway is running. Make sure sync_gateway
           'Content-Type': 'text/html'
       }
     };
-    common.http_post_api(t, post_data, options, 200, function (callback) { setTimeout(function () {
+    common.http_post_api(t, post_data, options, undefined, function (callback) { setTimeout(function () {
         t.end();
-        }, timeoutReplication * 2);
+        }, timeoutReplication * 4);
     });
 });
-
 
 test("done", function(t){setTimeout(function() {
     common.cleanup(t, function(json) {

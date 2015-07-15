@@ -18,7 +18,6 @@ var urlCB = "http://localhost:8091"
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 
 var numDocs= parseInt(config.numDocs) || 100;
-var timeoutShadowing = 1000;
 var timeoutReplication = 5000;
 var updatedData = "updated data";
 

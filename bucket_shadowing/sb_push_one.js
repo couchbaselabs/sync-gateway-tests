@@ -15,6 +15,20 @@ var server, sg
 var pushdb = "push_db"
 var bucketNames = ["app-bucket", "shadow-bucket"]
 
+var sgShadowBucketDbLH = "http://localhost:4985/db"
+var sgShadowBucketDb = "http://localhost:4985/db"
+if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDbLH.replace("localhost", "10.0.2.2");
+
+var timeoutReplication = 5000;
+var docId = "testdoc";
+var value_data = Math.random().toString(5).substring(4);
+var value_json = {_id : docId,
+            data: value_data,   
+            at: new Date()};
+var value = JSON.stringify( value_json );
+var app_bucket;
+
+
 test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
@@ -32,28 +46,12 @@ test("create buckets", test_conf, function (t) {
     }
 });
 
-var sgShadowBucketDbLH = "http://localhost:4985/db"
-var sgShadowBucketDb = "http://localhost:4985/db"
-var urlCB = "http://localhost:8091" 
-if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDbLH.replace("localhost", "10.0.2.2");
-
-var timeoutReplication = 5000;
-
-var docId = "testdoc";
-var value_data = Math.random().toString(5).substring(4);
-var value_json = {_id : docId,
-            data: value_data,   
-            at: new Date()};
-var value = JSON.stringify( value_json );
-var app_bucket;
-
-
 test("start test client", function(t){
   common.launchClient(t, function(_server){
     server = _server
     setTimeout(function () {
         t.end()
-    }, 12000) 
+    }, timeoutReplication*2)
   })
 })
 
@@ -74,7 +72,6 @@ test("create app_bucket connection", function(t){
         }
     })
 })
-
 
 test("create test database " + pushdb, function(t){
   common.createDBs(t, [ pushdb ])
@@ -106,7 +103,6 @@ test("Mobile client start continous push replication", function(t) {
         t.end();
     });
 });
-
 
 test("Verify that the doc is replicated to sync_gateway", test_conf, function(t) {
     setTimeout(function () {
@@ -226,7 +222,7 @@ test("Verify that the doc is shadowed to app-bucket", test_conf, function(t) {
 test("delete buckets", function (t) {
     common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
         t.end();
-    }, timeoutReplication * 3));
+    }, timeoutReplication * 4));
 });
 
 test("done", function(t){setTimeout(function() {

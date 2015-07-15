@@ -328,7 +328,7 @@ var common = module.exports = {
       t.end();
   }).on('socket', function (e) {
       //tests/cbl-simple-requests.js stuck on android
-      req.socket.setTimeout(25000);
+      req.socket.setTimeout(40000);
       req.socket.on('timeout', function() {
           req.abort();
       });

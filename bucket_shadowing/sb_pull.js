@@ -14,7 +14,6 @@ pulldb = "pull_db",
 bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
-var urlCB = "http://localhost:8091"  
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeStamps = [];
 var data = [];
@@ -80,8 +79,10 @@ test("create shadow_bucket connection", function(t){
 })
 
 test("create test database " + pulldb, function(t){
-  common.createDBs(t, [ pulldb ])
-  t.end()
+    common.createDBs(t, [ pulldb ])
+    setTimeout(function () {
+        t.end()
+    }, timeoutReplication/2)
 })
 
 test("Mobile client start continous replication", function(t) {

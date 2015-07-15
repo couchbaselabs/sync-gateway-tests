@@ -17,10 +17,8 @@ var bucketNames = ["app-bucket", "shadow-bucket"]
 
 
 var sgShadowBucketDb = "http://localhost:4985/db" 
-//var urlCB = "http://localhost:8091"
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 
-//var timeoutShadowing = 2000;
 var timeoutReplication = 4000;
 var maxDataSize = 200000;
 //var maxDataSize = 2000000;

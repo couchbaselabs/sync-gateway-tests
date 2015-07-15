@@ -15,7 +15,6 @@ pushdb = "push_db",
 bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
-var urlCB = "http://localhost:8091"  
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeoutShadowing = 2000;
 var timeoutReplication = 5000;
@@ -77,9 +76,11 @@ test("create shadow_bucket connection", function(t){
     })
 })
 
-test("create both pull lite db " , function(t){
-  common.createDBs(t, [ pulldb ])
-  t.end()
+test("create test database " + pulldb, function(t){
+    common.createDBs(t, [ pulldb ])
+    setTimeout(function () {
+        t.end()
+    }, timeoutReplication)
 })
 
 test("create both push lite db " , function(t){
@@ -218,6 +219,3 @@ test("done", function(t){
     t.end()
   })
 })
- 
-
-

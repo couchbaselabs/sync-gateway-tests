@@ -14,12 +14,11 @@ pulldb = "pull_db",
 bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db"  
-var urlCB = "http://localhost:8091"  
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 var timeoutShadowing = 2000;
-var timeoutReplication = 5000;
+var timeoutReplication = 6000;
 // var maxDataSize = 20000000;
-var maxDataSize = 400
+var maxDataSize = 2000000;
 
 
 test("delete buckets", test_conf, function (t) {
@@ -79,7 +78,9 @@ test("start sync_gateway", function(t){
 
 test("create test database " + pulldb, function(t){
   common.createDBs(t, [ pulldb ])
-  t.end()
+    setTimeout(function () {
+        t.end()
+    }, timeoutReplication/2)
 })
 
 test("Mobile client start continous replication", function(t) {
@@ -95,7 +96,6 @@ sgShadowBucketDb, ">> target:", pulldb)
         t.end()
     });    
 });
-
 
 test("Adding a document of maximum size to app-bucket and verify it is shadowed correctly", function(t) {
     var docId = "testdoc_max_size";
@@ -228,7 +228,3 @@ test("done", function(t){setTimeout(function() {
         t.end()
     })
 }, timeoutReplication);})
-
- 
-
-
