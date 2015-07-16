@@ -268,20 +268,19 @@ test("Mobile client push one doc to shadow-bucket and verify that bucket shadowi
 test("delete app_bucket while shadow bucket is going on ", test_conf, function (t) {
     var post_data = 'STR';
     var options = {
-      host : "localhost",
-      port : 8091,
-      path: "/pools/default/buckets/" + bucketNames[0],
-      auth : "Administrator:password",
-      method: 'DELETE',
-      headers: {
-          'Content-Type': 'text/html'
-      }
+        host: "localhost",
+        port: 8091,
+        path: "/pools/default/buckets/" + bucketNames[0],
+        auth: "Administrator:password",
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'text/html'
+        }
     };
     common.http_post_api(t, post_data, options, undefined, function (callback) {
-        setTimeout(function () {
-            t.end();
-        }, timeoutReplication * 5);
-    });
+    }, setTimeout(function () {
+        t.end();
+    }, timeoutReplication * 5));
 });
 
 test("Verify the documents in shadow_bucket is still there and still accessible from the lite db ", function(t) {
@@ -362,10 +361,10 @@ test("delete shadow_bucket while sync_gateway is running. Make sure sync_gateway
           'Content-Type': 'text/html'
       }
     };
-    common.http_post_api(t, post_data, options, undefined, function (callback) { setTimeout(function () {
+    common.http_post_api(t, post_data, options, undefined, function (callback) {
+    }, setTimeout(function () {
         t.end();
-        }, timeoutReplication * 4);
-    });
+    }, timeoutReplication * 5));
 });
 
 test("done", function(t){setTimeout(function() {

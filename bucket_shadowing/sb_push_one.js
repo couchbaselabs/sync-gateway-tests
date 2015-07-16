@@ -10,7 +10,6 @@ var launcher = require("../lib/launcher"),
   cb_util = require("../tests/utils/cb_util"),
   couchbase = require('couchbase');
 
-
 var server, sg
 var pushdb = "push_db"
 var bucketNames = ["app-bucket", "shadow-bucket"]
@@ -19,7 +18,7 @@ var sgShadowBucketDbLH = "http://localhost:4985/db"
 var sgShadowBucketDb = "http://localhost:4985/db"
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDbLH.replace("localhost", "10.0.2.2");
 
-var timeoutReplication = 5000;
+var timeoutReplication = 6000;
 var docId = "testdoc";
 var value_data = Math.random().toString(5).substring(4);
 var value_json = {_id : docId,
@@ -27,7 +26,6 @@ var value_json = {_id : docId,
             at: new Date()};
 var value = JSON.stringify( value_json );
 var app_bucket;
-
 
 test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
@@ -183,6 +181,7 @@ test("Mobile client remove the doc in lite and verify the change is shadowed to 
                 t.equals(json.ok, true, "doc is deleted")
                 setTimeout(function () {
                     app_bucket.get(docId, function(err, result) {
+                        console.log(err, result)
                         t.equals(JSON.stringify(err), "{\"message\":\"The key does not exist on the server\",\"code\":13}", "The deleted document is removed at app bucket")
                         t.end()
                     });

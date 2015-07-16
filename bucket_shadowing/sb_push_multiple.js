@@ -195,6 +195,7 @@ test("Web client verifies the deleted docs are no longer in app-bucke", function
                     t.equals(JSON.stringify(err.message), "\"The key does not exist on the server\"", "The deleted document is removed at app bucket")
                     cb(err, result)
                 } else {
+                    console.log("Got error", err)
                     t.fail(err, "Fail to remove document " + docId)
                     cb(err, result)
                 }

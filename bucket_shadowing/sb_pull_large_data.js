@@ -98,7 +98,7 @@ sgShadowBucketDb, ">> target:", pulldb)
     });    
 });
 
-test("Adding a document of maximum size to app-bucket and verify it is shadowed correctly", function(t) {
+test("Adding a document of maximum size to app-bucket and verify it is shadowed correctly", test_conf, function(t) {
     var docId = "testdoc_max_size";
     data = (new Array(maxDataSize - 321 )).join("x")  // 321 is the size of
 														// additional data SG
@@ -135,15 +135,15 @@ test("Adding a document of maximum size to app-bucket and verify it is shadowed 
                                     t.end()
                                 }
                             })
-                        }, timeoutReplication*4)
+                        }, timeoutReplication*3)
                     }
                 }); 
-            }, timeoutShadowing*4) 
+            }, timeoutShadowing*3)
         }
     });            
 });
 
-test("Verify updating a doc with maximum size in app-bucket and check shadowing is done properly", function(t) {
+test("Verify updating a doc with maximum size in app-bucket and check shadowing is done properly", test_conf, function(t) {
     var docId = "testdoc_max_size";
     data = (new Array(maxDataSize - 368 )).join("y")   // With update,
 														// additional revision
