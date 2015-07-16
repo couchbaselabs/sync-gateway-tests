@@ -20,7 +20,8 @@ var sgShadowBucketDb = "http://localhost:4985/db"
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 
 var timeoutReplication = 4000;
-var maxDataSize = 200000;
+var maxDataSize = 100000;
+//decreased for jenkins to avoid TransactionTooLargeException. We should verify with 2M size
 //var maxDataSize = 2000000;
 
 var docId = "testdoc";
