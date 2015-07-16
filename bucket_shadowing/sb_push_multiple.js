@@ -38,7 +38,7 @@ test("create buckets", test_conf, function (t) {
     }
 });
 
-test("start test client", function(t){
+test("start test client", test_conf, function(t){
   common.launchClient(t, function(_server){
     server = _server
     setTimeout(function () {

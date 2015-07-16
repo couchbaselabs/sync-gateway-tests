@@ -55,7 +55,7 @@ test("create buckets", test_conf, function (t) {
     }
 });
 
-test("start test client", function(t){
+test("start test client", test_conf, function(t){
   common.launchClient(t, function(_server){
     server = _server
     setTimeout(function () {
@@ -318,7 +318,6 @@ test("Verify the documents in shadow_bucket is still there and still accessible 
         }) 
     }, timeoutShadowing)  
 });
-
 
 test("With app_bucket down, push one doc from lite db to shadow_bucket.  Verify sync_gateway handle it correctly.", function(t){
     var docId = "testdoc_push_with_app_bucket_off";
