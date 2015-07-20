@@ -81,7 +81,7 @@ test("verify SG replicated num-docs=" + numDocs, test_conf, function(t){
 
 // 1 minute, count = 12
 // 10 minutes,count = 120
-var count = 150;
+var count = 200;
 test("doc update on liteServ", test_conf, function(t){
   // each iteration generates one timer of 5 secs
   // Need to run a total duration of 30 mins

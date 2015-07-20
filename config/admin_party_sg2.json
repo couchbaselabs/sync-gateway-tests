@@ -4,7 +4,7 @@
 	"facebook" : {"register" : true },
 	"databases": {
 		"db": {
-			"server": "http://172.23.106.151:8091",
+			"server": "http://172.23.105.68:8091",
 			"bucket": "default",
 			"sync": `function(doc){ channel(doc.channels); }`,
 			"users": {"GUEST": {"disabled": false, "admin_channels": ["*"] }
