@@ -167,7 +167,7 @@ var common = module.exports = {
         path : config.SyncGatewayPath,
 	    configPath : __dirname+"/../config/gateway_config_shadow_localhost.json",
 	    verbose : true
-	    
+
       }
       )
       sg.once("ready", function(err){
@@ -205,6 +205,22 @@ var common = module.exports = {
         })
       });
 
+    },
+
+    launchSGWithConfigParams : function(t, sgconfig, params){
+        sg = launcher.launchSyncGatewayCommon(config.SyncGatewayPath, sgconfig, params)
+        sg.once("ready", function(err){
+            if(t){
+                t.false(err, "no error, Sync Gateway running on port " + port  + ": " + JSON.stringify(err))
+            }
+            sg.db = coax([sg.url, bucket])
+            sg.db(function(err, ok){
+                if(t){
+                    t.false(err, "no error, Sync Gateway reachable by: " + sg.url + bucket +": " + JSON.stringify(err))
+                }
+                done(sg)
+            })
+        });
     },
 
   createDBs : function(t, dbs, emits){
