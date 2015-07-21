@@ -14,7 +14,6 @@ pushdb = "push_db",
 bucketNames = ["app-bucket", "shadow-bucket"]
 
 var sgShadowBucketDb = "http://localhost:4985/db" 
-var urlCB = "http://localhost:8091" 
 if (config.provides=="android") sgShadowBucketDb = sgShadowBucketDb.replace("localhost", "10.0.2.2");
 
 var numDocs= parseInt(config.numDocs) || 100;
@@ -48,7 +47,7 @@ test("start test client", test_conf, function(t){
 })
 
 test("start sync gateway", function(t){
-  common.launchSGShadowing(t, function(_sg){
+    common.launchSGShadowing(t, __dirname+"/../config/gateway_config_shadow_localhost.json", function(_sg){
     sg  = _sg
     t.end()
   })
@@ -97,8 +96,7 @@ test("Mobile client start continous push replication", function(t) {
 
 test("Verify that the created docs are shadowed to app-bucket", function(t){
     setTimeout(function () {
-        var iter = numDocs
-        async.times(iter, function(i, cb){
+        async.times(numDocs, function(i, cb){
             var docId = pushdb + "_" + i;
             var timestamp = 0
             app_bucket.get(docId, function(err, result) {
@@ -118,8 +116,7 @@ test("Verify that the created docs are shadowed to app-bucket", function(t){
 })
 
 test("Update the doc in lite pushdb", function(t){
-    var iter = numDocs
-    async.times(iter, function(i, cb){
+    async.times(numDocs, function(i, cb){
         var docId = pushdb + "_" + i;
         coax([server, pushdb, docId], function (err, doc) {
             if (err || (!doc) || doc == undefined) {
@@ -144,8 +141,7 @@ test("Update the doc in lite pushdb", function(t){
 
 test("Verify that the updated doc are shadowed to app-bucket", function(t){
     setTimeout(function () {
-        var iter = numDocs
-        async.times(iter, function(i, cb){
+        async.times(numDocs, function(i, cb){
             var docId = pushdb + "_" + i;
             var timestamp = 0
             app_bucket.get(docId, function(err, result) {
@@ -166,8 +162,7 @@ test("Verify that the updated doc are shadowed to app-bucket", function(t){
 })
 
 test("Mobile client remove the doc in lite", function(t) {
-    var iter = numDocs
-    async.times(iter, function(i, cb){
+    async.times(numDocs, function(i, cb){
         var docId = pushdb + "_" + i;
         coax([server, pushdb, docId], function (err, result) {
             if (err || (!result) || result == undefined) {
@@ -185,18 +180,16 @@ test("Mobile client remove the doc in lite", function(t) {
     })
 })
 
-test("Web client verifies the deleted docs are no longer in app-bucke", function(t) {
+test("Web client verifies the deleted docs are no longer in app-bucket", function(t) {
     setTimeout(function () {
-        var iter = numDocs
-        async.times(iter, function(i, cb){
+        async.times(numDocs, function(i, cb){
             var docId = pushdb + "_" + i;
             app_bucket.get(docId, function(err, result) {
                 if (err) {
                     t.equals(JSON.stringify(err.message), "\"The key does not exist on the server\"", "The deleted document is removed at app bucket")
                     cb(err, result)
                 } else {
-                    console.log("Got error", err)
-                    t.fail(err, "Fail to remove document " + docId)
+                    t.fail("Document " + docId + " still existed: " + result);
                     cb(err, result)
                 }
             })

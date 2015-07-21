@@ -60,7 +60,7 @@ test("create test database " + pushdb, function(t){
 })
 
 test("start sync gateway", function(t){
-  common.launchSGShadowing(t, function(_sg){
+    common.launchSGShadowing(t, __dirname+"/../config/gateway_config_shadow_localhost.json", function(_sg){
     sg  = _sg
     t.end()
   })

@@ -117,7 +117,7 @@ test("Web client create docs in app-bucket before sync_gateway is started", func
 
 test("start sync_gateway when app_bucket has document loaded already", function(t){
     setTimeout(function () {
-        common.launchSGShadowing(t, function(_sg){
+            common.launchSGShadowing(t, __dirname+"/../config/gateway_config_shadow_localhost.json", function(_sg){
             sg  = _sg
             gateway = sg.url
             t.end()
@@ -188,7 +188,7 @@ test("Verify the documents in app_bucket are shadowed to shadow_bucket and lite 
 test("kill and re-start sync_gateway", function(t){
     sg.kill()
     setTimeout(function () {
-        common.launchSGShadowing(t, function(_sg){
+            common.launchSGShadowing(t, __dirname+"/../config/gateway_config_shadow_localhost.json", function(_sg){
             sg  = _sg
             gateway = sg.url
             t.end()

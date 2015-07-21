@@ -145,7 +145,6 @@ test("all docs with keys", function(t){
   })
 })
 
-
 test("compact db", function(t){
   common.compactDBs(t, [dbs[0]])
 })
@@ -155,14 +154,11 @@ test("compact during doc update", test_conf, function(t){
   common.updateDBDocs(t, {dbs : [dbs[0]],
                           numrevs : 5,
                           numdocs : numDocs})
-
   // run compaction while documents are updating
   eventEmitter.once("docsUpdating", function(){
     common.compactDBs(t, [dbs[0]], emitsdefault)
   })
-
 })
-
 
 test("compact during doc delete", test_conf, function(t){
   // start deleting docs
@@ -172,11 +168,9 @@ test("compact during doc delete", test_conf, function(t){
   common.compactDBs(t, [dbs[0]], emitsdefault)
 })
 
-
 test("load multiple databases", test_conf, function(t){
   common.createDBDocs(t, {numdocs : numDocs, dbs : dbs})
 })
-
 
 //issue#149 "Error: socket hang up" when request docs asynchronously
 //https://github.com/couchbase/couchbase-lite-android/issues/149#issuecomment-31798402

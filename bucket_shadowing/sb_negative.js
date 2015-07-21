@@ -47,7 +47,7 @@ test("start test client", test_conf, function(t){
 })
 
 test("start sync_gateway", function(t){
-  common.launchSGShadowing(t, function(_sg){
+    common.launchSGShadowing(t, __dirname+"/../config/gateway_config_shadow_localhost.json", function(_sg){
     sg  = _sg
     gateway = sg.url
     t.end()

@@ -156,15 +156,15 @@ var common = module.exports = {
         done(sg);
       });
     });
-
   },
  
-  launchSGShadowing : function(t, done){
+  launchSGShadowing : function(t, config_file, done){
+      console.log(config_file)
       sg = launcher.launchSyncGatewayWithConfig({
         port : 4984,
         dir : __dirname + "/../tmp/sg",
         path : config.SyncGatewayPath,
-	    configPath : __dirname+"/../config/gateway_config_shadow_localhost.json",
+	    configPath : config_file,
 	    verbose : true
 
       }
@@ -172,14 +172,8 @@ var common = module.exports = {
       sg.once("ready", function(err){
         if(t);
           t.false(err, "no error, Sync Gateway running on our port", err);
-// sg.db = coax([sg.url, "db"]);
-// sg.db(function(err, ok){
-// if(t);
-// t.false(err, "no error, Sync Gateway reachable", err); why Login required?
           done(sg);
-// });
       });
-
     },
 
   launchSGWithParams : function(t, port, db, bucket, done){
