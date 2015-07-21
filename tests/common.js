@@ -11,8 +11,8 @@ var launcher = require("../lib/launcher"),
   listener = require('../lib/listener'),
   conf_file = process.env.CONF_FILE || 'local',
   config = require('../config/' + conf_file),
-  perfconfig = require('../config/perf.js'),
-  port = 59850;
+  perfconfig = require('../config/perf.js');
+  //port = 59850;
 
 
 var common = module.exports = {
@@ -22,7 +22,6 @@ var common = module.exports = {
 
   ee : new events.EventEmitter(),
 
- 
   launchClient : function(t, done){
 
     if(!this.listener){
@@ -207,16 +206,21 @@ var common = module.exports = {
 
     },
 
-    launchSGWithConfigParams : function(t, sgconfig, params){
-        sg = launcher.launchSyncGatewayCommon(config.SyncGatewayPath, sgconfig, params)
+    launchSGWithConfigParams : function(t, sgconfig, params, exp_sg_port, exp_sg_bucket, exp_err, done){
+        sg = launcher.launchSyncGatewayCommon(config.SyncGatewayPath, sgconfig, params, exp_sg_port, exp_err)
         sg.once("ready", function(err){
-            if(t){
-                t.false(err, "no error, Sync Gateway running on port " + port  + ": " + JSON.stringify(err))
+            if(err){
+                t.false(err, "no error, Sync Gateway running on port " + exp_sg_port  + ": " + JSON.stringify(err))
             }
-            sg.db = coax([sg.url, bucket])
+            if(exp_err!=
+                null && sg.exitCode!==null){
+                console.log("Failed to start SG as expected")
+                done(sg)
+            }
+            sg.db = coax([sg.url, exp_sg_bucket])
             sg.db(function(err, ok){
                 if(t){
-                    t.false(err, "no error, Sync Gateway reachable by: " + sg.url + bucket +": " + JSON.stringify(err))
+                    t.false(err, "no error, Sync Gateway reachable by: " + sg.url + exp_sg_bucket +": " + JSON.stringify(err))
                 }
                 done(sg)
             })
