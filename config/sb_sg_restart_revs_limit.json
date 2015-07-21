@@ -1,0 +1,27 @@
+{
+  "interface":":4984",
+  "adminInterface":":4985",
+  "log":["REST", "HTTP", "Shadow", "CHANGES"],
+  "verbose":"true",
+  "databases":{
+    "sync_gateway" :{
+      "server":"http://localhost:8091",
+      "revs_limit" : 3,
+      "users": { "GUEST": { "disabled": false, "admin_channels": ["*"] } },
+      "bucket": "sync_gateway",
+      "shadow": {
+        "server": "http://localhost:8091",
+        "bucket": "default"
+      },
+      "sync":`function(doc){
+if (doc.deleted) {
+channel("deleted")
+} else if (doc.isExpired) {
+channel("expired")
+} else {
+channel("active")
+}
+}`
+}
+}
+}
