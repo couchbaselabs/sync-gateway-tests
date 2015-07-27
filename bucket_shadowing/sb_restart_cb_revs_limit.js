@@ -6,9 +6,10 @@ var launcher = require("../lib/launcher"),
     test = require("tap").test,
     eventEmitter = common.ee,
     test_time = process.env.TAP_TIMEOUT || 60,
-    test_conf = {timeout: test_time * 1000},
+    test_conf = {timeout: test_time * 2000},
     cb_util = require("../tests/utils/cb_util"),
     couchbase = require('couchbase');
+
 
 var server, sg, gateway, app_bucket
 pushdb = "sb_sg_restart_revs_limit",
@@ -162,56 +163,51 @@ test("Verify that the updated doc are shadowed to app-bucket", function(t){
     }, timeoutReplication);
 })
 
-test("kill SG", function(t) {
-    sg.kill()
-    t.end()
-})
-
-test("re-start sync_gateway", test_conf, function(t){
+test("re-start CB", test_conf, function(t){
     // start updating docs
     common.updateDBDocs(t, {dbs : [ pushdb ],
-        numrevs : 100,
+        numrevs : 200,
         numdocs : numDocs})
     // run compaction while documents are updating
     eventEmitter.once("docsUpdating", function(){
         setTimeout(function () {
-            common.launchSGShadowing(t, __dirname+"/../config/sb_sg_restart_revs_limit.json", function(_sg){
-                console.log("launchSGShadowing!!!!!!!!!!!!!")
-                sg  = _sg
-                gateway = sg.url
-                //t.end()
-            })
-        }, timeoutReplication)
+            var sys = require('sys')
+            var exec = require('child_process').exec;
+            function puts(error, stdout, stderr) { sys.puts(stdout) }
+            exec("echo resetm33 | sudo -S /etc/init.d/couchbase-server restart", puts);
+        }, timeoutReplication*10)
         //t.end()
         //common.compactDBs(t, [dbs[0]], emitsdefault)
     })
 })
 
 
-/*test("Mobile client remove the doc in lite", function(t) {
-    async.times(numDocs, function(i, cb){
+test("Mobile client remove the doc in lite", function (t) {
+    console.log("will remove all docs in lite!!!!!!!!!!!!!!!")
+    async.times(numDocs, function (i, cb) {
         var docId = pushdb + "_" + i;
         coax([server, pushdb, docId], function (err, result) {
             if (err || (!result) || result == undefined) {
                 t.fail(true, "unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", result:" + result);
                 cb(err, result)
             } else {
-                coax.del([server, pushdb, docId, {rev : result._rev}], function (err, json) {
+                coax.del([server, pushdb, docId, {rev: result._rev}], function (err, json) {
                     t.equals(json.ok, true, "doc " + docId + " is deleted")
                 })
                 cb(err, result)
             }
         })
-    }, function(err, result){
+    }, function (err, result) {
         t.end()
     })
 })
 
-test("Web client verifies the deleted docs are no longer in app-bucket", function(t) {
+test("Web client verifies the deleted docs are no longer in app-bucket", function (t) {
+    console.log("will verify all docs in CB!!!!!!!!!!!!!!!")
     setTimeout(function () {
-        async.times(numDocs, function(i, cb){
+        async.times(numDocs, function (i, cb) {
             var docId = pushdb + "_" + i;
-            app_bucket.get(docId, function(err, result) {
+            app_bucket.get(docId, function (err, result) {
                 if (err) {
                     t.equals(JSON.stringify(err.message), "\"The key does not exist on the server\"", "The deleted document is removed at app bucket")
                     cb(err, result)
@@ -220,18 +216,19 @@ test("Web client verifies the deleted docs are no longer in app-bucket", functio
                     cb(err, result)
                 }
             })
-        }, function(err, result){
+        }, function (err, result) {
+            console.log("DONE!!!!!!!!!!!!!!!")
             t.end()
         })
-    }, timeoutReplication);
+    }, timeoutReplication*10);
 });
 
 test("delete buckets", function (t) {
-    common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
+    common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
-    }, timeoutReplication * 5));
+    }, timeoutReplication * 10));
 });
- */
+
 
 test("done", function(t){setTimeout(function() {
     common.cleanup(t, function(json) {
