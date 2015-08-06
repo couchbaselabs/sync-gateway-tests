@@ -189,6 +189,7 @@ test("Update the doc in lite pushdb and verify the updated document is shadowed 
                 t.equals(json.ok, true, "doc is deleted")
                 setTimeout(function () {
                     app_bucket.get(docId, function(err, result) {
+                        console.log(err)
                         t.equals(JSON.stringify(err.message), "\"The key does not exist on the server\"", "The deleted document is removed at app bucket")
                         t.end()
                     });

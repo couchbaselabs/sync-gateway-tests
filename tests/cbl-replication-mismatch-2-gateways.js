@@ -125,29 +125,26 @@ test("verify sync gateway changes feed has all docs in it", test_conf, function(
       t.equals(dupSeqs.length, 0, "duplicate seqs in changes:" + dupSeqs.length)
       t.equals(missing.length, 0, "missing changes:" + missing.length)
 
-      console.log("missing "+missing.length+", ids:", missing.join(', '))
+      console.log("missing " + missing.length + ", ids:", missing.join(', '))
       console.log("duplicate change ids "+dupIds.length+", ids:", dupIds.join(', '))
       console.log("duplicate change seqs "+dupSeqs.length+", seqs:", dupSeqs.join(', '))
-
       t.end()
     })
-
   })
-
 })
 
 test("verify cbl changes", function(t){
-	common.verifyChanges(coax([server, dbs[0]]), function(db_one_ids, db_one_dup_ids, db_one_seqs,db_one_dup_seqs) {
+	common.verifyChanges(coax([server, dbs[0]]), function(db_one_ids, db_one_dup_ids, db_one_seqs, db_one_dup_seqs) {
     var one_ids_list = Object.keys(db_one_ids), db_one_seqs_list = Object.keys(db_one_seqs)
-    t.equals(one_ids_list.length, numDocs, "correct number of docs in _all_docs")
+    t.equals(one_ids_list.length, numDocs, "correct number of docs in _all_docs db_one_ids")
     t.equals(db_one_seqs_list.length, numDocs, "correct number of docs in _changes")
     t.equals(db_one_dup_ids.length, 0, "duplicate ids in changes " + db_one_dup_ids)
     t.equals(db_one_dup_seqs.length, 0, "duplicate seqs in changes")
 
-    common.verifyChanges(coax([server, dbs[0]]), function(db_two_ids, db_two_dup_ids, db_two_seqs,db_two_dup_seqs) {
+    common.verifyChanges(coax([server, dbs[0]]), function(db_two_ids, db_two_dup_ids, db_two_seqs ,db_two_dup_seqs) {
       var db_two_idslist = Object.keys(db_two_ids), db_two_seqs_list = Object.keys(db_two_seqs)
 
-      t.equals(db_two_idslist.length, numDocs, "correct number of docs in _all_docs")
+      t.equals(db_two_idslist.length, numDocs, "correct number of docs in _all_docs db_two_ids")
       t.equals(db_two_seqs_list.length, numDocs, "correct number of docs in _changes")
       t.equals(db_two_dup_ids.length, 0, "duplicate ids in changes")
       t.equals(db_two_dup_seqs.length, 0, "duplicate seqs in changes")
