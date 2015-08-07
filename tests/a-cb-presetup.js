@@ -5,19 +5,35 @@ var launcher = require("../lib/launcher"),
     conf_file = process.env.CONF_FILE || 'local',
     cb_util = require("./utils/cb_util"),
     config = require('../config/' + conf_file),
-    test = require("tap").test;
+    test = require("tap").test,
+    test_time = process.env.TAP_TIMEOUT || 60,
+    test_conf = {timeout: test_time * 1000};
 
-test("delete bucket",
-function(t) {
+
+test("delete buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.deleteBucket(t, config.DbBucket)
+        cb_util.deleteBucket(t, config.DbBucket,
+            setTimeout(function () {
+                t.end()
+            }, 40000));
+    } else {
         t.end()
-    }else{
-    	t.end()
-    	};
-    })
+    }
+});
 
-test("create bucket",
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, config.DbBucket, setTimeout(function () {
+            t.end();
+        }, 40000));
+    } else {
+        t.end()
+    }
+});
+
+
+/*(test("create bucket", test_conf,
     function(t) {
         if (config.DbUrl.indexOf("http") > -1) {
             var ini_file_config = ini.parse(fs.readFileSync(config.cluster_ini_file, "utf-8"));
@@ -43,9 +59,11 @@ test("create bucket",
                     'Content-Length': post_data.length
                 }
             };
-            common.http_post_api(t, post_data, options, 202, function(callback) {});
+            common.http_post_api(t, post_data, options, undefined, function (callback) {
+                t.end()
+            }, 20000);
         } else {
             t.end();
         };
 
-    });
+    });*/
