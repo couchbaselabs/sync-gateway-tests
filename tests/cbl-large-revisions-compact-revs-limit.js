@@ -23,7 +23,7 @@ var numRevs = parseInt(config.numRevs)*2 || 20;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
-test("cleanup cb bucket", function (t) {
+test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
         coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
             {
@@ -34,11 +34,11 @@ test("cleanup cb bucket", function (t) {
                     }
                 }
             }, function (err, js) {
-                t.false(err, "flush cb bucket")
+                t.false(err, "flush cb bucket: ", err)
             },
             setTimeout(function () {
                 t.end();
-            }, 5000));
+            }, test_time*400));
     } else {
         t.end();
     }
