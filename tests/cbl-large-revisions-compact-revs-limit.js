@@ -174,11 +174,15 @@ test("set pull replication from gateway", test_conf, function (t) {
         })
 })
 
+// compact db
+test("compact db", test_conf, function (t) {
+    common.compactDBs(t, dbs)
+})
+
 test("verify num Revs1", test_conf, function (t) {
     setTimeout(function () {
-        console.log(timeoutReplication)
         common.verifyNumRevsLessRevsLimit(t, dbs, numDocs, 10)
-    }, timeoutReplication * 4);
+    }, timeoutReplication);
 })
 
 test("delete conflicts in docs", test_conf, function (t) {
@@ -220,7 +224,11 @@ test("verify doc revisions 9*numrevs + 3-", test_conf, function (t) {
     common.verifyDocsRevisions(t, dbs, numDocs, 9 * numRevs + 3 + "-")
 })
 
-test("verify num Revs2", test_conf, function (t) {
+test("compact db", test_conf, function (t) {
+    common.compactDBs(t, dbs)
+})
+
+test("verify num Revs4", test_conf, function (t) {
     setTimeout(function () {
         common.verifyNumRevsLessRevsLimit(t, dbs, numDocs, 10)
     }, timeoutReplication);
@@ -257,4 +265,3 @@ test("done", function (t) {
         t.end()
     }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
 });
-

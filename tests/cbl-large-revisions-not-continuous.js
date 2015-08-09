@@ -106,7 +106,7 @@ test("set push replication to gateway", function (t) {
 
          }, sgpull)
          }*/], function (err, json) {
-        t.false(err, "setup push replication to gateway")
+        t.false(err, "setup push replication to gateway", err)
         t.end()
     })
 
