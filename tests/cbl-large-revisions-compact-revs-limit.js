@@ -34,7 +34,7 @@ test("cleanup cb bucket", test_conf, function (t) {
                     }
                 }
             }, function (err, js) {
-                t.false(err, "flush cb bucket: ", err)
+                t.false(err, "flush cb bucket")
             },
             setTimeout(function () {
                 t.end();

@@ -36,7 +36,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time*400));
+            }, test_time*40));
     } else {
         t.end();
     }
