@@ -7,7 +7,7 @@ var launcher = require("../lib/launcher"),
     config = require('../config/' + conf_file),
     test = require("tap").test,
     test_time = process.env.TAP_TIMEOUT || 500,
-    test_conf = {timeout: test_time * 2000};
+    test_conf = {timeout: test_time * 4000};
 
 var server, sg, gateway,
 // local dbs
@@ -15,7 +15,7 @@ var server, sg, gateway,
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 5000;
-var numRevs = parseInt(config.numRevs)*4 || 100;
+var numRevs = parseInt(config.numRevs)*3 || 100;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
@@ -118,6 +118,7 @@ test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
 
 test("doc update on SG", test_conf, function (t) {
     // start updating docs
+    console.log("start updating SG docs...")
     common.updateSGDocs(t, {
         dbs: [sg],
         numrevs: numRevs
@@ -125,6 +126,7 @@ test("doc update on SG", test_conf, function (t) {
 })
 
 test("doc update on liteServ", test_conf, function (t) {
+    console.log("start updating docs...", numRevs, "numRevs")
     // start updating docs
     common.updateDBDocs(t, {
         dbs: dbs,
@@ -132,7 +134,6 @@ test("doc update on liteServ", test_conf, function (t) {
         numdocs: numDocs
     })
 })
-
 
 // setup pull replication from gateway
 test("set pull replication from gateway", test_conf, function (t) {
@@ -195,6 +196,7 @@ test("load databases", test_conf, function (t) {
 
 test("update docs", test_conf, function (t) {
     // start updating docs
+    console.log("start updating docs...", 5 * numRevs, "numRevs")
     common.updateDBDocs(t, {dbs: dbs, numrevs: 5 * numRevs, numdocs: numDocs})
 })
 
@@ -222,7 +224,7 @@ test("cleanup cb bucket", function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, 5000));
+            }, test_time * 100));
     } else {
         t.end();
     }

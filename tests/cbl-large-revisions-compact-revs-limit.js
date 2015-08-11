@@ -7,7 +7,7 @@ var launcher = require("../lib/launcher"),
     config = require('../config/' + conf_file),
     test = require("tap").test,
     test_time = process.env.TAP_TIMEOUT || 600,
-    test_conf = {timeout: test_time * 4000};
+    test_conf = {timeout: test_time * 5000};
 
 var server, sg, gateway,
 // local dbs
@@ -120,6 +120,7 @@ test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
 
 test("doc update on SG", test_conf, function (t) {
     // start updating docs
+    console.log("start updating SG docs...", numRevs * 4, " numRevs")
     common.updateSGDocs(t, {
         dbs: [sg],
         numrevs: numRevs * 4
@@ -211,6 +212,7 @@ test("load databases 2", test_conf, function (t) {
 })
 
 test("update docs", test_conf, function (t) {
+    console.log("start updating docs...", 5 * numRevs, "numRevs")
     // start updating docs
     common.updateDBDocs(t, {dbs: dbs, numrevs: 5 * numRevs, numdocs: numDocs})
 })
@@ -253,7 +255,7 @@ test("cleanup cb bucket", function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, 5000));
+            }, test_time * 100));
     } else {
         t.end();
     }

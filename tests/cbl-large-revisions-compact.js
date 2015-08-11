@@ -7,7 +7,7 @@ var launcher = require("../lib/launcher"),
     config = require('../config/' + conf_file),
     test = require("tap").test,
     test_time = process.env.TAP_TIMEOUT || 600,
-    test_conf = {timeout: test_time * 2000};
+    test_conf = {timeout: test_time * 2500};
 
 var server, sg, gateway,
 // local dbs
@@ -110,7 +110,6 @@ test("set push replication to gateway", function (t) {
         t.false(err, "setup push replication to gateway")
         t.end()
     })
-
 })
 
 test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
@@ -119,6 +118,7 @@ test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
 
 test("doc update on SG", test_conf, function (t) {
     // start updating docs
+    console.log("start updating SG docs...", numRevs * 4, " numRevs")
     common.updateSGDocs(t, {
         dbs: [sg],
         numrevs: numRevs * 4
@@ -127,6 +127,7 @@ test("doc update on SG", test_conf, function (t) {
 
 test("doc update on liteServ", test_conf, function (t) {
     // start updating docs
+    console.log("start updating docs...", numRevs * 4, "numRevs")
     common.updateDBDocs(t, {
         dbs: dbs,
         numrevs: numRevs * 4,
@@ -295,7 +296,7 @@ test("cleanup cb bucket", function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, 5000));
+            }, test_time * 100));
     } else {
         t.end();
     }

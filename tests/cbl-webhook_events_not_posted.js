@@ -85,6 +85,7 @@ test("doc update on SG", test_conf, function(t){
 
 test("doc update on liteServ", test_conf, function(t){
   // start updating docs
+  console.log("start updating SG docs... 10 numRevs")
   //setInterval(common.updateDBDocs,5000,t,{dbs:dbs,numrevs:10,numdocs:numDocs})
   common.updateDBDocs(t, {dbs : dbs,
                           numrevs : 10,

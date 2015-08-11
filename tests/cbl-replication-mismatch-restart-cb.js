@@ -277,7 +277,7 @@ test("cleanup cb bucket", function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time / 10));
+            }, test_time * 100));
     } else {
         t.end();
     }

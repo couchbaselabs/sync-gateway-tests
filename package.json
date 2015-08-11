@@ -29,8 +29,8 @@
 
   },
   "scripts": {
-    "test": "TAP_TIMEOUT=200 tap ./tests",
-    "test_long": "TAP_TIMEOUT=200 tap --tap ./tests",
+    "test": "TAP_TIMEOUT=300 tap ./tests",
+    "test_long": "TAP_TIMEOUT=300 tap --tap ./tests",
     "bucket_shadowing": "TAP_TIMEOUT=200 tap --tap ./bucket_shadowing"
   },
   "author": "Couchbase, Inc.",

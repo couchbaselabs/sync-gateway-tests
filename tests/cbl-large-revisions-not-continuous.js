@@ -118,6 +118,7 @@ test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
 
 test("doc update on SG", test_conf, function (t) {
     // start updating docs
+    console.log("start updating SG docs...", numRevs * 4, " numRevs")
     common.updateSGDocs(t, {
         dbs: [sg],
         numrevs: numRevs * 4
@@ -268,7 +269,7 @@ test("cleanup cb bucket", function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, 5000));
+            }, test_time * 100));
     } else {
         t.end();
     }
