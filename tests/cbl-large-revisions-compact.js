@@ -36,7 +36,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time*40));
+            }, test_time*200));
     } else {
         t.end();
     }
@@ -281,7 +281,7 @@ test("delete db docs", test_conf, function (t) {
     common.deleteDBDocs(t, dbs, numDocs)
 })
 
-test("cleanup cb bucket", function (t) {
+test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
         coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
             {

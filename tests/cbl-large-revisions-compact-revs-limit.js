@@ -13,7 +13,6 @@ var server, sg, gateway,
 // local dbs
     dbs = ["large-revisions-revslimit"];
 
-
 config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_revslimit.json"
 if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_cb_revslimit.json"
 
@@ -38,7 +37,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time*400));
+            }, test_time*200));
     } else {
         t.end();
     }
@@ -240,7 +239,7 @@ test("delete db docs", test_conf, function (t) {
     common.deleteDBDocs(t, dbs, numDocs)
 })
 
-test("cleanup cb bucket", function (t) {
+test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
         coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
             {
