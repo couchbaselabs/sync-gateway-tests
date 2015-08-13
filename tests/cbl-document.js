@@ -7,7 +7,7 @@ var launcher = require("../lib/launcher"),
     utils = common.utils,
     ee = common.ee,
     test = require("tap").test,
-    test_time = process.env.TAP_TIMEOUT || 30,
+    test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 1000},
     port = config.LiteServPort;
 

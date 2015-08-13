@@ -6,7 +6,7 @@ var launcher = require("../lib/launcher"),
   conf_file = process.env.CONF_FILE || 'local',
   config = require('../config/' + conf_file),
   test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 60,
+  test_time = process.env.TAP_TIMEOUT || 30000,
   test_conf = {timeout: test_time * 1000};
 
 var server, sg, gateway,

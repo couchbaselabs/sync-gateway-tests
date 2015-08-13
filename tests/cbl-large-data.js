@@ -3,7 +3,7 @@ var launcher = require("../lib/launcher"),
     common = require("../tests/common"),
     ee = common.ee,
     test = require("tap").test,
-    test_time = process.env.TAP_TIMEOUT || 30,
+    test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {
         timeout: test_time * 1000
     };

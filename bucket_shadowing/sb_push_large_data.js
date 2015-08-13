@@ -5,10 +5,8 @@ var launcher = require("../lib/launcher"),
   cb_util = require("../tests/utils/cb_util"),
   util =  require("util"),
   test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 60,
-  test_conf = {timeout: test_time * 1000},
   couchbase = require('couchbase'),
-  test_time = process.env.TAP_TIMEOUT || 60,
+  test_time = process.env.TAP_TIMEOUT || 30000,
   test_conf = {timeout: test_time * 1000};
 
 var server, sg, app_bucket, shadow_bucket

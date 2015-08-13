@@ -35,7 +35,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time*200));
+            }, timeoutReplication*6));
     } else {
         t.end();
     }
@@ -224,7 +224,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time * 100));
+            }, timeoutReplication*6));
     } else {
         t.end();
     }

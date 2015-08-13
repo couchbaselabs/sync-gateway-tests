@@ -6,7 +6,7 @@ var launcher = require("../lib/launcher"),
     conf_file = process.env.CONF_FILE || 'local',
     config = require('../config/' + conf_file),
     test = require("tap").test,
-    test_time = process.env.TAP_TIMEOUT || 600,
+    test_time = process.env.TAP_TIMEOUT || 300000,
     test_conf = {timeout: test_time * 5000};
 
 var server, sg, gateway,
@@ -17,8 +17,10 @@ config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_revslimit.jso
 if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_cb_revslimit.json"
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
-var timeoutReplication = 1000 * numDocs;
+var timeoutReplication = 5000;
 var numRevs = parseInt(config.numRevs)*2 || 20;
+
+if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
@@ -37,7 +39,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time*200));
+            }, timeoutReplication*6));
     } else {
         t.end();
     }
@@ -254,7 +256,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, test_time * 100));
+            }, timeoutReplication*6));
     } else {
         t.end();
     }

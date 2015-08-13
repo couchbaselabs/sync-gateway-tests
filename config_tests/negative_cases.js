@@ -4,7 +4,7 @@ var launcher = require("../lib/launcher"),
     common = require("../tests/common"),
     util =  require("util"),
     test = require("tap").test,
-    test_time = process.env.TAP_TIMEOUT || 60,
+    test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 1000},
     cb_util = require("../tests/utils/cb_util");
 
