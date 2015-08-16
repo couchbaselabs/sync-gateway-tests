@@ -179,7 +179,7 @@ test("recreate test databases when syncgateway restarted", function(t){
     })
 })  
 
-test("cleanup cb bucket", function(t){
+test("cleanup cb bucket", test_conf, function(t){
     if (config.DbUrl.indexOf("http") > -1){
     coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
 	    {"auth":{"passwordCredentials":{"username":"Administrator", "password":"password"}}}, function (err, js){

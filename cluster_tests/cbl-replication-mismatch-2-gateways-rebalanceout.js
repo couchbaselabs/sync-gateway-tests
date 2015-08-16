@@ -1,16 +1,16 @@
 var launcher = require("../lib/launcher"),
-  ini = require("ini"),
-  fs = require("fs"),
-  coax = require("coax"),
-  async = require("async"),
-  tstart = process.hrtime(),
-  common = require("../tests/common"),
-  conf_file = process.env.CONF_FILE || 'local',
-  config = require('../config/' + conf_file),
-  util =  require("util"),
-  eventEmitter = common.ee,
-  emitsdefault  = "default",
-  test = require("tap").test;
+    ini = require("ini"),
+    fs = require("fs"),
+    coax = require("coax"),
+    async = require("async"),
+    common = require("../tests/common"),
+    conf_file = process.env.CONF_FILE || 'local',
+    config = require('../config/' + conf_file),
+    util = require("util"),
+    test = require("tap").test,
+    test_time = process.env.TAP_TIMEOUT || 30000,
+    test_conf = {timeout: test_time * 2500};
+
 
 var numDocs=(parseInt(config.numDocs) || 100)*5;
 
@@ -264,7 +264,7 @@ test("verify cbl changes", function(t){
   })
 })
 
-test("cleanup cb bucket", function(t){
+test("cleanup cb bucket", test_conf, function(t){
     if (config.DbUrl.indexOf("http") > -1){
     coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
 	    {"auth":{"passwordCredentials":{"username":"Administrator", "password":"password"}}}, function (err, js){

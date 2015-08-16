@@ -6,8 +6,9 @@ var launcher = require("../lib/launcher"),
     conf_file = process.env.CONF_FILE || 'local',
     config = require('../config/' + conf_file),
     test = require("tap").test,
-    test_time = process.env.TAP_TIMEOUT || 300000,
+    test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 5000};
+
 
 var server, sg, gateway,
 // local dbs
@@ -23,6 +24,8 @@ var numRevs = parseInt(config.numRevs)*2 || 20;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+console.log(numDocs)
+console.log(timeoutReplication)
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
