@@ -15,7 +15,9 @@ var server, sg, gateway,
 var numDocs = parseInt(config.numDocs) || 100;
 if (config.provides=="android") {
 	//to decrease number of failures for
-	//https://github.com/couchbase/couchbase-lite-android/issues/261
+	//https://github.com/couchbase/couchbase-lite-android/issues/261 ->
+    //https://github.com/couchbase/couchbase-lite-android/issues/256 ->
+    //https://github.com/couchbase/couchbase-lite-android/issues/357
 	numDocs = 1;
 }
 
