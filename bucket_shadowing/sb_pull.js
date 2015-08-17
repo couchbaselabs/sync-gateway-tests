@@ -220,7 +220,7 @@ test("Web client remove docs in app-bucket and check the doc is no longer access
                             cb(err, result)
                         }
                     })
-                }, timeoutReplication)
+                }, timeoutReplication*2)
             }
         });            
     }, function(err, result){

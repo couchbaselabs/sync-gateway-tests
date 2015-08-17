@@ -12,7 +12,7 @@ var launcher = require("../lib/launcher"),
 
 
 var server, sg, gateway, app_bucket
-pushdb = "sb_sg_restart_revs_limit",
+pushdb = "sb_restart_cb_revs_limit",
     bucketNames = ["sync_gateway", "default"]
 
 var sgShadowBucketDb = "http://localhost:4985/sync_gateway"
@@ -202,7 +202,7 @@ test("Mobile client remove the doc in lite", function (t) {
     })
 })
 
-test("Web client verifies the deleted docs are no longer in app-bucket", function (t) {
+test("Web client verifies the deleted docs are no longer in app-bucket", test_conf, function (t) {
     console.log("will verify all docs in CB!!!!!!!!!!!!!!!")
     setTimeout(function () {
         async.times(numDocs, function (i, cb) {
@@ -223,7 +223,7 @@ test("Web client verifies the deleted docs are no longer in app-bucket", functio
     }, timeoutReplication*10);
 });
 
-test("delete buckets", function (t) {
+test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
     }, timeoutReplication * 10));
