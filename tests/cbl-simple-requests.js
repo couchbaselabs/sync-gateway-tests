@@ -20,7 +20,7 @@ var server,
 
 var numDocs = parseInt(config.numDocs) || 100;
 
-console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3));
 
 // start client endpoint
 test("start test client", function (t) {
@@ -42,7 +42,7 @@ test("create test databases", function (t) {
  * }
  * $ curl -X PUT http://127.0.0.1:8081/simple-requests/foo4 -d 'STRING' -H "Content-Type: text/html" 
  * {"error":"not_found","reason":"Router unable to route request to do_PUT_Documentjava.lang.reflect.InvocationTargetException"}
-*/
+ */
 test("try to create json doc without 'Content-Type'", function (t) {
     var post_data = 'STR';
     var options = {
@@ -55,7 +55,10 @@ test("try to create json doc without 'Content-Type'", function (t) {
         }
     };
     console.log(options);
-    common.http_post_api(t, post_data, options, 406, function (callback) {});
+    common.http_post_api(t, post_data, options, 406, function (callback) {
+    }, setTimeout(function () {
+        t.end();
+    }, 5000));
 });
 
 /*
@@ -67,7 +70,7 @@ test("try to create json doc without 'Content-Type'", function (t) {
  *   "status" : 502,
  *   "error" : "Invalid response from remote replication server"
  * }
-*/
+ */
 test("try to create json doc without 'Content-Type'", function (t) {
     var post_data = 'STR';
     var options = {
@@ -80,7 +83,10 @@ test("try to create json doc without 'Content-Type'", function (t) {
         }
     };
     console.log(options);
-    common.http_post_api(t, post_data, options, 502, function (callback) {});
+    common.http_post_api(t, post_data, options, 502, function (callback) {
+    }, setTimeout(function () {
+        t.end();
+    }, 5000));
 });
 
 
@@ -93,7 +99,7 @@ test("try to create json doc without 'Content-Type'", function (t) {
  *   "status" : 406,
  *   "error" : "not_acceptable"
  * }
-*/
+ */
 test("try to create json doc without 'Content-Type'", function (t) {
     var post_data = '{"count":1}';
     var options = {
@@ -105,12 +111,15 @@ test("try to create json doc without 'Content-Type'", function (t) {
             'Content-Type': 'text/html'
         }
     };
-    common.http_post_api(t, post_data, options, 406, function (callback) {});
+    common.http_post_api(t, post_data, options, 406, function (callback) {
+    }, setTimeout(function () {
+        t.end();
+    }, 5000));
 });
 
 
 test("done", function (t) {
     common.cleanup(t, function (json) {
         t.end();
-    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3)));
 });
