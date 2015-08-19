@@ -215,7 +215,7 @@ test("Verify removing a doc with maximum size in app-bucket and check the doc is
   });            
 });
 
-test("delete buckets", function (t) {
+test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
         t.end();
     }, timeoutReplication * 3));

@@ -19,8 +19,8 @@ var timeStamps = [];
 var data = [];
 
 var numDocs= parseInt(config.numDocs) || 100;
-var timeoutShadowing = 5000;
-var timeoutReplication = 8000;
+var timeoutShadowing = 11000;
+var timeoutReplication = 11000;
 
 test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
@@ -139,7 +139,7 @@ test("Web client create docs in app-bucket and check the doc is shadowed to shad
                             }, timeoutReplication)
                         }
                     }); 
-                }, timeoutShadowing) 
+                }, timeoutShadowing)
             }
         });            
     }, function(err, result){
@@ -189,7 +189,7 @@ test("Web client updating docs with large data in app-bucket and check the doc i
                             }, timeoutReplication)
                         }
                     }); 
-                }, timeoutShadowing) 
+                }, timeoutShadowing)
             }
         });            
     }, function(err, result){
@@ -220,7 +220,7 @@ test("Web client remove docs in app-bucket and check the doc is no longer access
                             cb(err, result)
                         }
                     })
-                }, timeoutReplication*2)
+                }, timeoutReplication)
             }
         });            
     }, function(err, result){
@@ -228,7 +228,7 @@ test("Web client remove docs in app-bucket and check the doc is no longer access
     })  
 });
 
-test("delete buckets", function (t) {
+test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
         t.end();
     }, timeoutReplication * 3));
