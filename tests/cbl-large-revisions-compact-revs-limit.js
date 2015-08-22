@@ -170,7 +170,7 @@ test("set pull replication from gateway", test_conf, function (t) {
                     t.ok(allDocs, "got _all_docs response")
                     console.log("sg doc_count", coax([gatewayDB, "_all_docs"]).pax().toString(), allDocs.total_rows);
                     t.equals(allDocs.total_rows, numDocs, "all docs replicated")
-                    t.equals(allDocs.update_seq, numRevs*mnumDocs*4 + numDocs + 1, "update_seq correct")
+                    t.equals(allDocs.update_seq, numRevs*numDocs*4 + numDocs + 1, "update_seq correct")
                     t.end()
                 })
             }, timeoutReplication)
