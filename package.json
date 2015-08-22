@@ -1,8 +1,8 @@
 {
-  "name": "cblite-tests",
+  "name": "sync-gateway-tests",
   "version": "0.0.0",
   "description": "Tests for Couchbase Lite, Sync Gateway, and friends.",
-  "repository": "https://github.com/couchbaselabs/cblite-tests.git",
+  "repository": "https://github.com/couchbaselabs/sync-gateway-tests.git",
   "keywords": [
     "test",
     "Couchbase",

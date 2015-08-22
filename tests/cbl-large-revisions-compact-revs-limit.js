@@ -24,8 +24,6 @@ var numRevs = parseInt(config.numRevs)*2 || 20;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
-console.log(numDocs)
-console.log(timeoutReplication)
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
@@ -164,18 +162,18 @@ test("set pull replication from gateway", test_conf, function (t) {
         , function (err, info) {
             setTimeout(function () {
                 t.false(err, "replication created")
-//		  console.log("info", info)
-//		  gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
-//		  coax([gatewayDB, "_all_docs"],function(err, allDocs){
-//			  console.log(allDocs)
-//			  t.false(err, "sg database exists")
-//			  t.ok(allDocs, "got _all_docs repsonse")
-//			  console.log("sg doc_count", coax([gatewayDB, "_all_docs"]).pax().toString(), allDocs.total_rows);
-//			  t.equals(allDocs.total_rows, numDocs, "all docs replicated")
-//			  //t.equals(allDocs.update_seq, numDocs*3 + 1, "update_seq correct")
-                t.end()
-//		  })
-            }, 0)
+                console.log("info", info)
+                gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
+                coax([gatewayDB, "_all_docs"], function (err, allDocs) {
+                    console.log(allDocs)
+                    t.false(err, "sg database exists")
+                    t.ok(allDocs, "got _all_docs response")
+                    console.log("sg doc_count", coax([gatewayDB, "_all_docs"]).pax().toString(), allDocs.total_rows);
+                    t.equals(allDocs.total_rows, numDocs, "all docs replicated")
+                    t.equals(allDocs.update_seq, numRevs*mnumDocs*4 + numDocs + 1, "update_seq correct")
+                    t.end()
+                })
+            }, timeoutReplication)
         })
 })
 

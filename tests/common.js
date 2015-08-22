@@ -599,9 +599,10 @@ var common = module.exports = {
 	                          }],
 	                          function (err, json) {
                                   // console.log(json)
-                                  t.equals(parseInt(confl.substring(0, confl.indexOf("-"))) + 1 + "", json.rev.substring(0, json.rev.indexOf("-")),
-                                  "Deleting a document adds a revision ('tombstone') that records the delete)")
-                                  t.equals(json.ok, true, "all conflict revisons deleted")
+                                  var rev_after_deletion =  json.rev.substring(0, json.rev.indexOf("-"));
+                                  t.equals(parseInt(confl.substring(0, confl.indexOf("-"))) + 1 + "", rev_after_deletion,
+                                  "Deleting a document adds a revision ('tombstone') that records the delete)" + rev_after_deletion)
+                                  t.equals(json.ok, true, "all conflict revisions deleted")
                                   cb(err, json)
 
 	                          }, nextConfl)
@@ -698,9 +699,9 @@ var common = module.exports = {
 	                   cb(err, json)
 	              } else {
                       if(json._conflicts.length!==0){
-	                    console.log(json)
+	                    console.log("not all revisions deleted", url, json)
                       }
-	                  t.equals(json._conflicts.length, 0, "all conflict revisons deleted")
+	                  t.equals(json._conflicts.length, 0, "all conflict revisions deleted")
 	                   cb(err, json)
 	              }
 	          })
