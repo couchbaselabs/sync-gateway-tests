@@ -205,7 +205,7 @@ test("Adding an non-json document to app-bucket and verify it is not shadowed", 
     });            
 });
 
-test("delete buckets", function (t) {
+test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0], bucketNames[1], setTimeout(function () {
         t.end();
     }, timeoutReplication * 5));

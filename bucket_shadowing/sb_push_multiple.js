@@ -199,7 +199,7 @@ test("Web client verifies the deleted docs are no longer in app-bucket", functio
     }, timeoutReplication);
 });
 
-test("delete buckets", function (t) {
+test("delete buckets", test_conf, function (t) {
     common.deleteShadowBuckets(t, bucketNames[0],bucketNames[1], setTimeout(function () {
         t.end();
     }, timeoutReplication * 5));

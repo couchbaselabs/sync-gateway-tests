@@ -1,0 +1,20 @@
+{
+    "log": ["CRUD", "REST+", "CHANGES"],
+    "facebook" : {
+    "register" : true
+},
+    "databases": {
+    "db": {
+        "revs_limit" : 30,
+        "rev_cache_size": 1000,
+        "server": "walrus:",
+        "sync":
+            `function(doc){
+                channel(doc.channels);
+            }`,
+        "users": {
+            "GUEST": {"disabled": false, "admin_channels": ["*"] }
+        }
+    }
+}
+}
