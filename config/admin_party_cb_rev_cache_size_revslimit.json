@@ -1,0 +1,17 @@
+{
+    "log": ["CRUD", "REST+", "CHANGES"],
+    "databases": {
+    "db": {
+        "revs_limit" : 30,
+        "rev_cache_size": 1000,
+        "server": "http://localhost:8091",
+        "sync": `
+      function(doc){
+          channel(doc.channels);
+      }`,
+        "users": {
+            "GUEST": {"disabled": false, "admin_channels": ["*"] }
+        }
+    }
+}
+}
