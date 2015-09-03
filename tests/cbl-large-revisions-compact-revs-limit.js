@@ -92,25 +92,7 @@ test("set push replication to gateway", function (t) {
                 })
 
             }, sgpush)
-        }/*,
-         function(sgpull){
-
-         async.mapSeries(dbs, function(db, cb){
-
-         coax([server, "_replicate"]).post({
-         source : gatewayDB,
-         target : db,
-         continuous : true,
-         }, function(err, ok){
-
-         t.equals(err, null,
-         util.inspect({_replicate : db+" <- " + gatewayDB}))
-         i++
-         cb(err, ok)
-         })
-
-         }, sgpull)
-         }*/], function (err, json) {
+        }], function (err, json) {
         t.false(err, "setup push replication to gateway")
         t.end()
     })

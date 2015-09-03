@@ -106,7 +106,7 @@ test("Verify that the doc is replicated to sync_gateway", test_conf, function(t)
     setTimeout(function () {
         coax([sgShadowBucketDbLH, "_all_docs"],function(err, allDocs){
             t.false(err, "sg database exists");
-            t.ok(allDocs, "got _all_docs repsonse");
+            t.ok(allDocs, "got _all_docs response");
             t.equals(allDocs.update_seq, 2, "sg sequence number correct")
             t.end();
         });

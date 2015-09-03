@@ -88,25 +88,7 @@ test("set push replication to gateway", function (t) {
                 })
 
             }, sgpush)
-        }/*,
-         function(sgpull){
-
-         async.mapSeries(dbs, function(db, cb){
-
-         coax([server, "_replicate"]).post({
-         source : gatewayDB,
-         target : db,
-         continuous : true,
-         }, function(err, ok){
-
-         t.equals(err, null,
-         util.inspect({_replicate : db+" <- " + gatewayDB}))
-         i++
-         cb(err, ok)
-         })
-
-         }, sgpull)
-         }*/], function (err, json) {
+        }], function (err, json) {
         t.false(err, "setup push replication to gateway")
         t.end()
     })
@@ -115,7 +97,7 @@ test("set push replication to gateway", function (t) {
 test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
     common.verifySGNumDocs(t, [sg], numDocs)
 })
-
+/
 test("doc update on SG", test_conf, function (t) {
     // start updating docs
     console.log("start updating SG docs...", numRevs * 4, " numRevs")
@@ -158,18 +140,18 @@ test("set pull replication from gateway", test_conf, function (t) {
             }]
         , function (err, info) {
             setTimeout(function () {
-//		  t.false(err, "replication created")
-//		  console.log("info", info)
-//		  gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
-//		  coax([gatewayDB, "_all_docs"],function(err, allDocs){
-//			  console.log(allDocs)
-//			  t.false(err, "sg database exists")
-//			  t.ok(allDocs, "got _all_docs repsonse")
-//			  console.log("sg doc_count", coax([gatewayDB, "_all_docs"]).pax().toString(), allDocs.total_rows);
-//			  t.equals(allDocs.total_rows, numDocs, "all docs replicated")
-//			  //t.equals(allDocs.update_seq, numDocs*3 + 1, "update_seq correct")
+		  t.false(err, "replication created")
+		  console.log("info", info)
+		  gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
+		  coax([gatewayDB, "_all_docs"],function(err, allDocs){
+			  console.log(allDocs)
+			  t.false(err, "sg database exists")
+			  t.ok(allDocs, "got _all_docs response")
+			  console.log("sg doc_count", coax([gatewayDB, "_all_docs"]).pax().toString(), allDocs.total_rows);
+			  t.equals(allDocs.total_rows, numDocs, "all docs replicated")
+			  //t.equals(allDocs.update_seq, numDocs*3 + 1, "update_seq correct")
                 t.end()
-//		  })
+		  })
             }, 0)
         })
 })
@@ -195,25 +177,7 @@ test("set push replication to gateway", function (t) {
                 })
 
             }, sgpush)
-        }/*,
-         function(sgpull){
-
-         async.mapSeries(dbs, function(db, cb){
-
-         coax([server, "_replicate"]).post({
-         source : gatewayDB,
-         target : db,
-         continuous : true,
-         }, function(err, ok){
-
-         t.equals(err, null,
-         util.inspect({_replicate : db+" <- " + gatewayDB}))
-         i++
-         cb(err, ok)
-         })
-
-         }, sgpull)
-         }*/], function (err, json) {
+        }], function (err, json) {
         t.false(err, "setup push replication to gateway")
         t.end()
     })

@@ -92,7 +92,6 @@ test("doc update on liteServ", test_conf, function (t) {
     })
 })
 
-
 // setup push replication to gateway
 test("set push replication to gateway", function (t) {
     var gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
