@@ -16,7 +16,7 @@
     # Server node is the first ip in the list for now
     couchbase_server_node: "{{ ansible_all_ipv4_addresses[0] }}"
     couchbase_server_primary_node: "{{ couchbase_server_node }}"
-    couchbase_server_bucket_name: default
+    couchbase_server_bucket_name: db
     couchbase_server_bucket_name2: bucket-1
     couchbase_server_bucket_name3: bucket-2
     couchbase_server_bucket_type: couchbase
@@ -37,6 +37,8 @@
   - name: Uninstall couchbase server
     shell: rpm -e couchbase-server
     ignore_errors: yes
+  - name: Remove couchbase server downloads
+    shell: rm -rf /tmp/*
   - name: Remove all couchbase server residue
     shell: rm -rf /opt/couchbase
 
@@ -83,7 +85,7 @@
     shell: "{{ couchbase_server_home_path }}/bin/couchbase-cli rebalance -c {{ couchbase_server_primary_node }}:{{ couchbase_server_admin_port }} --user={{ couchbase_server_admin }} --password={{ couchbase_server_password }}"
     ignore_errors: yes
 
-  - name: Create new default bucket
+  - name: Create new db bucket
     shell: "{{ couchbase_server_home_path }}/bin/couchbase-cli bucket-create -c {{ couchbase_server_node }}:{{ couchbase_server_admin_port }} --user={{ couchbase_server_admin }} --password={{ couchbase_server_password }} --bucket={{ couchbase_server_bucket_name }} --bucket-type={{ couchbase_server_bucket_type }} --bucket-port={{ couchbase_server_bucket_port }} --bucket-ramsize={{ couchbase_server_bucket_ram }} --bucket-replica={{ couchbase_server_bucket_replica }}"
     when: couchbase_server_node == couchbase_server_primary_node
 

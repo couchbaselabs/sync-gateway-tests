@@ -12,6 +12,8 @@
 
   tasks:
   # Download + Extract sync_gateway package
+  - name: Remove sync_gateway downloads
+    shell: rm -rf /tmp/*
   - name: downloading sync_gateway package
     debug: msg={{ sync_gateway_package_url }}
   - name: Download sync_gateway
