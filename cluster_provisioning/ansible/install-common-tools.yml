@@ -1,0 +1,8 @@
+- hosts: sg_nodes:cb_nodes
+
+  remote_user: root
+
+  tasks:
+  # Install useful tools for debugging
+  - name: install lsof
+    yum: pkg=lsof state=latest

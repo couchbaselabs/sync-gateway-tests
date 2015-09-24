@@ -1,0 +1,49 @@
+---
+# Provision sync_gateway_vms
+- hosts: sg_nodes
+  vars:
+      sync_gateway_package_base_url:
+      sync_gateway_package_name:
+      sync_gateway_package_url: "{{ sync_gateway_package_base_url }}/{{ sync_gateway_package_name }}"
+      sync_gateway_config_file_name: admin_party.json
+
+  remote_user: root
+  sudo: yes
+
+  tasks:
+  # Download + Extract sync_gateway package
+  - name: downloading sync_gateway package
+    debug: msg={{ sync_gateway_package_url }}
+  - name: Download sync_gateway
+    get_url: url={{ sync_gateway_package_url }} dest=/tmp/{{ sync_gateway_package_name }}
+  - name: Creates extraction directory
+    file: path=/root/sync_gateway state=directory
+  - name: Unarchive sync_gateway
+    unarchive: src=/tmp/{{ sync_gateway_package_name }} dest=/root/sync_gateway copy=no
+
+  # stop sync_gateway and remove sync_gateway user
+  - name: stop any sync gateway services that might be running
+    service: name=sync_gateway state=stopped
+    ignore_errors: yes
+  - name: delete sync_gateway user
+    user: name=sync_gateway state=absent remove=yes
+
+  # create sync_gateway user and copy binary to sync_gateway
+  - name: add sync gateway user
+    user: name=sync_gateway createhome=yes
+  - name: make service install script executable
+    file: path=/root/sync_gateway/service/sync_gateway_service_install.sh mode=a+x
+  - name: copy sync gateway binary to sync_gateway home
+    shell: cp /root/sync_gateway/bin/sync_gateway /home/sync_gateway
+  - name: change permissions of sync gateway executable
+    file: path=/home/sync_gateway mode=a+x
+
+  # copy sync_gateway configs and start sync_gateway
+  - name: copy sync gateway config to host
+    copy: src=../../config/ dest=/home/sync_gateway/config owner=sync_gateway group=sync_gateway mode=0644 force=true
+  - name: using config
+    debug: msg={{ sync_gateway_config_file_name }}
+  - name: install sync gateway service
+    shell: ./sync_gateway_service_install.sh --sgpath=/home/sync_gateway/sync_gateway --cfgpath=/home/sync_gateway/config/{{ sync_gateway_config_file_name }} chdir=/root/sync_gateway/service
+  - name: wait until sync gateway to listen on port
+    wait_for: port=4985 delay=1 timeout=30
