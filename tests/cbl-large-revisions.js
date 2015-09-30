@@ -15,10 +15,10 @@ var server, sg, gateway,
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 10;
 var timeoutReplication = 5000;
-var numRevs = parseInt(config.numRevs)*3 || 100;
+var numRevs = parseInt(config.numRevs) * 3 || 100;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
-console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3));
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
@@ -35,10 +35,17 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, timeoutReplication*6));
+            }, timeoutReplication * 6));
     } else {
         t.end();
     }
+})
+
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
 })
 
 // start client endpoint
@@ -224,7 +231,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, timeoutReplication*6));
+            }, timeoutReplication * 6));
     } else {
         t.end();
     }
@@ -234,5 +241,5 @@ test("done", function (t) {
     common.cleanup(t, function (json) {
         sg.kill()
         t.end()
-    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3)));
 });

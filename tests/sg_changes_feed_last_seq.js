@@ -1,5 +1,6 @@
 var launcher = require("../lib/launcher"),
     coax = require("coax"),
+    common = require("../tests/common"),
     conf_file = process.env.CONF_FILE || 'local',
     config = require('../config/' + conf_file),
     test = require("tap").test,
@@ -9,6 +10,13 @@ var launcher = require("../lib/launcher"),
 
 var serve, port = 8888, server = "http://localhost:" + port + "/"
 var admin_server = "http://localhost:" + (port + 1) + "/"
+
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
+})
 
 test("can launch a Sync Gateway", function (t) {
     serve = launcher.launchSyncGateway({

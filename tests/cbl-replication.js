@@ -34,6 +34,14 @@ test("start test client", function(t){
   });
 });
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
+})
+
+
 // start sync gateway
 test("start syncgateway", function(t){
   common.launchSG(t, function(_sg){

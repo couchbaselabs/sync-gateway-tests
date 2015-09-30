@@ -47,6 +47,14 @@ test("cleanup cb bucket", test_conf, function (t) {
     }
 })
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
+})
+
+
 // start client endpoint
 test("start test client", function (t) {
     common.launchClient(t, function (_server) {

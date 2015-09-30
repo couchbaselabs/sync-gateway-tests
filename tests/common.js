@@ -9,6 +9,7 @@ var launcher = require("../lib/launcher"),
   fs = require('fs'),
   logger = require("../lib/log"),
   listener = require('../lib/listener'),
+  spawn = require('child_process').spawn
   conf_file = process.env.CONF_FILE || 'local',
   config = require('../config/' + conf_file),
   perfconfig = require('../config/perf.js');
@@ -136,6 +137,11 @@ var common = module.exports = {
           common.http_post_api(t, post_data, options1, undefined, function (callback) {
           }, 20000);
 },
+
+    kill_sg : function(t, done){
+        done(spawn("killall", ["sync_gateway"]))
+    },
+
 
   launchSG : function(t, done){
     sg = launcher.launchSyncGateway({

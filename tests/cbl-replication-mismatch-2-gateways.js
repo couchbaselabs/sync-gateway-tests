@@ -25,6 +25,13 @@ test("start test client", function(t){
   })
 })
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+  common.kill_sg(t, function () {
+    t.end()
+  })
+})
+
 // start sync gateway
 test("start syncgateway", function(t){
   common.launchSGWithParams(t, 9888, config.DbUrl, config.DbBucket, function(_sg1){

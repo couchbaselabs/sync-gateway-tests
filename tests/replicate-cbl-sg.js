@@ -1,5 +1,6 @@
 var launcher = require("../lib/launcher"),
     phalanx = require("../lib/phalanx"),
+    common = require("../tests/common"),
     coax = require("coax"),
     async = require("async"),
     conf_file = process.env.CONF_FILE || 'local',
@@ -19,6 +20,12 @@ if (config.provides == "android") {
 	 console.log("Skipping phalanx tests on Android")
 	}
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
+})
 
 test("launch 2 LiteServs", function(t) {
 	if (config.provides == "android") {

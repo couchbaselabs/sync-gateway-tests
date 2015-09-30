@@ -7,8 +7,10 @@ var launcher = require("../lib/launcher"),
     cb_util = require("./utils/cb_util"),
     test = require("tap").test,
     sudo = require('sudo'),
+    exec = require('child_process').exec,
     test_time = process.env.TAP_TIMEOUT || 30000,
-    test_conf = {timeout: test_time * 1000};
+    test_conf = {timeout: test_time * 1000},
+    sudo_passwd = process.env.SUDO_PASSWD || "couchbase";
 
 var numDocs=(parseInt(config.numDocs) || 100)*5;
 
@@ -53,6 +55,13 @@ test("start test client", function(t){
     })
 })
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
+})
+
 // start sync gateway
 test("start syncgateway", function(t){
     common.launchSGWithParams(t, 9888, config.DbUrl, config.DbBucket, function(_sg1){
@@ -91,11 +100,15 @@ test("verify dbs have same number of docs", test_conf, function(t) {
 
 test("kill CB", test_conf, function(t) {
     if (/^linux/.test(process.platform) && (config.DbUrl.indexOf("http") > -1)) {
-        var child = sudo(['/etc/init.d/couchbase-server', 'stop']);
-        child.stdout.on('data', function (data) {
-            console.log(data.toString());
-            t.end();
-        });
+        var child = exec('echo " + sudo_passwd +" | sudo     -S /etc/init.d/couchbase-server stop',
+            function (error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }
+                t.end();
+            });
     } else {
         t.end();
     }
@@ -115,11 +128,15 @@ test("load databases", test_conf, function(t){
 // restart CB
 test("restart CB", test_conf, function(t){
     if (/^linux/.test(process.platform) && (config.DbUrl.indexOf("http") > -1)) {
-        var child = sudo(['/etc/init.d/couchbase-server', 'start']);
-        child.stdout.on('data', function (data) {
-            console.log(data.toString());
-            t.end();
-        });
+        var child = exec('echo " + sudo_passwd +" | sudo -S /etc/init.d/couchbase-server start',
+            function (error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }
+                t.end();
+            });
     } else {
         //TODO fix for mac
         t.end();
@@ -222,6 +239,7 @@ test("verify sync gateway changes feed has all docs in it", test_conf, function 
             return r.id
         });
         db("_all_docs", function (err, view) {
+            console.log(view)
             var docs = view.rows;
             var missing = [];
 
