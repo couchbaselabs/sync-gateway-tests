@@ -8,7 +8,8 @@ var launcher = require("../lib/launcher"),
     test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 2000},
     cb_util = require("../tests/utils/cb_util"),
-    couchbase = require('couchbase');
+    couchbase = require('couchbase'),
+    sudo_passwd = process.env.SUDO_PASSWD || "couchbase";
 
 
 var server, sg, gateway, app_bucket
@@ -174,7 +175,7 @@ test("re-start CB", test_conf, function(t){
             var sys = require('sys')
             var exec = require('child_process').exec;
             function puts(error, stdout, stderr) { sys.puts(stdout) }
-            exec("echo resetm33 | sudo -S /etc/init.d/couchbase-server restart", puts);
+            exec("echo " + sudo_passwd +" | sudo -S /etc/init.d/couchbase-server restart", puts);
         }, timeoutReplication*10)
         //t.end()
         //common.compactDBs(t, [dbs[0]], emitsdefault)
@@ -217,7 +218,6 @@ test("Web client verifies the deleted docs are no longer in app-bucket", test_co
                 }
             })
         }, function (err, result) {
-            console.log("DONE!!!!!!!!!!!!!!!")
             t.end()
         })
     }, timeoutReplication*10);
