@@ -7,7 +7,10 @@ from urlparse import urlparse
 from optparse import OptionParser
 
 
-def main():
+def provision_cluster(server_package_url, sync_gateway_package_url):
+
+    if not "INVENTORY" in os.environ:
+        print "Make sure $INVENTORY points to an ansible inventory"
 
     def base_url_and_package(url):
         partitioned = url.rpartition("/")
@@ -25,27 +28,7 @@ def main():
         inventory = open(os.environ["INVENTORY"], 'r')
         print "\n{}".format(inventory.read())
 
-    usage = "usage: python provision_cluster.py --couchbase-server-url=<package_url> --sync-gateway-url=<package_url>"
-    parser = OptionParser(usage=usage)
 
-    parser.add_option(
-        "", "--couchbase-server-url",
-        action="store",
-        type="string",
-        dest="couchbase_server_package_url",
-        help="couchbase package to install"
-    )
-
-    parser.add_option(
-        "", "--sync-gateway-url",
-        action="store",
-        type="string",
-        dest="sync_gateway_package_url",
-        help="sync_gateway package to install"
-    )
-
-    cmd_args = sys.argv[1:]
-    (opts, args) = parser.parse_args(cmd_args)
 
     # check that packages exist
     if not package_exists(opts.couchbase_server_package_url):
@@ -63,9 +46,11 @@ def main():
     print ">>> Provisioning cluster"
     print_inventory()
 
+    print os.path.expandvars("$INVENTORY")
+
     os.chdir("ansible/")
     # $INVENTORY is the path your .ini file
-    subprocess.call(["ansible-playbook", "-i", os.path.expandvars("$INVENTORY"), "install-common-tools.yml"])
+    subprocess.call(["ansible-playbook", "-i", os.environ["INVENTORY"], "install-common-tools.yml", "-vvvv"])
 
     subprocess.call([
         "ansible-playbook", "-i", os.path.expandvars("$INVENTORY"),
@@ -82,5 +67,30 @@ def main():
     ])
 
 if __name__ == "__main__":
-    main()
+
+    usage = "usage: python provision_cluster.py --couchbase-server-url=<package_url> --sync-gateway-url=<package_url>"
+    parser = OptionParser(usage=usage)
+
+    parser.add_option(
+        "", "--couchbase-server-url",
+        action="store",
+        type="string",
+        default="http://latestbuilds.hq.couchbase.com/couchbase-server/sherlock/4051/couchbase-server-enterprise-4.0.0-4051-centos7.x86_64.rpm",
+        dest="couchbase_server_package_url",
+        help="couchbase package to install"
+    )
+
+    parser.add_option(
+        "", "--sync-gateway-url",
+        action="store",
+        type="string",
+        default="http://latestbuilds.hq.couchbase.com/couchbase-sync-gateway/release/1.1.1/1.1.1-10/couchbase-sync-gateway-enterprise_1.1.1-10_x86_64.rpm",
+        dest="sync_gateway_package_url",
+        help="sync_gateway package to install"
+    )
+
+    cmd_args = sys.argv[1:]
+    (opts, args) = parser.parse_args(cmd_args)
+
+    provision_cluster(opts.couchbase_server_package_url, opts.sync_gateway_package_url)
 

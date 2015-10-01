@@ -1,4 +1,4 @@
-- hosts: sg_nodes:cb_nodes
+- hosts: sg_pool:cb_pool
 
   remote_user: root
 

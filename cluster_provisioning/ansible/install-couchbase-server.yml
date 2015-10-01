@@ -1,6 +1,6 @@
 ---
 # Provision server_vms
-- hosts: cb_nodes
+- hosts: cb_pool
   vars:
 
     couchbase_server_package_base_url:
