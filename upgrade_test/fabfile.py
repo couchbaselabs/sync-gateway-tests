@@ -109,10 +109,16 @@ def compose_cbl_url(product,version,platform):
 		build_url = build_url + url_append(['release','1.1.0' , platform , version ])
 		build_name = c[platform+'Build'] + version + ".zip"
 		build_url = build_url + build_name
+
+	elif version and '1.1.1' in version:
+		build_url = build_url + url_append(['release', '1.1.1', platform, version ])
+		build_name = c[platform+'Build'] + version + '.zip'
+		build_url = build_url + build_name
 	
 	else:
 		print "Error: Should not have landed here. No CBL version found"
-	
+
+	print "compose_cbl_url: build_url: {0}, build_name: {1}".format(build_url, build_name)
 	return build_url,build_name
 
 
