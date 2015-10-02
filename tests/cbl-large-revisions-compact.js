@@ -42,11 +42,9 @@ test("cleanup cb bucket", test_conf, function (t) {
     }
 })
 
-// start sync gateway
-test("start syncgateway", function (t) {
-    common.launchSG(t, function (_sg) {
-        sg = _sg
-        gateway = sg.url
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
         t.end()
     })
 })
