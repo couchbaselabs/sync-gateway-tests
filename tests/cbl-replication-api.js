@@ -18,17 +18,17 @@ if (config.provides=="android" || config.DbUrl.indexOf("http") > -1) timeoutRepl
 
 console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
 
-// start client endpoint
-test("start test client", function(t){
-  common.launchClient(t, function(_server){
-    server = _server
+// kill sync gateway
+test("kill syncgateway", function (t) {
+  common.kill_sg(t, function () {
     t.end()
   })
 })
 
-// kill sync gateway
-test("kill syncgateway", function (t) {
-  common.kill_sg(t, function () {
+// start client endpoint
+test("start test client", function(t){
+  common.launchClient(t, function(_server){
+    server = _server
     t.end()
   })
 })
