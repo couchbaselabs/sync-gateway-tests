@@ -24,6 +24,8 @@ test("kill LiteServ on android", test_conf, function (t) {
     if (config.provides == "android") {
         spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"]);
         t.end();
+    } else {
+        t.end();
     }
 });
 
