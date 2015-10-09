@@ -1,8 +1,0 @@
-- hosts: sg_pool:cb_pool
-
-  remote_user: root
-
-  tasks:
-  # Install useful tools for debugging
-  - name: install lsof
-    yum: pkg=lsof state=latest
