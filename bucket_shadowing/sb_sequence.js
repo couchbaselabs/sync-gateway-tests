@@ -115,6 +115,13 @@ test("Web client create docs in app-bucket before sync_gateway is started", func
     })  
 });
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
+})
+
 test("start sync_gateway when app_bucket has document loaded already", function(t){
     setTimeout(function () {
             common.launchSGShadowing(t, __dirname+"/../config/gateway_config_shadow_localhost.json", function(_sg){

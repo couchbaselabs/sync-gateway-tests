@@ -31,7 +31,7 @@ test("create buckets", test_conf, function (t) {
         cb_util.createBucket(t, bucketNames[0])
         cb_util.createBucket(t, bucketNames[1], setTimeout(function () {
             t.end();
-        }, timeoutReplication * 6));
+        }, timeoutReplication * 10));
     } else {
         t.end()
     }
@@ -44,6 +44,13 @@ test("start test client", test_conf, function(t){
         t.end()
     }, timeoutReplication*3) 
   })
+})
+
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        t.end()
+    })
 })
 
 test("start sync gateway", function(t){

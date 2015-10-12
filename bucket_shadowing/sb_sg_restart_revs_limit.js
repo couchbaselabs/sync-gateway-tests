@@ -47,6 +47,13 @@ test("start test client", test_conf, function(t){
     })
 })
 
+    // kill sync gateway
+    test("kill syncgateway", function (t) {
+        common.kill_sg(t, function () {
+            t.end()
+        })
+    })
+
 test("start sync gateway", function(t){
     common.launchSGShadowing(t, __dirname+"/../config/sb_sg_restart_revs_limit.json", function(_sg){
         sg  = _sg
