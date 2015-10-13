@@ -130,7 +130,7 @@ test("Update the doc in lite pushdb", function(t){
         var docId = pushdb + "_" + i;
         coax([server, pushdb, docId], function (err, doc) {
             if (err || (!doc) || doc == undefined) {
-                t.fail("unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", json:" + doc);
+                t.fail("unable to get doc rev for url:" + coax([server, pushdb, docId]).pax().toString() + ", err:" + err + ", json:" + doc);
                 cb(err, doc);
             } else {
                 doc.data = updatedData
@@ -196,7 +196,7 @@ test("Mobile client remove the doc in lite", function (t) {
         var docId = pushdb + "_" + i;
         coax([server, pushdb, docId], function (err, result) {
             if (err || (!result) || result == undefined) {
-                t.fail(true, "unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", result:" + result);
+                t.fail(true, "unable to get doc rev for url:" + coax([server, pushdb, docId]).pax().toString() + ", err:" + err + ", result:" + result);
                 cb(err, result)
             } else {
                 coax.del([server, pushdb, docId, {rev: result._rev}], function (err, json) {

@@ -186,7 +186,7 @@ test("Update the doc in lite pushdb and verify the updated document is shadowed 
     // get the document revision and delete the revision
     coax([server, pushdb, docId], function (err, doc) {
         if (err || (!doc) || doc == undefined) {
-            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", json:" + doc);
+            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docId]).pax().toString() + ", err:" + err + ", json:" + doc);
             t.end();
         } else {
             // delete doc

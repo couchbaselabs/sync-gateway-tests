@@ -139,7 +139,7 @@ test("Update the doc in lite pushdb", function(t){
     // get the document revision and update the revision
     coax([server, pushdb, docId], function (err, doc) {
         if (err || (!doc) || doc == undefined) {
-            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", json:" + doc);
+            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docId]).pax().toString() + ", err:" + err + ", json:" + doc);
             t.end();
         } else {
             // Change the date and data of the doc
@@ -180,7 +180,7 @@ test("Mobile client remove the doc in lite and verify the change is shadowed to 
     // get the document revision and delete the revision
     coax([server, pushdb, docId], function (err, doc) {
         if (err || (!doc) || doc == undefined) {
-            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docid]).pax().toString() + ", err:" + err + ", json:" + doc);
+            t.fail("unable to get doc rev for url:" + coax([server, pushdb, docId]).pax().toString() + ", err:" + err + ", json:" + doc);
             t.end();
         } else {
             // delete doc
