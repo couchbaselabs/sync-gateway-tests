@@ -3,4 +3,6 @@ tmp/
 .project
 .settings/
 .idea/
+temp_*
+*.pyc
 
