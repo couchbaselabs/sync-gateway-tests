@@ -227,7 +227,7 @@ test("Web client verifies the deleted docs are no longer in app-bucket", test_co
         }, function (err, result) {
             t.end()
         })
-    }, timeoutReplication*10);
+    }, timeoutReplication*11);
 });
 
 test("delete buckets", test_conf, function (t) {
