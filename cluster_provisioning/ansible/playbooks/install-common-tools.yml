@@ -5,7 +5,7 @@
   sudo: true
   tasks:
   - name: create centos user
-    user: name=centos createhome=yes group=centos
+    user: name=centos createhome=yes
   - name: install git
     yum: pkg=git state=latest
   - name: install bc
