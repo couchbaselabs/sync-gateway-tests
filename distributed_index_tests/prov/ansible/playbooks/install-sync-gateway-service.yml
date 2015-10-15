@@ -5,7 +5,7 @@
 
   serial: 1
   vars:
-    couchbase_server_primary_node: "{{ groups['cb_pool'][0] }}"
+    couchbase_server_primary_node: "{{ hostvars['cb1']['ansible_ssh_host'] }}"
 
   connection: local
   tasks:
@@ -22,6 +22,7 @@
   - name: set couchbase_server_primary_node variable
     set_fact:
       couchbase_server_primary_node: "{{ lookup('file', '../../temp_couchbase_server_primary_node') }}"
+
   - name: stop any sync gateway services that might be running
     service: name=sync_gateway pattern=sync_gateway state=stopped
     ignore_errors: yes

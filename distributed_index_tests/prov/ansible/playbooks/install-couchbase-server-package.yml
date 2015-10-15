@@ -4,9 +4,10 @@
   any_errors_fatal: true
   serial: 1
   vars:
-    couchbase_server_primary_node: "{{ groups['cb_pool'][0] }}"
+    couchbase_server_primary_node: "{{ hostvars['cb1']['ansible_ssh_host'] }}"
   connection: local
   tasks:
+    - debug: msg="Couchbase Server primary node - {{ couchbase_server_primary_node }}"
     - shell: echo {{ couchbase_server_primary_node }} > ../../temp_couchbase_server_primary_node
 
 - hosts: cb_pool
