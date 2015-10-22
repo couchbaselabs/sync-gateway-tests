@@ -1,22 +1,30 @@
 import requests
 import json
 
+import orch.syncgatewayactions
+
 # Server
 # GET /
 # POST db/_session
 # DELETE db/_session
 
-
 class SyncGateway:
 
-    def __init__(self, ip, db_name):
+    def __init__(self, host_info, db_name):
         self.public_port = 4984
         self.admin_port = 4985
-        self.ip = "http://{}".format(ip)
+        self.ip = "http://{}".format(host_info["ip"])
+        self.host_name = host_info["name"]
         self.db = Database(self.ip, self.admin_port, self.public_port, db_name)
 
     def info(self):
         return requests.get("{0}:{1}".format(self.ip, self.public_port))
+
+    def stop(self):
+        orch.syncgatewayactions.stop(self.host_name)
+
+    def start(self):
+        orch.syncgatewayactions.start(self.host_name)
 
 # Database
 # GET /{db}
@@ -28,6 +36,7 @@ class SyncGateway:
 
 # Document
 # POST /{db}
+
 
 class Database:
 
@@ -74,8 +83,12 @@ class Database:
             }
         )
 
-    def changes(self):
-        return requests.get("{}/_changes".format(self.public_db_url))
+    def get_user_changes(self, user):
+        headers = {
+            "Authorization": "Basic {}".format(user.auth)
+        }
+        r = requests.get("{}/_changes".format(self.public_db_url), headers=headers)
+        return json.loads(r.text)
 
     def add_document(self, name, doc):
         headers = {
@@ -84,11 +97,24 @@ class Database:
         json_doc = json.dumps(doc)
         return requests.put("{0}/{1}".format(self.public_db_url, name), headers=headers, data=json_doc)
 
-    def add_user_document(self, name, doc, user):
+    def add_user_document(self, doc_id, doc_body, user):
         headers = {
             "Content-Type": "application/json",
             "Authorization": "Basic {}".format(user.auth)
         }
-        json_doc = json.dumps(doc)
-        return requests.put("{0}/{1}".format(self.public_db_url, name), headers=headers, data=json_doc)
+        json_doc = json.dumps(doc_body)
+        return requests.put("{0}/{1}".format(self.public_db_url, doc_id), headers=headers, data=json_doc, timeout=30)
 
+    def add_user_bulk_documents(self, docs, user):
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Basic {}".format(user.auth)
+        }
+
+        docs_list = []
+        for doc in docs:
+            docs_list.append(doc.name_with_body())
+
+        json_doc = json.dumps({"docs": docs_list})
+        return requests.post("{0}/_bulk_docs".format(self.public_db_url), headers=headers, data=json_doc)
