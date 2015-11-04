@@ -7,16 +7,17 @@ from cluster_setup import cluster
 
 def test_update_docs_multiple_users_and_channels(cluster):
 
+    num_docs = 100
+    num_revisions = 10
+    admin = Admin(sgs[0])
+    num_channels = 10
+
     cluster.reset()
 
     start = time.time()
     sgs = cluster.sync_gateways
-    num_docs = 100
-    num_revisions = 10
-    admin = Admin(sgs[0])
 
-    # three channels
-    all_channels = ["channel-" + i for i in xrange(1, 4)]
+    all_channels = ["channel-" + i for i in xrange(1, num_channels + 1)]
     one_channels = list(all_channels[0])
     two_channels = all_channels[0:2]
 
