@@ -1,8 +1,5 @@
 import os
-import subprocess
 import sys
-import urlparse
-import httplib
 from optparse import OptionParser
 
 import install_sync_gateway
@@ -14,7 +11,6 @@ from install_sync_gateway import SyncGatewayConfig
 import ansible_runner
 
 # TODO Add SG package
-
 
 def provision_cluster(couchbase_server_config, sync_gateway_config):
 
@@ -82,10 +78,10 @@ if __name__ == "__main__":
 
     parser = OptionParser(usage=usage)
 
-    default_sync_gateway_config = os.path.abspath("prov/ansible/playbooks/files/sync_gateway_config.json")
+    default_sync_gateway_config = os.path.abspath("conf/sync_gateway_default.json")
 
     parser.add_option("", "--server-version",
-                      action="store", type="string", dest="server_version", default="3.1.1",
+                      action="store", type="string", dest="server_version", default=None,
                       help="server version to download")
 
     parser.add_option("", "--server-build",
@@ -100,12 +96,20 @@ if __name__ == "__main__":
                       action="store", type="string", dest="sync_gateway_build", default=None,
                       help="sync_gateway build to download")
 
+    parser.add_option("", "--sync-gateway-dev-build-url",
+                      action="store", type="string", dest="sync_gateway_dev_build_url", default=None,
+                      help="sync_gateway dev build url to download")
+
+    parser.add_option("", "--sync-gateway-dev-build-number",
+                      action="store", type="string", dest="sync_gateway_dev_build_number", default=None,
+                      help="sync_gateway dev build number")
+
     parser.add_option("", "--sync-gateway-config-file",
                       action="store", type="string", dest="sync_gateway_config_file", default=default_sync_gateway_config,
                       help="path to your sync_gateway_config file")
 
     parser.add_option("", "--sync-gateway-branch",
-                      action="store", type="string", dest="source_branch", default="master",
+                      action="store", type="string", dest="source_branch", default=None,
                       help="sync_gateway branch to checkout and build")
 
     arg_parameters = sys.argv[1:]
@@ -120,6 +124,8 @@ if __name__ == "__main__":
     sync_gateway_config = SyncGatewayConfig(
         version=opts.sync_gateway_version,
         build_number=opts.sync_gateway_build,
+        dev_build_url=opts.sync_gateway_dev_build_url,
+        dev_build_number=opts.sync_gateway_dev_build_number,
         branch=opts.source_branch,
         config_path=opts.sync_gateway_config_file
     )
