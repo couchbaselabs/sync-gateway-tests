@@ -168,12 +168,12 @@ test("longpoll feed since_ramge", function (t) {
                                 clearInterval(docInterval)
                             }
                             t.end()
-                        }, 200)
+                        }, 500)
                     })
-                }, 200)
+                }, 600)
             })
         })
-    }, 200)
+    }, 900)
     var docidCount = 0;
     docInterval = setInterval(function () {
         for (var i = 10 - 1; i >= 0; i--) {
