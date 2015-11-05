@@ -1,6 +1,6 @@
 ---
 - hosts: sync_gateways:couchbase_servers
-  remote_user: root
+  remote_user: centos
   any_errors_fatal: true
   sudo: true
   tasks:

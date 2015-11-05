@@ -1,7 +1,7 @@
 ---
 - hosts: sync_gateways
   any_errors_fatal: true
-  remote_user: root
+  remote_user: centos
   sudo: yes
 
   tasks:

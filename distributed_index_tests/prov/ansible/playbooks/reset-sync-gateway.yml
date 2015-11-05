@@ -2,7 +2,7 @@
 # Kill sync_gateway
 - hosts: sync_gateways
   any_errors_fatal: true
-  remote_user: root
+  remote_user: centos
   sudo: yes
 
   tasks:
@@ -11,7 +11,7 @@
 # Flush server buckets
 - hosts: couchbase_servers
   any_errors_fatal: true
-  remote_user: root
+  remote_user: centos
   sudo: true
   vars:
 
@@ -36,7 +36,7 @@
 
 # Start sync_gateway
 - hosts: sync_gateways
-  remote_user: root
+  remote_user: centos
   any_errors_fatal: true
   sudo: true
 
