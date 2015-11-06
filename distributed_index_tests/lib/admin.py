@@ -18,7 +18,7 @@ class Admin:
         self.admin_url = "http://{}:4985".format(sync_gateway.ip)
         self.users = {}
 
-    def register_user(self, target, db, name, password, channels):
+    def register_user(self, target, db, name, channels, password="password"):
 
         headers = {"Content-Type": "application/json"}
         data = {"name": name, "password": password, "admin_channels": channels}

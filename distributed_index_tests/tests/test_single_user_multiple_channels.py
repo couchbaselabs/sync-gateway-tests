@@ -42,7 +42,7 @@ def test_1(cluster):
 
     assert len(seth_changes_doc_ids) == 2000
     assert len(seth_changes_doc_ids) == len(seth_cache_ids)
-    assert set(seth_changes_doc_ids) == set(seth_changes_doc_ids)
+    assert set(seth_changes_doc_ids) == set(seth_cache_ids)
 
     end = time.time()
     print("TIME:{}s".format(end - start))

@@ -13,11 +13,10 @@ def ini_file_to_dictionary(ini_file):
         print("Could not find .ini file: {}".format(ini_abs_path))
         sys.exit(1)
 
-    print("Converting .ini: {}".format(ini_abs_path))
+    print("\n\n> Converting {} to temp_ansible_hosts".format(ini_abs_path))
 
     config = ConfigParser.ConfigParser()
     config.read(ini_abs_path)
-    print(config.sections())
 
     section_options = {}
     for section in config.sections():
@@ -36,8 +35,6 @@ def copy_keys(cbs, sgs, key_name, user):
 
 
 def ini_to_ansible_host(ini_file, key_name=None, ssh_user=None):
-
-    print(">>> Using .ini file: {}".format(ini_file))
 
     ini_dict = ini_file_to_dictionary(ini_file)
 
@@ -84,7 +81,6 @@ def ini_to_ansible_host(ini_file, key_name=None, ssh_user=None):
     with open("temp_ansible_hosts", "w") as hosts:
         hosts.write(host_file_test)
 
-    # export INVENTORY env variable
     return sgs, cbs
 
 if __name__ == "__main__":

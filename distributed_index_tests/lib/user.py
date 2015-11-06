@@ -8,6 +8,8 @@ import time
 import base64
 import uuid
 import re
+import logging
+
 from collections import defaultdict
 from responseprinter import ResponsePrinter
 
@@ -63,7 +65,11 @@ class User:
         docs["docs"] = doc_list
 
         data = json.dumps(docs)
-        r = requests.post("{0}/{1}/_bulk_docs".format(self.target.url, self.db), headers=self._headers, data=data, timeout=self._request_timeout)
+        endpoint = "{0}/{1}/_bulk_docs".format(self.target.url, self.db)
+
+        logging.debug("{0: <10} POST {1}".format(self.name, endpoint))
+
+        r = requests.post(endpoint, headers=self._headers, data=data, timeout=self._request_timeout)
         self._r_printer.print_status(r)
         r.raise_for_status()
 
@@ -90,7 +96,6 @@ class User:
                     except Exception as exc:
                         print('Generated an exception while adding doc_id : %s %s' % (doc, exc))
         else:
-            print(">>> Adding bulk docs ...")
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
                 future = [executor.submit(self.add_bulk_docs, doc_names)]
                 for f in concurrent.futures.as_completed(future):

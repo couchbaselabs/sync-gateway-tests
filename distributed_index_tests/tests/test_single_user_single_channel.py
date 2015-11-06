@@ -40,7 +40,7 @@ def test_1(cluster):
     assert len(seth_changes_doc_ids) == 7000
     assert len(seth_changes_doc_ids) == len(seth_cache_ids)
 
-    assert set(seth_changes_doc_ids) == set(seth_changes_doc_ids)
+    assert set(seth_changes_doc_ids) == set(seth_cache_ids)
 
     admin_changes_doc_ids = admin.get_doc_ids_from_changes()
     print("admin number of changes: {}".format(len(admin_changes_doc_ids)))

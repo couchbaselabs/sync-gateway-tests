@@ -11,7 +11,7 @@ def start(hostname, configuration):
 
     conf_path = os.path.abspath("conf/" + configuration)
 
-    print(">>> Starting sync_gateway with configuration: {}".format(conf_path))
+    print("> Starting sync_gateway with configuration: {}".format(conf_path))
 
     run_targeted_ansible_playbook(
         "start-sync-gateway.yml",
@@ -23,7 +23,7 @@ def restart(hostname, configuration):
 
     conf_path = os.path.abspath("conf/" + configuration)
 
-    print(">>> Restarting sync_gateway with configuration: {}".format(conf_path))
+    print("> Restarting sync_gateway with configuration: {}".format(conf_path))
 
     run_targeted_ansible_playbook(
         "reset-sync-gateway.yml",

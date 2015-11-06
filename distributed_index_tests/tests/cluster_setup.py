@@ -3,9 +3,20 @@ import pytest
 from lib.cluster import Cluster
 from prov.fetch_sg_logs import fetch_sync_gateway_logs
 
+import logging
 
-@pytest.fixture()
+@pytest.fixture
+def simple_users_with_channels():
+    users = [
+        {"db": "db", "name": "seth", "channels": ["ABC", "CBS", "NBC", "FOX"]},
+        {"db": "db2", "name": "ashvinder", "channels": ["ABC", "CBS", "NBC", "FOX"]}
+    ]
+    return users
+
+@pytest.fixture
 def cluster(request):
+
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG)
 
     def fetch_logs():
 
@@ -18,6 +29,7 @@ def cluster(request):
             fetch_sync_gateway_logs(log_zip_prefix)
 
     c = Cluster("conf/hosts.ini")
+    print(c)
 
     request.addfinalizer(fetch_logs)
     return c

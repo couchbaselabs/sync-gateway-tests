@@ -6,7 +6,7 @@ def reset(configuration):
 
     conf_path = os.path.abspath("conf/" + configuration)
 
-    print(">>> Restarting sync_gateway with configuration: {}".format(conf_path))
+    print("> Restarting sync_gateway with configuration: {}".format(conf_path))
 
     run_ansible_playbook(
         "reset-sync-gateway.yml",
