@@ -1,7 +1,7 @@
 from lib.syncgateway import SyncGateway
 from conf.ini_to_ansible_host import ini_to_ansible_host
-from orch import clusteractions
-import logging
+from prov.ansible_runner import run_ansible_playbook
+import os
 
 class Cluster:
 
@@ -13,7 +13,13 @@ class Cluster:
         self.servers = cbs
 
     def reset(self, config):
-        clusteractions.reset(config)
+        conf_path = os.path.abspath("conf/" + config)
+
+        print("> Restarting sync_gateway with configuration: {}".format(conf_path))
+
+        run_ansible_playbook(
+            "reset-sync-gateway.yml",
+            extra_vars="sync_gateway_config_filepath={0}".format(conf_path)
 
     def __str__(self):
         with open("temp_ansible_hosts", "r") as f:
