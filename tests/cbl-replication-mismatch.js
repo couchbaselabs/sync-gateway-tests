@@ -13,7 +13,11 @@ var server, sg, gateway, sgdb
   // local dbs
  dbs = ["mismatch-test-one", "mismatch-test-two"];
 
-console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3));
+var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
+        + 1, module.filename.length - 3) + '.js ' + new Date().toString()
+console.time(module_name);
+console.error(module_name)
+
 
 // start client endpoint
 test("start test client", function(t){
@@ -169,5 +173,5 @@ test("done", function(t){
   common.cleanup(t, function(json){
     sg.kill()
     t.end()
-  }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep)+1, module.filename.length -3)));
+  }, console.timeEnd(module_name));
 });

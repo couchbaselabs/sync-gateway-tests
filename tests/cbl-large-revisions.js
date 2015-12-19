@@ -18,7 +18,11 @@ var timeoutReplication = 5000;
 var numRevs = parseInt(config.numRevs) * 3 || 100;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
-console.time(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3));
+var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
+        + 1, module.filename.length - 3) + '.js ' + new Date().toString()
+console.time(module_name);
+console.error(module_name)
+
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
@@ -241,5 +245,5 @@ test("done", function (t) {
     common.cleanup(t, function (json) {
         sg.kill()
         t.end()
-    }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3)));
+    }, console.timeEnd(module_name));
 });
