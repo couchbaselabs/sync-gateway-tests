@@ -13,13 +13,6 @@ var server, sg, gateway,
     dbs = ["bigtable"];
 
 var numDocs = parseInt(config.numDocs) || 100;
-if (config.provides=="android") {
-	//to decrease number of failures for
-	//https://github.com/couchbase/couchbase-lite-android/issues/261 ->
-    //https://github.com/couchbase/couchbase-lite-android/issues/256 ->
-    //https://github.com/couchbase/couchbase-lite-android/issues/357
-	numDocs = 1;
-}
 
 var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
         + 1, module.filename.length - 3) + '.js ' + new Date().toString()
@@ -40,7 +33,6 @@ test("create test databases", function (t) {
     common.createDBs(t, dbs);
 });
 
-//https://github.com/couchbase/couchbase-lite-android/issues/357
 test("load databases with large JSON ~4MB", test_conf, function (t) {
     common.createDBDocs(t, {
         numdocs: numDocs,
@@ -56,7 +48,7 @@ test("load databases with large JSON ~4MB", test_conf, function (t) {
 
             if (e) {
                 console.log(e);
-                t.fail("unable to retrieve doc wiht large json: " + dbs[0] + "/" + dbs[0] + "_0");
+                t.fail("unable to retrieve doc with large json: " + dbs[0] + "/" + dbs[0] + "_0");
                 t.end()
             } else {
 
