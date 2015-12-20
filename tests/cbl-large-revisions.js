@@ -24,26 +24,26 @@ console.time(module_name);
 console.error(module_name)
 
 
-test("cleanup cb bucket", test_conf, function (t) {
+test("delete buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
-            {
-                "auth": {
-                    "passwordCredentials": {
-                        "username": "Administrator",
-                        "password": "password"
-                    }
-                }
-            }, function (err, js) {
-                t.false(err, "flush cb bucket")
-            },
+        cb_util.deleteBucket(t, config.DbBucket,
             setTimeout(function () {
-                t.end();
-            }, timeoutReplication * 6));
+                t.end()
+            }, timeoutReplication * 10));
     } else {
-        t.end();
+        t.end()
     }
-})
+});
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, config.DbBucket, setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
+});
 
 // kill sync gateway
 test("kill syncgateway", function (t) {
