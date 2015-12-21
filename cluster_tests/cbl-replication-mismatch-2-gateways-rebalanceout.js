@@ -26,7 +26,7 @@ var	bucket = ini_file_config.bucket.bucket1;
 	
 
 
-var server, sg1, sg2, sg2, sgdb
+var server, sg1, sg2
   // local dbs
  dbs = ["mismatch-gateways-one-rebalanceout", "mismatch-test-two-rebalanceout"];
 
