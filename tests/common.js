@@ -247,6 +247,18 @@ var common = module.exports = {
     }, notifycaller.call(t, emits))
   },
 
+    deleteDBs: function (t, dbs, emits) {
+        async.mapSeries(dbs, function (db, cb) {
+            // check if db exists
+            coax([this.server, db], function (err, json) {
+                if (!err) {
+                    console.log("deletion db:", this.server, db)
+                    // delete db
+                    coax.del([this.server, db], cb)
+                }
+            });
+        }, notifycaller.call(t, emits))
+    },
 
   http_get_api: function (t, options, expectedStatus, callback) {
       var request = http.get(options, function (response) {
