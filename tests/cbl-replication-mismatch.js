@@ -64,7 +64,6 @@ test("setup continuous push and pull from both client database", function(t) {
   })
 })
 
-
 test("load databases", test_conf, function(t){
   t.equals(numDocs/2, Math.floor(numDocs/2), "numDocs must be an even number")
   common.createDBDocs(t, {numdocs : numDocs/2, dbs : dbs, docgen : "channels"})
@@ -167,6 +166,11 @@ test("cleanup cb bucket", test_conf, function(t){
 	}else{
 	    t.end();
 	}
+})
+
+// delete all dbs
+test("delete test databases", function(t){
+  common.deleteDBs(t, dbs)
 })
 
 test("done", function(t){

@@ -78,6 +78,11 @@ test("load databases with large JSON ~4MB", test_conf, function (t) {
     });
 });
 
+// delete all dbs
+test("delete test databases", function(t){
+    common.deleteDBs(t, dbs)
+})
+
 test("done", function (t) {
     common.cleanup(t, function (json) {
         t.end();

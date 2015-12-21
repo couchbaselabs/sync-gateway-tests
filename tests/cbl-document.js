@@ -465,6 +465,11 @@ test("delete local db docs", test_conf, function (t) {
 
 // doc expire
 
+// delete all dbs
+test("delete test databases", function(t){
+    common.deleteDBs(t, dbs)
+})
+
 test("done", function (t) {
     common.cleanup(t, function (json) {
         t.end()

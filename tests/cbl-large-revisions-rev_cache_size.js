@@ -12,7 +12,7 @@ var launcher = require("../lib/launcher"),
 
 var server, sg, gateway,
 // local dbs
-    dbs = ["large-revisions-revslimit"];
+    dbs = ["large-revisions-revs_cache_size"];
 
 config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_rev_cache_size_revslimit.json"
 if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_cb_rev_cache_size_revslimit.json"
@@ -247,6 +247,12 @@ test("cleanup cb bucket", test_conf, function (t) {
     } else {
         t.end();
     }
+})
+
+
+// delete all dbs
+test("delete test databases", function(t){
+    common.deleteDBs(t, dbs)
 })
 
 test("done", function (t) {

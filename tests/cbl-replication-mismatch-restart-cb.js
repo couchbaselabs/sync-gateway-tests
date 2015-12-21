@@ -6,7 +6,6 @@ var launcher = require("../lib/launcher"),
     config = require('../config/' + conf_file),
     cb_util = require("./utils/cb_util"),
     test = require("tap").test,
-    sudo = require('sudo'),
     exec = require('child_process').exec,
     test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 1000},
@@ -14,9 +13,9 @@ var launcher = require("../lib/launcher"),
 
 var numDocs=(parseInt(config.numDocs) || 100)*5;
 
-var server, sg1, sg2, sg2, sgdb,
+var server, sg1
 // local dbs
-    dbs = ["mismatch-restart-one", "mismatch-restart-two"];
+    dbs = ["mismatch-restart-cb-one", "mismatch-restart-cb-two"];
 
 var timeoutReplication=0;
 if (config.DbUrl.indexOf("http") > -1){
@@ -304,6 +303,11 @@ test("cleanup cb bucket", test_conf, function (t) {
     } else {
         t.end();
     }
+})
+
+// delete all dbs
+test("delete test databases", function(t){
+    common.deleteDBs(t, dbs)
 })
 
 test("done", function (t) {

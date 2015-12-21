@@ -10,9 +10,9 @@ var launcher = require("../lib/launcher"),
 
 var numDocs=(parseInt(config.numDocs) || 100)*5;
 
-var server, sg1, sg2, sg2, sgdb,
+var server, sg1
   // local dbs
- dbs = ["mismatch-restart-one", "mismatch-restart-two"];
+ dbs = ["mismatch-restart-sg-one", "mismatch-restart-sg-two"];
 
 var timeoutReplication=0;
 if (config.DbUrl.indexOf("http") > -1){
@@ -152,6 +152,12 @@ test("cleanup cb bucket", test_conf, function (t) {
     } else {
         t.end();
     }
+})
+
+
+// delete all dbs
+test("delete test databases", function(t){
+    common.deleteDBs(t, dbs)
 })
 
 test("done", function(t){
