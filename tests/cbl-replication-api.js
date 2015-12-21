@@ -1,11 +1,12 @@
 var launcher = require("../lib/launcher"),
-  coax = require("coax"),
-  async = require("async"),
-  common = require("../tests/common"),
-  util =  require("util"),
-  test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 30000,
-  test_conf = {timeout: test_time * 1000};
+    coax = require("coax"),
+    async = require("async"),
+    common = require("../tests/common"),
+    util = require("util"),
+    cb_util = require("./utils/cb_util"),
+    test = require("tap").test,
+    test_time = process.env.TAP_TIMEOUT || 30000,
+    test_conf = {timeout: test_time * 1000};
 
 var server, sg, gateway,
   // local dbs
@@ -13,7 +14,7 @@ var server, sg, gateway,
  pulldbs = ["api-test-once-pull"];
 
 var numDocs=parseInt(config.numDocs) || 100;
-var timeoutReplication = 0;
+var timeoutReplication = 5000;
 if (config.provides=="android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 300 * numDocs;
 
 var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
@@ -21,6 +22,27 @@ var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filena
 console.time(module_name);
 console.error(module_name)
 
+
+test("delete buckets", test_conf, function (t) {
+  if (config.DbUrl.indexOf("http") > -1) {
+    cb_util.deleteBucket(t, config.DbBucket,
+        setTimeout(function () {
+          t.end()
+        }, timeoutReplication * 10));
+  } else {
+    t.end()
+  }
+});
+
+test("create buckets", test_conf, function (t) {
+  if (config.DbUrl.indexOf("http") > -1) {
+    cb_util.createBucket(t, config.DbBucket, setTimeout(function () {
+      t.end();
+    }, timeoutReplication * 6));
+  } else {
+    t.end()
+  }
+});
 
 // kill sync gateway
 test("kill syncgateway", function (t) {

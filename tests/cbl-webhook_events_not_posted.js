@@ -22,6 +22,12 @@ var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filena
 console.time(module_name);
 console.error(module_name)
 
+// kill sync gateway
+test("kill syncgateway", function (t) {
+  common.kill_sg(t, function () {
+    t.end()
+  })
+})
 
 // start client endpoint
 test("start test client", function(t){

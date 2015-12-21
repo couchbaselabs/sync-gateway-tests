@@ -3,6 +3,7 @@ var launcher = require("../lib/launcher"),
     async = require("async"),
     common = require("../tests/common"),
     util = require("util"),
+    cb_util = require("./utils/cb_util"),
     conf_file = process.env.CONF_FILE || 'local',
     config = require('../config/' + conf_file),
     test = require("tap").test,
@@ -22,6 +23,27 @@ var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filena
 console.time(module_name);
 console.error(module_name)
 
+
+test("delete buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.deleteBucket(t, config.DbBucket,
+            setTimeout(function () {
+                t.end()
+            }, timeoutReplication * 10));
+    } else {
+        t.end()
+    }
+});
+
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, config.DbBucket, setTimeout(function () {
+            t.end();
+        }, timeoutReplication * 6));
+    } else {
+        t.end()
+    }
+});
 
 // start client endpoint
 test("start test client", function (t) {
