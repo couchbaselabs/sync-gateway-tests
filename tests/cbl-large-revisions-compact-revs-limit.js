@@ -50,6 +50,14 @@ test("cleanup cb bucket", test_conf, function (t) {
     }
 })
 
+// start client endpoint
+test("start test client", function (t) {
+    common.launchClient(t, function (_server) {
+        server = _server
+        t.end()
+    })
+})
+
 // start sync gateway
 test("start syncgateway", function (t) {
     common.launchSG(t, function (_sg) {
@@ -66,14 +74,6 @@ test("kill syncgateway", function (t) {
         setTimeout(function(){
             t.end();
         }, 2000))
-})
-
-// start client endpoint
-test("start test client", function (t) {
-    common.launchClient(t, function (_server) {
-        server = _server
-        t.end()
-    })
 })
 
 // create all dbs
