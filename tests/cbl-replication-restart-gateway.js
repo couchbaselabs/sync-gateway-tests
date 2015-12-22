@@ -55,12 +55,14 @@ test("start test client", function(t){
 	  })
 	})
 
-//// kill sync gateway
-//test("kill syncgateway", function (t) {
-//    common.kill_sg(t, function () {
-//        t.end()
-//    })
-//})
+// kill sync gateway
+test("kill syncgateway", function (t) {
+    common.kill_sg(t, function () {
+        },
+        setTimeout(function(){
+            t.end();
+        }, 2000))
+})
 
 // start sync gateway
 test("start syncgateway", function(t){

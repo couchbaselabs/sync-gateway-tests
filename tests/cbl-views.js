@@ -76,7 +76,6 @@ test("simple map function", function(t) {
     });
 });
 
-//https://github.com/couchbase/couchbase-lite-java-core/issues/293/
 test("total_rows attribute on view query result", function(t) {
 
     var view = db(['_design', 'test', '_view', 'basic']);
