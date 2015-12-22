@@ -57,11 +57,21 @@ console.time(module_name);
 console.error(module_name)
 
 
+// start client endpoint
+test("start test client", function (t) {
+    common.launchClient(t, function (_server) {
+        server = _server;
+        t.end();
+    });
+});
+
 // kill sync gateway
 test("kill syncgateway", function (t) {
     common.kill_sg(t, function () {
-        t.end()
-    })
+        },
+        setTimeout(function(){
+            t.end();
+        }, 2000))
 })
 
 // start sync gateway
@@ -69,14 +79,6 @@ test("start syncgateway", function (t) {
     common.launchSG(t, function (_sg) {
         sg = _sg;
         gateway = sg.url;
-        t.end();
-    });
-});
-
-// start client endpoint
-test("start test client", function (t) {
-    common.launchClient(t, function (_server) {
-        server = _server;
         t.end();
     });
 });
