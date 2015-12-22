@@ -58,15 +58,6 @@ test("start test client", function (t) {
     })
 })
 
-// start sync gateway
-test("start syncgateway", function (t) {
-    common.launchSG(t, function (_sg) {
-        sg = _sg
-        gateway = sg.url
-        t.end()
-    })
-})
-
 // kill sync gateway
 test("kill syncgateway", function (t) {
     common.kill_sg(t, function () {
@@ -74,6 +65,15 @@ test("kill syncgateway", function (t) {
         setTimeout(function(){
             t.end();
         }, 2000))
+})
+
+// start sync gateway
+test("start syncgateway", function (t) {
+    common.launchSG(t, function (_sg) {
+        sg = _sg
+        gateway = sg.url
+        t.end()
+    })
 })
 
 // create all dbs
