@@ -23,7 +23,9 @@ test("delete buckets", test_conf, function (t) {
 test("kill LiteServ on android", test_conf, function (t) {
     if (config.provides == "android") {
         spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"]);
-        t.end();
+        setTimeout(function(){
+            t.end();
+        }, 4000)
     } else {
         t.end();
     }

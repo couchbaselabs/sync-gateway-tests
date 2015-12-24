@@ -46,6 +46,15 @@ test("create buckets", test_conf, function (t) {
     }
 });
 
+// start client endpoint
+test("start test client", function (t) {
+    common.launchClient(t, function (_server) {
+        server = _server
+        t.end()
+    })
+})
+
+
 // kill sync gateway
 test("kill syncgateway", function (t) {
     common.kill_sg(t, function () {
@@ -53,14 +62,6 @@ test("kill syncgateway", function (t) {
         setTimeout(function(){
             t.end();
         }, 2000))
-})
-
-// start client endpoint
-test("start test client", function (t) {
-    common.launchClient(t, function (_server) {
-        server = _server
-        t.end()
-    })
 })
 
 // start sync gateway
