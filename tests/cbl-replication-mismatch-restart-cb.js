@@ -49,12 +49,25 @@ test("create buckets", test_conf, function (t) {
     }
 });
 
-test("start test client", function(t){
-    common.launchClient(t, function(_server){
+// start client endpoint
+test("start test client", function (t) {
+    common.launchClient(t, function (_server) {
         server = _server
-        setTimeout(function () {
-            t.end()
-        }, timeoutReplication*3)
+        coax([server, "_session"], function (err, ok) {
+            try {
+                console.error(ok)
+                t.equals(ok.ok, true, "api exists")
+            } catch (err) {
+                console.error(err, "will restart LiteServ...")
+                common.launchClient(t, function (_server) {
+                    server = _server
+                }, setTimeout(function () {
+                    t.end();
+                }, 3000))
+            } finally {
+                t.end()
+            }
+        })
     })
 })
 

@@ -235,9 +235,11 @@ var common = module.exports = {
               // delete db
               coax.del([this.server, db], function(err, json){
                   if(err){
+                    console.error(db, "not created:", err)
                     cb(err, json)
                   } else {
                     coax.put([this.server, db], cb)
+                    console.error(db, "created on", this.server)
                   }
               });
           } else {
@@ -252,7 +254,7 @@ var common = module.exports = {
             // check if db exists
             coax([this.server, db], function (err, json) {
                 if (!err) {
-                    console.log("deletion db:", this.server, db)
+                    console.error("deletion db:", this.server,  db)
                     // delete db
                     coax.del([this.server, db], cb)
                 }

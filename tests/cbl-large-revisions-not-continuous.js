@@ -39,7 +39,7 @@ test("cleanup cb bucket", test_conf, function (t) {
             },
             setTimeout(function () {
                 t.end();
-            }, timeoutReplication*6));
+            }, timeoutReplication * 6));
     } else {
         t.end();
     }
@@ -49,7 +49,19 @@ test("cleanup cb bucket", test_conf, function (t) {
 test("start test client", function (t) {
     common.launchClient(t, function (_server) {
         server = _server
-        t.end()
+        coax([server, "_session"], function (err, ok) {
+            try {
+                console.error(ok)
+                t.equals(ok.ok, true, "api exists")
+            } catch (err){
+                console.error(err, "will restart LiteServ...")
+                common.launchClient(t, function (_server) {
+                    server = _server
+                })
+            }finally {
+                t.end()
+            }
+        })
     })
 })
 
