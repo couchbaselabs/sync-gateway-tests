@@ -32,8 +32,8 @@ test("start test client", function (t) {
                 console.error(err, "will restart LiteServ...")
                 common.launchClient(t, function (_server) {
                     server = _server
-                }, setTimeout(function () {
                     t.end();
+                }, setTimeout(function () {
                 }, 3000))
             } finally {
                 t.end()

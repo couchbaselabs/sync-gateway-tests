@@ -70,7 +70,6 @@ test("start test client", function (t) {
                 common.launchClient(t, function (_server) {
                     server = _server
                 }, setTimeout(function () {
-                    t.end();
                 }, 3000))
             } finally {
                 t.end()
