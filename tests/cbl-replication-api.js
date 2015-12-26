@@ -170,6 +170,9 @@ test("cleanup cb bucket", test_conf, function(t){
 // delete all dbs
 test("delete test databases", function(t){
   common.deleteDBs(t, dbs.concat(pulldbs))
+    setTimeout(function () {
+        t.end()
+    }, 6000)
 })
 
 test("done", function(t){
