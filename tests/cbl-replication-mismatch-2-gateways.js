@@ -1,12 +1,13 @@
 var launcher = require("../lib/launcher"),
-  coax = require("coax"),
-  async = require("async"),
-  common = require("../tests/common"),
-  conf_file = process.env.CONF_FILE || 'local',
-  config = require('../config/' + conf_file),
-  test = require("tap").test,
-  test_time = process.env.TAP_TIMEOUT || 30000,
-  test_conf = {timeout: test_time * 1000};
+    spawn = require('child_process').spawn,
+    coax = require("coax"),
+    async = require("async"),
+    common = require("../tests/common"),
+    conf_file = process.env.CONF_FILE || 'local',
+    config = require('../config/' + conf_file),
+    test = require("tap").test,
+    test_time = process.env.TAP_TIMEOUT || 30000,
+    test_conf = {timeout: test_time * 1000};
 
 
 var numDocs=(parseInt(config.numDocs) || 100)*5;
@@ -20,26 +21,38 @@ var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filena
 console.time(module_name);
 console.error(module_name)
 
+test("kill LiteServ", function (t) {
+    if (config.provides == "android") {
+        spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"])
+        setTimeout(function () {
+            t.end()
+        }, 3000)
+    } else {
+        t.end()
+    }
+})
 
 // start client endpoint
 test("start test client", function (t) {
-  common.launchClient(t, function (_server) {
-    server = _server
-    coax([server, "_session"], function (err, ok) {
-      try {
-        console.error(ok)
-        t.equals(ok.ok, true, "api exists")
-      } catch (err) {
-        console.error(err, "will restart LiteServ...")
-        common.launchClient(t, function (_server) {
-          server = _server
-        }, setTimeout(function () {
-        }, 3000))
-      } finally {
-        t.end()
-      }
+    common.launchClient(t, function (_server) {
+        server = _server
+        coax([server, "_session"], function (err, ok) {
+            try {
+                console.error(ok)
+                t.equals(ok.ok, true, "api exists")
+                if (ok.ok == true) {
+                    t.end()
+                }
+            } catch (err) {
+                console.error(err, "will restart LiteServ...")
+                common.launchClient(t, function (_server) {
+                    server = _server
+                    t.end()
+                }, setTimeout(function () {
+                }, 3000))
+            }
+        })
     })
-  })
 })
 
 // kill sync gateway
