@@ -24,6 +24,62 @@ Run the tests with `npm test`. NPM test will pick up any file in the 'tests' dir
 
 To run a particular test, try `node tests/liteserv-phalanx.js`
 
+## How to run tests agains Android LiteServ
+
+ - Download an Android emultator and Android SDK
+
+- Make sure to set the following enviroment variables
+```
+export ANDROID_HOME="/Users/{user}/Library/Android/sdk/"
+export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+```
+- Get liteserv and build
+```
+git clone https://github.com/couchbase/couchbase-lite-android-liteserv
+cd couchbase-lite-android-liteserv
+git submodule update --init --recursive
+```
+- Follow the section titled 'Building LiteServAndroid via Gradle command line'
+
+Make sure your emulator is running and issue the following command
+```
+adb shell am start -a android.intent.action.MAIN -n com.couchbase.liteservandroid/com.couchbase.liteservandroid.MainActivity --ei listen_port 8081 --es username \"\" --es password \"\"
+```
+You should see ListServ running in the emulator with an empty login: and password:
+
+Set environment for testing
+- Point to sync_gateway build and liteserv repositories
+```
+export SYNCGATE_PATH=~/Dev/sync_gateway/bin/sync_gateway
+export LITESERV_PATH=~/Dev/couchbase-lite-android-liteserv
+```
+
+If you have node installed, make sure you have the following version
+```
+node -v
+v0.10.36
+```
+
+If you do not have this version, please removed node and download https://nodejs.org/dist/v0.10.36/node-v0.10.36.pkg
+```
+cd sync-gateway-tests/
+rm -rf node_modules
+npm install
+```
+
+Running against walrus
+```
+export CONF_FILE=local_android
+```
+Running against cb server
+```
+export CONF_FILE=local_android_cb
+```
+To set up bucket for running tests
+```
+node tests/a-cb-presetup.js
+```
+
 ## How to run performance tests:
 
 The simplest way to run a perf test is to update config/perf.js to match your configuration and start the test using run.js:
