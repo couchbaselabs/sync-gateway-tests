@@ -104,11 +104,11 @@ test("create test databases", function(t){
   sgdb1 = sg1.db.pax().toString()
 })
 
-//test("load databases", test_conf, function(t){
-//  t.equals(numDocs/2, Math.floor(numDocs/2), "numDocs must be an even number")
-//  common.createDBDocs(t, {numdocs : numDocs/2, dbs : dbs, docgen : "channels"})
-//})
-//
+test("load databases", test_conf, function(t){
+  t.equals(numDocs, numDocs, "numDocs must be an even number")
+  common.createDBDocs(t, {numdocs : numDocs, dbs : dbs, docgen : "channels"})
+})
+
 test("setup continuous push and pull from both client database", function(t) {
 	if (config.provides=="android"){
 		sgdb1 = sgdb1.replace("localhost", "10.0.2.2")
@@ -120,7 +120,7 @@ test("setup continuous push and pull from both client database", function(t) {
 	})
 
 test("verify dbs have same number of docs", test_conf, function(t) {
-  common.verifyNumDocs(t, dbs, numDocs/2)
+  common.verifyNumDocs(t, dbs, numDocs)
 })
 
 test("kill sg", function(t){
@@ -150,7 +150,7 @@ test("restart syncgateway", function(t){
 test("reload databases after restart", test_conf, function(t){
     common.updateDBDocs(t, {dbs : [dbs[0]],
         numrevs : 5,
-        numdocs : numDocs/2})
+        numdocs : numDocs})
 
 })
 
