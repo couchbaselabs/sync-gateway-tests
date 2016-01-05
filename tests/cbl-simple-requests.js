@@ -1,4 +1,5 @@
 var launcher = require("../lib/launcher"),
+    spawn = require('child_process').spawn,
     coax = require("coax"),
     async = require("async"),
     common = require("../tests/common"),
@@ -26,19 +27,45 @@ console.time(module_name);
 console.error(module_name)
 
 
+test("kill LiteServ", function (t) {
+    if (config.provides == "android") {
+        spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"])
+        setTimeout(function () {
+            t.end()
+        }, 3000)
+    } else {
+        t.end()
+    }
+})
+
 // start client endpoint
 test("start test client", function (t) {
     common.launchClient(t, function (_server) {
-        server = _server;
-        t.end();
-    });
-});
+        server = _server
+        coax([server, "_session"], function (err, ok) {
+            try {
+                console.error(ok)
+                t.equals(ok.ok, true, "api exists")
+                if (ok.ok == true) {
+                    t.end()
+                } else {  return new Error("LiteServ was not run?: " + ok)}
+            } catch (err) {
+                console.error(err, "will restart LiteServ...")
+                common.launchClient(t, function (_server) {
+                    server = _server
+                    t.end()
+                }, setTimeout(function () {
+                }, 3000))
+            }
+        })
+    })
+})
 
 test("create test databases", function (t) {
     common.createDBs(t, dbs);
 });
 /*
- * https://github.com/couchbase/couchbase-lite-java-core/issues/107
+ * https://github.com/couchbase/couchbase-lite-java-core/issues/107 fixed
  * $ curl -X PUT http://127.0.0.1:59851/simple-requests/foo4 -d 'STRING' -H "Content-Type: text/html" 
  * {
  * 	"status" : 406,
@@ -66,7 +93,7 @@ test("try to create json doc without 'Content-Type'", function (t) {
 });
 
 /*
- * https://github.com/couchbase/couchbase-lite-java-core/issues/107
+ * https://github.com/couchbase/couchbase-lite-java-core/issues/107 fixed
  * $curl -X PUT http://127.0.0.1:8081/simple-requests/foo2 -d 'STRING' -H "Content-Type: application/json" 
  * {"error":"not_found","reason":"Router unable to route request to do_PUT_Documentjava.lang.reflect.InvocationTargetException"}
  * $curl -X PUT http://127.0.0.1:59851/simple-requests/foo2 -d 'STRING' -H "Content-Type: application/json" 
@@ -95,7 +122,7 @@ test("try to create json doc without 'Content-Type'", function (t) {
 
 
 /*
- * https://github.com/couchbase/couchbase-lite-java-core/issues/107
+ * https://github.com/couchbase/couchbase-lite-java-core/issues/107 fixed
  * $curl -X PUT http://127.0.0.1:8081/simple-requests/foo3 -d '{"count":1}' -H "Content-Type: text/html" 
  * {"id":"foo","rev":"1-9483947665d3ac2e389c6c7a14848f82","ok":true}
  * $curl -X PUT http://127.0.0.1:59851/simple-requests/foo3 -d '{"count":1}' -H "Content-Type: text/html" 
