@@ -20,6 +20,13 @@ Get the dependencies with `npm install`. (It reads `package.json` to know what t
 
 Make a `tmp` directory inside your `sync-gateway-tests` checkout, by running `mkdir tmp`
 
+- Point to sync_gateway build and liteserv repositories
+```
+export LITESERV_PATH=~/Dev/couchbase-lite-ios/build/Products/Debug/LiteServ
+export SYNCGATE_PATH=~/Dev/sync_gateway/bin/sync_gateway
+```
+(LiteServ App should be build from  https://github.com/couchbase/couchbase-lite-ios repository)
+
 Run the tests with `npm test`. NPM test will pick up any file in the 'tests' directory.
 
 To run a particular test, try `node tests/liteserv-phalanx.js`
