@@ -32,7 +32,7 @@ test("kill LiteServ", function (t) {
 
 // start client endpoint
 test("start test client", test_conf, function (t) {
-  var i=0;
+  var i=1;
   (function loop() {
     common.launchClient(t, function (_server) {
       server = _server
@@ -44,11 +44,10 @@ test("start test client", test_conf, function (t) {
             return new Error("LiteServ was not run?: " + ok)
           }
         } catch (err) {
-          console.error(err, "will restart LiteServ...")
+          console.error(err, "will restart LiteServ..." + i++ +" times")
           setTimeout(function () {
             console.log(i)
-            i++
-            if (i<4) {
+            if (i<6) {
               loop()
             } else {
               console.error("can't run LiteServ...")
