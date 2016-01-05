@@ -1,4 +1,5 @@
 var launcher = require("../lib/launcher"),
+    spawn = require('child_process').spawn,
     coax = require("coax"),
     async = require("async"),
     common = require("../tests/common"),
@@ -15,13 +16,39 @@ console.time(module_name);
 console.error(module_name)
 
 
+test("kill LiteServ", function (t) {
+    if (config.provides == "android") {
+        spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"])
+        setTimeout(function () {
+            t.end()
+        }, 3000)
+    } else {
+        t.end()
+    }
+})
+
 // start client endpoint
-test("start test client", function(t) {
-    common.launchClient(t, function(_server) {
-        server = _server;
-        t.end();
-    });
-});
+test("start test client", function (t) {
+    common.launchClient(t, function (_server) {
+        server = _server
+        coax([server, "_session"], function (err, ok) {
+            try {
+                console.error(ok)
+                t.equals(ok.ok, true, "api exists")
+                if (ok.ok == true) {
+                    t.end()
+                } else {  return new Error("LiteServ was not run?: " + ok)}
+            } catch (err) {
+                console.error(err, "will restart LiteServ...")
+                common.launchClient(t, function (_server) {
+                    server = _server
+                    t.end()
+                }, setTimeout(function () {
+                }, 3000))
+            }
+        })
+    })
+})
 
 // create all dbs
 test("create test database", function(t) {
@@ -32,7 +59,7 @@ test("create test database", function(t) {
         // always attempt to recreate db
         db.del(function() {
             db.put(function(err, ok) {
-                t.false(err, "test db reachable");
+                    t.false(err, "test db reachable");
                 t.end();
             });
         });
@@ -275,6 +302,7 @@ test("update ddoc with player view", function(t) {
 
 })
 
+// https://github.com/couchbase/couchbase-lite-java-core/issues/880
 test("test array keys", function(t) {
 
     var view = db(['_design', 'test', '_view', 'player']);
