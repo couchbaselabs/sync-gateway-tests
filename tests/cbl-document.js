@@ -18,6 +18,8 @@ var server,
 
 var numDocs = parseInt(config.numDocs) || 100;
 
+if (config.provides == "android") numDocs = 4; // to reduce the number of falls due to bugs
+
 var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
         + 1, module.filename.length - 3) + '.js ' + new Date().toString()
 console.time(module_name);
