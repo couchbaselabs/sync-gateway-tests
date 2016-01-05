@@ -68,7 +68,7 @@ test("start test client", function (t) {
                 t.equals(ok.ok, true, "api exists")
                 if (ok.ok == true) {
                     t.end()
-                }
+                } else {  return new Error("LiteServ was not run?: " + ok)}
             } catch (err) {
                 console.error(err, "will restart LiteServ...")
                 common.launchClient(t, function (_server) {
