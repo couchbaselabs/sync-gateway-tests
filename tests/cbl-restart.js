@@ -21,7 +21,6 @@ var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filena
 console.time(module_name);
 console.error(module_name)
 
-
 test("kill LiteServ", function (t) {
     if (config.provides == "android") {
         spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"])
@@ -236,6 +235,14 @@ test("cleanup cb bucket", test_conf, function (t) {
     } else {
         t.end();
     }
+})
+
+// delete all dbs
+test("delete test databases", function(t){
+    common.deleteDBs(t, dbs)
+    setTimeout(function () {
+        t.end()
+    }, 6000)
 })
 
 test("done", function(t){
