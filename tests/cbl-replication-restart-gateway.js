@@ -158,11 +158,12 @@ test("reload databases after restart", test_conf, function(t){
     common.updateDBDocs(t, {dbs : [dbs[0]],
         numrevs : 5,
         numdocs : numDocs})
-
+    t.end()
 })
 
 test("verify dbs have same number of docs", test_conf, function(t) {
   common.verifyNumDocs(t, dbs, numDocs)
+  t.end()
 })
 
 test("cleanup cb bucket", test_conf, function (t) {
