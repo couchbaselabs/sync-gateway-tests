@@ -6,6 +6,7 @@ var launcher = require("../lib/launcher"),
     util = require("util"),
     eventEmitter = common.ee,
     docgens = common.generators,
+    test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 1000};
     test = require("tap").test;
 
