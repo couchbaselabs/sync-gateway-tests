@@ -1,0 +1,35 @@
+{
+   "log":[
+      "*"
+   ],
+   "verbose":true,
+   "skip_runmode_validation":true,
+   "facebook":{
+      "register":true
+   },
+   "cluster_config":{
+      "server":"http://172.23.105.98:8091",
+      "data_dir":".",
+      "bucket":"default"
+   },
+   "databases":{
+      "db":{
+         "feed_type":"DCPSHARD",
+         "server":"http://172.23.105.98:8091",
+         "bucket":"default",
+         "users":{
+            "GUEST":{
+               "disabled":false,
+               "admin_channels":[
+                  "*"
+               ]
+            }
+         },
+         "channel_index":{
+            "server":"http://172.23.105.98:8091",
+            "bucket":"index-bucket",
+            "writer":true
+         }
+      }
+   }
+}
