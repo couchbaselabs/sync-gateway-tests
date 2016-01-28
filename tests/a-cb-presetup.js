@@ -20,6 +20,17 @@ test("delete buckets", test_conf, function (t) {
     }
 });
 
+test("delete buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.deleteBucket(t, "index-bucket",
+            setTimeout(function () {
+                t.end()
+            }, 10000));
+    } else {
+        t.end();
+    }
+});
+
 test("kill LiteServ on android", test_conf, function (t) {
     if (config.provides == "android") {
         spawn('adb', ["shell", "am", "force-stop", "com.couchbase.liteservandroid"]);
@@ -30,6 +41,16 @@ test("kill LiteServ on android", test_conf, function (t) {
         t.end();
     }
 });
+test("create buckets", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createBucket(t, "index-bucket", setTimeout(function () {
+            t.end();
+        }, 10000));
+    } else {
+        t.end();
+    }
+});
+
 
 test("create buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {

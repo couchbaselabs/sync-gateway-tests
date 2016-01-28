@@ -1,8 +1,21 @@
 {
     "log": ["CRUD", "REST+", "CHANGES"],
+  "skip_runmode_validation":true,
+  "cluster_config":{
+	"server":"http://localhost:8091",
+	"data_dir":".",
+	"bucket":"db"
+  },
 	"databases": {
 		"db": {
+		    "feed_type":"DCPSHARD",
 			"server": "http://localhost:8091",
+		    "bucket":"db",
+		    "channel_index":{
+			"server":"http://localhost:8091",
+			"bucket":"index-bucket",
+			"writer":true
+		  },
 			"sync": `
 function(doc){
 	channel(doc.channels);
