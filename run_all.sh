@@ -10,7 +10,7 @@ do
   python ./upgrade_test/create_buckets.py $1 $3
   sleep 15
   echo $file
-  node "$file" | tee results.tap 
+  node "$file" | tee -a results.tap 
   sleep 5
   rm -rf *.pindex
   python ./upgrade_test/delete_buckets.py $1 $2
