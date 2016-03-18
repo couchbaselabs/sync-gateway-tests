@@ -9,7 +9,7 @@ rm -rf ../sync-gateway-tests-deps/
 mkdir ../sync-gateway-tests-deps/
 cd ../sync-gateway-tests-deps/
 
-git clone git@github.com:couchbase/couchbase-lite-android-liteserv.git
+git clone https://github.com/couchbase/couchbase-lite-android-liteserv.git
 cd couchbase-lite-android-liteserv/
 
 git checkout $liteserv_branch
