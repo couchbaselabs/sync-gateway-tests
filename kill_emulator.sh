@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Kill running emulator if
 adb emu kill
 if [ $? -ne 0 ]; then
