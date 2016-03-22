@@ -2,6 +2,11 @@
 
 liteserv_branch=$1
 
+if [ "$#" -ne 1 ]; then
+    echo "You must provide 'master' or a branch name for LiteServ"
+    exit 1
+fi
+
 # Remove downloads dir if it exists
 rm -rf ../sync-gateway-tests-deps/
 
