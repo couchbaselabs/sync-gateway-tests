@@ -1,11 +1,6 @@
-from junit_xml import TestSuite, TestCase
-
-
 def tap_junit_xml():
     with open("results.tap", "r") as f:
         lines = f.readlines()
-
-        test_failures = []
 
         for line in lines:
 
