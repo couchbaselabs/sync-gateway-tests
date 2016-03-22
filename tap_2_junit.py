@@ -21,7 +21,7 @@ def tap_junit_xml():
                 print("PASSED: {}".format(passed))
                 print("FAILED: {}".format(failed))
 
-                results = '<testsuites tests="{}" failures="{}" disabled="0" errors="0" time="1" name="AllTests"></testsuites>'.format(
+                results = '<?xml version="1.0" encoding="UTF-8"?><testsuites tests="{}" failures="{}" name="AllTests"></testsuites>'.format(
                     total_tests,
                     failed
                 )
