@@ -1,3 +1,14 @@
+import unittest
+import xmlrunner
+
+class TestSequence(unittest.TestCase):
+    pass
+
+def test_generator(b):
+    def test(self):
+        self.assertTrue(b)
+    return test
+
 def tap_junit_xml():
     with open("results.tap", "r") as f:
         lines = f.readlines()
@@ -21,13 +32,17 @@ def tap_junit_xml():
                 print("PASSED: {}".format(passed))
                 print("FAILED: {}".format(failed))
 
-                results = '<?xml version="1.0" encoding="UTF-8"?><testsuites tests="{}" failures="{}" name="AllTests"></testsuites>'.format(
-                    total_tests,
-                    failed
-                )
+                for t in xrange(0, passed):
+                    test_name = 'test_pass_%s' % t
+                    test = test_generator(True)
+                    setattr(TestSequence, test_name, test)
 
-                with open("results.xml", "w") as f:
-                    f.write(results)
+                for t in range(0, failed):
+                    test_name = 'test_failed_%s' % t
+                    test = test_generator(False)
+                    setattr(TestSequence, test_name, test)
+
+                unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
 
 
 if __name__ == '__main__':
