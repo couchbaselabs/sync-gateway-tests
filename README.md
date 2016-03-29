@@ -43,7 +43,7 @@ export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
 **Install sync_gateway**
 ```
-python install_sync_gateway.py --version=${SYNC_GATEWAY_VERSION}
+python install_sync_gateway.py --version=1.2.0-79
 export SYNCGATE_PATH=sync-gateway-tests/binaries/couchbase-sync-gateway/bin/sync_gateway
 ```
 
