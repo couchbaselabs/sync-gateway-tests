@@ -37,24 +37,24 @@ To run a particular test, try `node tests/liteserv-phalanx.js`
 
 - Make sure to set the following enviroment variables
 ```
-export ANDROID_HOME="/Users/{user}/Library/Android/sdk/"
-export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+$ export ANDROID_HOME="/Users/{user}/Library/Android/sdk/"
+$ export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 ```
 
 **Install sync_gateway**
 ```
-python install_sync_gateway.py --version=1.2.0-79
-export SYNCGATE_PATH=sync-gateway-tests/binaries/couchbase-sync-gateway/bin/sync_gateway
+$ python install_sync_gateway.py --version=1.2.0-79
+$ export SYNCGATE_PATH=sync-gateway-tests/binaries/couchbase-sync-gateway/bin/sync_gateway
 ```
 
 **Start android emulator**
 ```
-./start_emulator.sh 23
+$ ./start_emulator.sh 23
 ```
 
 **Get, build, and deploy LiteServ**
 ```
-./build_and_deploy_liteserv.sh master
+$ ./build_and_deploy_liteserv.sh master
 ```
 
 You should see ListServ running in the emulator with an empty login: and password:
@@ -62,7 +62,7 @@ You should see ListServ running in the emulator with an empty login: and passwor
 
 If you have node installed, make sure you have the following version
 ```
-node -v
+$ node -v
 v0.10.36
 ```
 
@@ -71,28 +71,24 @@ If you do not have this version, please removed node and download https://nodejs
 **Install test dependencies**
 
 ```
-rm -rf node_modules
-npm install
+$ rm -rf node_modules
+$ npm install
 ```
 
 Running against walrus
 ```
-export CONF_FILE=local_android
+$ export CONF_FILE=local_android
 ```
 Running against cb server
 ```
-export CONF_FILE=local_android_cb
-```
-To set up bucket for running tests
-```
-node tests/a-cb-presetup.js
+$ export CONF_FILE=local_android_cb
 ```
 
 **Run tests**
 NOTE: All tests must be run from the root directory
 
 ```
-npm test 2>&1 | tee results.tap
+$ npm test 2>&1 | tee results.tap
 ```
 
 **Run an individual test**
@@ -100,11 +96,13 @@ NOTE: Individual tests must be run from the `tests/` directory
 
 ```
 cd tests/
-node node cbl-database.js
+$ node cbl-database.js
 ```
 
 **Kill emulator**
-./kill_emulator.sh
+ ```
+ $ ./kill_emulator.sh
+ ```
 
 ## How to run performance tests:
 
