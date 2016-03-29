@@ -31,7 +31,7 @@ Run the tests with `npm test`. NPM test will pick up any file in the 'tests' dir
 
 To run a particular test, try `node tests/liteserv-phalanx.js`
 
-## How to run tests agains Android LiteServ
+## How to run tests against Android LiteServ
 
  - Download an Android emultator and Android SDK
 
@@ -40,26 +40,25 @@ To run a particular test, try `node tests/liteserv-phalanx.js`
 export ANDROID_HOME="/Users/{user}/Library/Android/sdk/"
 export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 ```
-- Get liteserv and build
-```
-git clone https://github.com/couchbase/couchbase-lite-android-liteserv
-cd couchbase-lite-android-liteserv
-git submodule update --init --recursive
-```
-- Follow the section titled 'Building LiteServAndroid via Gradle command line'
 
-Make sure your emulator is running and issue the following command
+**Install sync_gateway**
 ```
-adb shell am start -a android.intent.action.MAIN -n com.couchbase.liteservandroid/com.couchbase.liteservandroid.MainActivity --ei listen_port 8081 --es username \"\" --es password \"\"
+python install_sync_gateway.py --version=${SYNC_GATEWAY_VERSION}
+export SYNCGATE_PATH=sync-gateway-tests/binaries/couchbase-sync-gateway/bin/sync_gateway
 ```
+
+**Start android emulator**
+```
+./start_emulator.sh 23
+```
+
+**Get, build, and deploy LiteServ**
+```
+./build_and_deploy_liteserv.sh master
+```
+
 You should see ListServ running in the emulator with an empty login: and password:
 
-Set environment for testing
-- Point to sync_gateway build and liteserv repositories
-```
-export SYNCGATE_PATH=~/Dev/sync_gateway/bin/sync_gateway
-export LITESERV_PATH=~/Dev/couchbase-lite-android-liteserv
-```
 
 If you have node installed, make sure you have the following version
 ```
@@ -68,8 +67,10 @@ v0.10.36
 ```
 
 If you do not have this version, please removed node and download https://nodejs.org/dist/v0.10.36/node-v0.10.36.pkg
+
+**Install test dependencies**
+
 ```
-cd sync-gateway-tests/
 rm -rf node_modules
 npm install
 ```
@@ -86,6 +87,12 @@ To set up bucket for running tests
 ```
 node tests/a-cb-presetup.js
 ```
+
+**Run tests
+npm test 2>&1 | tee results.tap
+
+**Kill emulator
+./kill_emulator.sh
 
 ## How to run performance tests:
 
