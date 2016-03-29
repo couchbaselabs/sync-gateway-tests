@@ -88,10 +88,22 @@ To set up bucket for running tests
 node tests/a-cb-presetup.js
 ```
 
-**Run tests
-npm test 2>&1 | tee results.tap
+**Run tests**
+NOTE: All tests must be run from the root directory
 
-**Kill emulator
+```
+npm test 2>&1 | tee results.tap
+```
+
+**Run an individual test**
+NOTE: Individual tests must be run from the `tests/` directory
+
+```
+cd tests/
+node node cbl-database.js
+```
+
+**Kill emulator**
 ./kill_emulator.sh
 
 ## How to run performance tests:
