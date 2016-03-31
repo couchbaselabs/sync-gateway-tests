@@ -8,6 +8,8 @@ if [ "$apiversion" == "23" ]; then
     emulator -scale 0.25 @Nexus_5_API_23_x86 &
 elif [ "$apiversion" == "21" ]; then
     emulator -scale 0.25 @Nexus_5_API_21_x86_64 &
+elif [ "$apiversion" == "19" ]; then
+    emulator -scale 0.25 @Nexus_5_API_19_x86 &
 elif [ "$apiversion" == "19-armeabi-v7a" ]; then
     emulator -scale 0.25 @Nexus_5_API_19_armeabi-v7a &
     echo "Waiting 5 min ..."
