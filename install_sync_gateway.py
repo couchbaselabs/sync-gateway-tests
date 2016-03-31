@@ -19,11 +19,19 @@ def install_local_sync_gateway(version):
 
         print("Version: {}".format(version_number))
 
-        url = "http://latestbuilds.hq.couchbase.com/couchbase-sync-gateway/{}/{}/couchbase-sync-gateway-enterprise_{}_x86_64.tar.gz".format(
-            version_number,
-            version,
-            version
-        )
+        if version_number == "1.1.1":
+            # http://latestbuilds.hq.couchbase.com/couchbase-sync-gateway/release/1.1.0/1.1.0-28/couchbase-sync-gateway-enterprise_1.1.0-28_x86_64.tar.gz
+            url = "http://latestbuilds.hq.couchbase.com/couchbase-sync-gateway/release/{}/{}/couchbase-sync-gateway-enterprise_{}_x86_64.tar.gz".format(
+                version_number,
+                version,
+                version
+            )
+        else:
+            url = "http://latestbuilds.hq.couchbase.com/couchbase-sync-gateway/{}/{}/couchbase-sync-gateway-enterprise_{}_x86_64.tar.gz".format(
+                version_number,
+                version,
+                version
+            )
 
         print os.getcwd()
 
