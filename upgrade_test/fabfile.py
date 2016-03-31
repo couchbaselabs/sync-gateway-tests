@@ -138,7 +138,7 @@ def compose_cbl_url(product,version,platform):
 		build_url = build_url + build_name
 
 	elif version and '1.2.1' in version:
-		build_url = build_url + url_append(['release','1.2.1' , platform , version ])
+		build_url = build_url + url_append(['1.2.1' , platform , version ])
 		build_name = c[platform+'Build'] + version + ".zip"
 		build_url = build_url + build_name
 
@@ -197,6 +197,7 @@ def deploy_sg(user,password,version,platform):
 		if platform == 'centos':
 			run("rpm -i " + file_name)
 			run("initctl stop sync_gateway")
+			run("iptables -F")
 		elif platform == 'macosx':
 			run(unzip_build)
 			run("ls ./couchbase-sync-gateway/*")
