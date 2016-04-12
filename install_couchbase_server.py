@@ -5,12 +5,27 @@ import subprocess
 import shutil
 import time
 
+from subprocess import CalledProcessError
 from zipfile import ZipFile
 
 from optparse import OptionParser
 
 
 def remove_existing_couchbase_server():
+
+    # Kill Archive
+    try:
+        output = subprocess.check_output("ps aux | grep Archive | awk '{print $2}' | xargs kill -9", shell=True)
+        print(output)
+    except CalledProcessError as e:
+        print("No Archive process running: {}".format(e))
+
+    # Kill Couchbase server
+    try:
+        subprocess.check_output("ps aux | grep '/Applications/Couchbase Server.app/Contents/MacOS/Couchbase Server' | awk '{print $2}' | xargs kill -9", shell=True)
+        print(output)
+    except CalledProcessError as e:
+        print("No Couchbase Server process running: {}".format(e))
 
     output = subprocess.check_output("rm -rf binaries/couchbase-server*", shell=True)
     print("Removing previous packages: {}".format(output))
@@ -30,11 +45,19 @@ def install_local_couchbase_server(version):
     # Remove previous install
     remove_existing_couchbase_server()
 
+    if version == "4.0.0":
+        url = "https://s3.amazonaws.com/packages.couchbase.com/releases/{}/couchbase-server-enterprise_{}-elcapitan_x86_64.zip".format(
+            version,
+            version
+        )
+    else:
+        url = "https://s3.amazonaws.com/packages.couchbase.com/releases/{}/couchbase-server-enterprise_{}-macos_x86_64.zip".format(
+            version,
+            version
+        )
+
     print("Installing Couchbase Server: {}".format(version))
-    url = "https://s3.amazonaws.com/packages.couchbase.com/releases/{}/couchbase-server-enterprise_{}-macos_x86_64.zip".format(
-        version,
-        version
-    )
+
 
     print os.getcwd()
 
@@ -50,8 +73,7 @@ def install_local_couchbase_server(version):
     subprocess.check_call("open couchbase-server*.zip", shell=True)
     time.sleep(10)
 
-    cwd = os.getcwd()
-    subprocess.check_call("mv couchbase-server-enterprise*/Couchbase\ Server.app /Applications/", shell=True)
+    subprocess.check_call("mv couchbase-server*/Couchbase\ Server.app /Applications/", shell=True)
 
     os.chdir("../")
 
