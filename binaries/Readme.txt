@@ -1,0 +1,1 @@
+sync_gateway will be downloaded to this directory
