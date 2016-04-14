@@ -5,4 +5,5 @@ tmp/
 .idea/
 temp_*
 *.pyc
-
+binaries/
+!binaries/Readme.txt
