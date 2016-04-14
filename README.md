@@ -4,13 +4,7 @@ Since Couchbase Mobile relies on a REST protocol for sync, we can test it at the
 
 We can also drive the clients from a REST interface, having them apply load to server components.
 
-### Sync Gateway
-
-Follow the instructions [on the Sync Gateway readme, about how to install](https://github.com/couchbaselabs/sync_gateway/wiki/Installing-and-Upgrading). Remember the path you downloaded it to so you can edit `config/local.js` to point to it.
-
 ### Node.js
-
-You'll need a newish Node.js install (>0.8) with npm. We recommend `brew install nodejs`
 Important!! For Android, you need https://nodejs.org/dist/v0.10.36/node-v0.10.36.pkg
 
 # How to run these tests with MacOSX LiteServ
