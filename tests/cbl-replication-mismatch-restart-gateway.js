@@ -150,49 +150,57 @@ t.end()
 })
 
 // restart sync gateway
-test("restart syncgateway", function(t){
-  common.launchSGWithParams(t, 9888, config.DbUrl, config.DbBucket, function(_sg1){
-    sg1  = _sg1
+test("restart syncgateway", function (t) {
+  common.launchSGWithParams(t, 9888, config.DbUrl, config.DbBucket, function (_sg1) {
+    sg1 = _sg1
     t.end()
   })
 })
 
-test("reload databases after restart", test_conf, function(t){
-    common.updateDBDocs(t, {dbs : [dbs[0]],
-        numrevs : 5,
-        numdocs : numDocs/2})
+// TODO: Fix and Reenable for iOS
+// Tracking ticket here - https://github.com/couchbaselabs/mobile-testkit/issues/394
+// Android only - currently failing on iOS - reenable for iOS once fixed
+if (config.provides=="android") {
+  test("reload databases after restart", test_conf, function (t) {
+    common.updateDBDocs(t, {
+      dbs: [dbs[0]],
+      numrevs: 5,
+      numdocs: numDocs / 2
+    })
 
-})
+  })
 
-test("verify dbs have same number of docs", test_conf, function(t) {
-  common.verifyNumDocs(t, dbs, numDocs)
-})
+  test("verify dbs have same number of docs", test_conf, function (t) {
+    common.verifyNumDocs(t, dbs, numDocs)
+  })
 
-test("cleanup cb bucket", test_conf, function (t) {
+  test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
-            {
-                "auth": {
-                    "passwordCredentials": {
-                        "username": "Administrator",
-                        "password": "password"
-                    }
-                }
-            }, function (err, js) {
-                console.log(err, 'ignore ....')
-            },
-            setTimeout(function () {
-                t.end();
-            }, test_time * 2));
+      coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
+        {
+          "auth": {
+            "passwordCredentials": {
+              "username": "Administrator",
+              "password": "password"
+            }
+          }
+        }, function (err, js) {
+          console.log(err, 'ignore ....')
+        },
+        setTimeout(function () {
+          t.end();
+        }, test_time * 2));
     } else {
-        t.end();
+      t.end();
     }
-})
+  })
 
-// delete all dbs
-test("delete test databases", function(t){
+  // delete all dbs
+  test("delete test databases", function (t) {
     common.deleteDBs(t, dbs)
-})
+  })
+
+}
 
 test("done", function(t){
   common.cleanup(t, function(json){

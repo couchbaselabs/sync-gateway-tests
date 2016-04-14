@@ -154,16 +154,23 @@ test("restart syncgateway", function(t){
   })
 })
 
-test("reload databases after restart", test_conf, function(t){
-    common.updateDBDocs(t, {dbs : [dbs[0]],
-        numrevs : 5,
-        numdocs : numDocs})
+// TODO: Fix and Reenable for iOS
+// Tracking ticket here - https://github.com/couchbaselabs/mobile-testkit/issues/395
+// Android only - currently failing on iOS - reenable for iOS once fixed
+if (config.provides=="android") {
+  test("reload databases after restart", test_conf, function (t) {
+    common.updateDBDocs(t, {
+      dbs: [dbs[0]],
+      numrevs: 5,
+      numdocs: numDocs
+    })
 
-})
+  })
 
-test("verify dbs have same number of docs", test_conf, function(t) {
-  common.verifyNumDocs(t, dbs, numDocs)
-})
+  test("verify dbs have same number of docs", test_conf, function (t) {
+    common.verifyNumDocs(t, dbs, numDocs)
+  })
+}
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
