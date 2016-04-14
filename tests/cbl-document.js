@@ -102,11 +102,23 @@ test("create docs with inline text attachments", test_conf, function (t) {
                     //{"status" : 406, "error" : "not_acceptable"}
                     var url = coax([server, dbs[0], docid, attchid]).pax().toString()
                     if (err) {
-                        t.equals(JSON.stringify(err), JSON.stringify({
+                        if (config.provides == "android") {
+                            t.equals(JSON.stringify(err), JSON.stringify({
+                                "error": "not_acceptable",
                                 "status": 406,
-                                "error": "not_acceptable"
-                            }),
-                            "status is not correct: " + JSON.stringify(err))
+                              }),
+                              "status is not correct: " + JSON.stringify(err)
+                            )
+                        } else {
+                            t.equals(JSON.stringify(err), JSON.stringify({
+                                  "status": 406,
+                                  "error": "not_acceptable"
+                              }),
+                              "status is not correct: " + JSON.stringify(err)
+                            )
+                        }
+
+
                         var options = {
                             host: config.LocalListenerIP,
                             port: port,

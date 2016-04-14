@@ -11,25 +11,47 @@ Follow the instructions [on the Sync Gateway readme, about how to install](https
 ### Node.js
 
 You'll need a newish Node.js install (>0.8) with npm. We recommend `brew install nodejs`
+Important!! For Android, you need https://nodejs.org/dist/v0.10.36/node-v0.10.36.pkg
 
-# How to run these tests
+# How to run these tests with MacOSX LiteServ
 
-First edit `config/local.js` to point to your build of LiteServ (found via "Products" in Xcode). Also to your local bin/sync_gateway
-
-Get the dependencies with `npm install`. (It reads `package.json` to know what to get.)
-
-Make a `tmp` directory inside your `sync-gateway-tests` checkout, by running `mkdir tmp`
-
-- Point to sync_gateway build and liteserv repositories
+**Install sync_gateway**
 ```
-export LITESERV_PATH=~/Dev/couchbase-lite-ios/build/Products/Debug/LiteServ
-export SYNCGATE_PATH=~/Dev/sync_gateway/bin/sync_gateway
+$ python install_sync_gateway.py --version=1.2.0-79
+$ export SYNCGATE_PATH=/Users/{user}/{path-to-repo}/sync-gateway-tests/binaries/couchbase-sync-gateway/bin/sync_gateway
 ```
-(LiteServ App should be build from  https://github.com/couchbase/couchbase-lite-ios repository)
 
-Run the tests with `npm test`. NPM test will pick up any file in the 'tests' directory.
+**Install MacOSX LiteServ**
+The following command will go and get MacOSX LiteServ 1.2.0-101
+```
+$ ./get_liteserv_ios.sh 1.2.0 101
+$ export LITESERV_PATH=/{user}/{path-to-repo}/sync-gateway-tests/binaries/liteserv-macosx/LiteServ
+```
 
-To run a particular test, try `node tests/liteserv-phalanx.js`
+**Install npm dependencies**
+```
+$ rm -rf node_modules
+$ npm install
+```
+
+**Set conf to point to MacOSX configuration**
+```
+$ export CONF_FILE=local
+```
+
+
+**Run tests**
+NOTE: All tests must be run from the root directory
+
+```
+$ npm test 2>&1 | tee results.tap
+```
+
+**Run an individual test**
+
+```
+$ node tests/cbl-database.js
+```
 
 ## How to run tests against Android LiteServ
 
