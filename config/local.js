@@ -10,6 +10,7 @@ var config = module.exports = {
   DbBucket          : "db",
   provides          : "ios",  // ios, android, pouchdb, couchdb
   numDocs           : process.env.NUM_DOCS || 100,
+  Storage           : process.env.STORAGE || 'SQLite', // 'SQLite' or 'ForestDB'
   channelsPerDoc    : 1,
 }
 
