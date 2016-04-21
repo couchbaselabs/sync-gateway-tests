@@ -29,8 +29,15 @@ $ npm install
 ```
 
 **Set conf to point to MacOSX configuration**
+
+Running against walrus
 ```
 $ export CONF_FILE=local
+```
+
+Running against cb server
+```
+$ export CONF_FILE=local_cb
 ```
 
 
