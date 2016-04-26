@@ -16,7 +16,7 @@ var server, sg, gateway,
 
 var numDocs = parseInt(config.numDocsMaxRevs) || 5;
 var timeoutReplication = 5000;
-var numRevs = parseInt(config.numRevs)*3 || 60;
+var numRevs = parseInt(config.numRevs)*2 || 60;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
 var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
@@ -24,6 +24,10 @@ var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filena
 console.time(module_name);
 console.error(module_name)
 
+console.log("numDocs: " + numDocs)
+console.log("numRevs: " + numRevs)
+// numDocs: 5
+// numRevs: 120
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
