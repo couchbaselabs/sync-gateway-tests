@@ -70,7 +70,6 @@ test("start test client", test_conf, function (t) {
 // TODO: Fix and Reenable for Android
 // Tracking ticket here - https://github.com/couchbaselabs/mobile-testkit/issues/396
 // iOS only - currently failing on Android - reenable for Android once fixed
-if (config.provides == "ios") {
     test("create test databases", function (t) {
         common.createDBs(t, dbs)
     })
@@ -331,7 +330,6 @@ if (config.provides == "ios") {
     test("delete db docs", test_conf, function (t) {
         common.deleteDBDocs(t, dbs, numDocs)
     })
-}
 
 test("create test databases", function (t) {
     common.createDBs(t, dbs)
