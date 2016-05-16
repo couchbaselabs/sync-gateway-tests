@@ -3,7 +3,7 @@
   "databases": {
     "db": {
       "revs_limit" : 10,
-      "server": "http://localhost:8091",
+      "server": "http://192.168.33.10:8091",
       "sync": `
       function(doc){
 channel(doc.channels);
