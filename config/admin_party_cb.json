@@ -2,7 +2,7 @@
     "log": ["CRUD", "REST+", "CHANGES"],
 	"databases": {
 		"db": {
-			"server": "http://localhost:8091",
+			"server": "http://192.168.33.10:8091",
 			"sync": `
 function(doc){
 	channel(doc.channels);

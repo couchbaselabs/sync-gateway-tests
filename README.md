@@ -7,6 +7,42 @@ We can also drive the clients from a REST interface, having them apply load to s
 ### Node.js
 Important!! For Android, you need https://nodejs.org/dist/v0.10.36/node-v0.10.36.pkg
 
+# VM Setup
+If you are using couchbase server as the backing sync_gateway datastore, you need to setup a local centos vm
+
+1. Follow setup here - https://github.com/couchbaselabs/mobile-testkit#spin-up-machines-on-vagrant
+1. Install server
+ 
+   ```
+   $ git clone https://github.com/couchbaselabs/mobile-testkit.git
+   cd mobile-testkit/
+      
+   # Create inventory to install server on running in vagrant on box
+   
+   $ local_cb_file="resources/cluster_configs/local_cb"
+   $ echo '[couchbase_servers]' > $local_cb_file
+   $ echo 'cb1 ansible_host=192.168.33.10' >> $local_cb_file
+   $ export CLUSTER_CONFIG=$local_cb_file
+   
+   $ ansible_cfg_file="libraries/provision/ansible/playbooks/ansible.cfg"
+   
+   # Create ansible config
+   $ echo '[defaults]' > $ansible_cfg_file
+   $ echo 'remote_user = vagrant' >> $ansible_cfg_file
+   
+   # install  server on vagrant vm
+   $ python libraries/provision/install_couchbase_server.py --version=${COUCHBASE_SERVER_VERSION}
+   
+   # Delete the buckets
+   $ cd keywords/
+   $ python -c "from CouchbaseServer import CouchbaseServer; s = CouchbaseServer(); s.delete_buckets('http://192.168.33.10:8091');"
+   
+   # Create db bucket
+   $ python -c "from CouchbaseServer import CouchbaseServer; s = CouchbaseServer(); s.create_bucket('http://192.168.33.10:8091', 'db');"
+   
+   $ cd ../..
+   ```
+
 # How to run these tests with MacOSX LiteServ
 
 **Install sync_gateway**
