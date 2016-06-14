@@ -718,11 +718,11 @@ var common = module.exports = {
 	                  t.fail("unable to get doc " + url +" to verify conflicts", err)
 	                   cb(err, json)
 	              } else {
-                      if(json._conflicts.length!==0){
-	                    console.log("not all revisions deleted", url, json)
-                      }
-	                  t.equals(json._conflicts.length, 0, "all conflict revisions deleted")
-	                   cb(err, json)
+                    if(json._conflicts && json._conflicts.length!==0){
+                      console.log("not all revisions deleted", url, json)
+                    }
+	                  t.true(!(json._conflicts), "all conflict revisions deleted")
+                    cb(err, json)
 	              }
 	          })
 
