@@ -146,86 +146,81 @@ test("kill sg", function(t){
     t.end()
 })
 
-// TODO: Fix and Reenable for iOS
-// Tracking ticket here - https://github.com/couchbaselabs/mobile-testkit/issues/397
-// Android only - currently failing on iOS - reenable for iOS once fixed
-if (config.provides=="android") {
-  test("recreate test databases after killing sg", function (t) {
-    async.mapSeries(dbs, function (db, cb) {
-      // check if db exists
-      var url = coax([this.server, db]).pax().toString()
-      coax([this.server, db], function (err, json) {
-        console.log("request db ", url, " info: ", json)
-        if (!err) {
-          // delete db
-          coax.del([this.server, db], function (err, json) {
-            if (err) {
-              console.log("unable to delete db: " + url)
-              t.fail("error: ", err)
-              t.end()
-            } else {
-              coax.put([this.server, db], function (err, ok) {
-                if (err) {
-                  console.log("unable to create db: " + url)
-                  t.fail("error: ", err)
-                  qt.end()
-                } else {
-                  console.log("db", url, "was recreated succesfull")
-                  t.end()
-                }
-              })
-            }
-          });
-        } else {
-          t.fail(url, " db should exist after restart server")
-          t.end()
-        }
-      });
-    })
+test("recreate test databases after killing sg", function (t) {
+  async.mapSeries(dbs, function (db, cb) {
+    // check if db exists
+    var url = coax([this.server, db]).pax().toString()
+    coax([this.server, db], function (err, json) {
+      console.log("request db ", url, " info: ", json)
+      if (!err) {
+        // delete db
+        coax.del([this.server, db], function (err, json) {
+          if (err) {
+            console.log("unable to delete db: " + url)
+            t.fail("error: ", err)
+            t.end()
+          } else {
+            coax.put([this.server, db], function (err, ok) {
+              if (err) {
+                console.log("unable to create db: " + url)
+                t.fail("error: ", err)
+                qt.end()
+              } else {
+                console.log("db", url, "was recreated succesfull")
+                t.end()
+              }
+            })
+          }
+        });
+      } else {
+        t.fail(url, " db should exist after restart server")
+        t.end()
+      }
+    });
   })
+})
 
-  test("start syncgateway", function (t) {
-    common.launchSG(t, function (_sg) {
-      sg = _sg
-      gateway = sg.url
-      t.end()
-    })
+test("start syncgateway", function (t) {
+  common.launchSG(t, function (_sg) {
+    sg = _sg
+    gateway = sg.url
+    t.end()
   })
+})
 
-  test("recreate test databases when syncgateway restarted", function (t) {
-    async.mapSeries(dbs, function (db, cb) {
-      // check if db exists
-      var url = coax([this.server, db]).pax().toString()
-      coax([this.server, db], function (err, json) {
-        console.log("db ", url, " info: " + json)
-        if (!err) {
-          // delete db
-          coax.del([this.server, db], function (err, json) {
-            if (err) {
-              console.log("unable to delete db: " + url)
-              t.fail("error: ", err)
-              t.end()
-            } else {
-              coax.put([this.server, db], function (err, ok) {
-                if (err) {
-                  console.log("unable to create db: " + url)
-                  t.fail("error: ", err)
-                  t.end()
-                } else {
-                  console.log("db", url, "was recreated succesfull")
-                  t.end()
-                }
-              })
-            }
-          });
-        } else {
-          t.fail(url + " db should exist after server restarted and db recreated")
-          t.end()
-        }
-      });
-    })
+test("recreate test databases when syncgateway restarted", function (t) {
+  async.mapSeries(dbs, function (db, cb) {
+    // check if db exists
+    var url = coax([this.server, db]).pax().toString()
+    coax([this.server, db], function (err, json) {
+      console.log("db ", url, " info: " + json)
+      if (!err) {
+        // delete db
+        coax.del([this.server, db], function (err, json) {
+          if (err) {
+            console.log("unable to delete db: " + url)
+            t.fail("error: ", err)
+            t.end()
+          } else {
+            coax.put([this.server, db], function (err, ok) {
+              if (err) {
+                console.log("unable to create db: " + url)
+                t.fail("error: ", err)
+                t.end()
+              } else {
+                console.log("db", url, "was recreated succesfull")
+                t.end()
+              }
+            })
+          }
+        });
+      } else {
+        t.fail(url + " db should exist after server restarted and db recreated")
+        t.end()
+      }
+    });
   })
-}
+})
 
 test("cleanup cb bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
