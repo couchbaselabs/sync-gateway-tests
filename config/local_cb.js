@@ -9,6 +9,7 @@ var config = module.exports = {
   DbUrl             : "http://192.168.33.10:8091",
   DbBucket          : "db",
   provides          : "ios",  // ios, android, pouchdb, couchdb
+  storageEngine     : process.env.STORAGE_ENGINE || "SQLite",
   numDocs           : process.env.NUM_DOCS || 100,
   numRevs           : process.env.NUM_REVS || 60
 }
