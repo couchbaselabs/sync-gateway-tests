@@ -35,7 +35,8 @@ test("launch 2 LiteServs", function(t) {
   ph = phalanx.launchLiteServ(2, {
     port : 59845,
     dir : __dirname+"/../tmp",
-    path : config.LiteServPath
+    path : config.LiteServPath,
+    storageEngine : config.storageEngine
   })
   ph.once("ready", function(){
     async.map(ph.servers, coax, function(err, oks){

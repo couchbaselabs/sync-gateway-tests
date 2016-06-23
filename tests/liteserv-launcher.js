@@ -14,7 +14,8 @@ test("can launch a LiteServ", {timeout : 60000}, function(t) {
   serve = launcher.launchLiteServ({
     port : port,
     dir : __dirname+"/../tmp/single",
-    path : config.LiteServPath
+    path : config.LiteServPath,
+    storageEngine : config.storageEngine
   })
   serve.on("error", function(e){
     console.log("error launching LiteServe", e)

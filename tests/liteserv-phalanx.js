@@ -27,7 +27,8 @@ test("can launch a phalanx of LiteServ", function(t) {
   ph = phalanx.launchLiteServ(size, {
     port : port,
     dir : __dirname+"/../tmp",
-    path : config.LiteServPath
+    path : config.LiteServPath,
+    storageEngine: config.storageEngine
   })
 
   ph.once("error", function(err){
