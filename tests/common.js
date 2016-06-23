@@ -718,10 +718,17 @@ var common = module.exports = {
 	                  t.fail("unable to get doc " + url +" to verify conflicts", err)
 	                   cb(err, json)
 	              } else {
-                    if(json._conflicts && json._conflicts.length!==0){
-                      console.log("not all revisions deleted", url, json)
+
+                    if (json._conflicts){
+                      // Needed to validate pre 1.3.0 Mac OSX LiteServ && Android 1.3.0
+                      // Remove when this is closed https://github.com/couchbase/couchbase-lite-java-core/issues/1269
+                      console.log("Conflicts array returned!!");
+                      t.equals(0, json._conflicts.length, "Conflicts should be empty")
+                    } else {
+                      // There should be no conflicts property
+                      t.true(!(json._conflicts), "all conflict revisions deleted")
                     }
-	                  t.true(!(json._conflicts), "all conflict revisions deleted")
+
                     cb(err, json)
 	              }
 	          })
