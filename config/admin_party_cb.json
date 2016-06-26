@@ -2,7 +2,7 @@
     "log": ["CRUD", "REST+", "CHANGES"],
 	"databases": {
 		"db": {
-			"server": "http://192.168.33.10:8091",
+			"server": "http://s61405cnt72.sc.couchbase.com:8091",
 			"sync": `
 function(doc){
 	channel(doc.channels);
