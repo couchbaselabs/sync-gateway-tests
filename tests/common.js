@@ -852,7 +852,7 @@ var common = module.exports = {
                       }}).length
 
                   if(num_avail > 1){
-                      t.fail(num_avail + ' uncompacted revision(s) remain')
+                      t.fail(num_avail + ' uncompacted revision(s) remain by ' + url, json)
                       }
 
               if(num_avail < 1){
