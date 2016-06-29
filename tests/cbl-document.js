@@ -66,11 +66,10 @@ test("start test client", test_conf, function (t) {
     }());
 })
 
-
-
 test("create test databases", function (t) {
     common.createDBs(t, dbs)
 })
+
 //https://github.com/couchbaselabs/cblite-tests/issues/13 ->
 //https://github.com/couchbase/couchbase-lite-android/issues/249
 test("create docs with inline text attachments", test_conf, function (t) {
@@ -234,6 +233,7 @@ test("create docs with image attachments", test_conf, function (t) {
                     if (e) {
 
                         if (config.provides == "android") {
+                            // https://github.com/couchbase/couchbase-lite-java-core/issues/1299
                             t.equals(JSON.stringify(e), JSON.stringify({
                                 "error": "not_acceptable",
                                 "status": 406
@@ -251,7 +251,7 @@ test("create docs with image attachments", test_conf, function (t) {
                             host: config.LocalListenerIP,
                             port: port,
                             path: dbs[0] + '/' + docid + "/" + attchid,
-                            method: 'GET',
+                            method: 'GET'
                         }
                         common.http_get_api(t, options, 200, function (callback) {
                             t.ok(callback.toString().slice(1, 4) == "PNG", "verify img attachment. Got attachment file type from " + url + ": " + callback.toString().slice(1, 4))
@@ -313,7 +313,7 @@ test("multi inline attachments", test_conf, function (t) {
                             host: config.LocalListenerIP,
                             port: port,
                             path: dbs[0] + '/' + docid + "/" + attchid,
-                            method: 'GET',
+                            method: 'GET'
                         }
                         common.http_get_api(t, options, 200, function (callback) {
                             t.equals(callback, "Inline text string created by cblite functional test");
@@ -335,9 +335,11 @@ test("compact db", test_conf, function (t) {
     common.compactDBs(t, dbs)
 })
 
+//https://github.com/couchbase/couchbase-lite-java-core/issues/1300
 test("verify compaction", test_conf, function (t) {
     common.verifyCompactDBs(t, dbs, numDocs)
 })
+
 
 test("delete doc attachments", test_conf, function (t) {
     common.deleteDBDocAttachments(t, dbs, numDocs)

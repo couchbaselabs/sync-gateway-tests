@@ -119,7 +119,7 @@ test("load databases", test_conf, function (t) {
 })
 
 // setup push replication to gateway
-test("set push replication to gateway", function (t) {
+test("set push replication to gateway", test_conf, function (t) {
     var gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
     if (config.provides == "android") gatewayDB = gatewayDB.replace("localhost", "10.0.2.2")
     async.series([
@@ -206,7 +206,7 @@ test("set pull replication from gateway", test_conf, function (t) {
 })
 
 // setup push replication to gateway
-test("set push replication to gateway", function (t) {
+test("set push replication to gateway", test_conf, function (t) {
     var gatewayDB = coax([gateway, config.DbBucket]).pax().toString()
     if (config.provides == "android") gatewayDB = gatewayDB.replace("localhost", "10.0.2.2")
     async.series([
@@ -217,7 +217,7 @@ test("set push replication to gateway", function (t) {
                 coax([server, "_replicate"]).post({
                     source: db,
                     target: gatewayDB,
-                    continuous : false,
+                    continuous : false
                 }, function (err, ok) {
                     t.equals(err, null,
                         util.inspect({_replicate: db + " -> " + gatewayDB}))

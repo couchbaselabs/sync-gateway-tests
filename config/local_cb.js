@@ -11,7 +11,7 @@ var config = module.exports = {
   provides          : "ios",  // ios, android, pouchdb, couchdb
   storageEngine     : process.env.STORAGE_ENGINE || "SQLite",
   numDocs           : process.env.NUM_DOCS || 100,
-  numRevs           : process.env.NUM_REVS || 60
+  numRevs           : process.env.NUM_REVS || 40
 }
 
 /*

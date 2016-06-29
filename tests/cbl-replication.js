@@ -353,6 +353,7 @@ test("cleanup cb bucket", test_conf, function (t) {
 })
 
 // delete all dbs
+// https://github.com/couchbase/couchbase-lite-ios/issues/1325
 test("delete test databases", function(t){
     common.deleteDBs(t, dbs.concat(repdbs).concat(sgdbs))
     setTimeout(function () {
