@@ -14,7 +14,7 @@ var server, sg, gateway,
 // local dbs
     dbs = ["large-revisions-compact"];
 
-var numDocs = parseInt(config.numDocsMaxRevs) || 10;
+var numDocs = 10;
 var timeoutReplication = 5000;
 var numRevs = parseInt(config.numRevs) || 60;
 
