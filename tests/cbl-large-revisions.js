@@ -15,7 +15,7 @@ var server, sg, gateway,
 // local dbs
     dbs = ["large-revisions"];
 
-var numDocs = parseInt(config.numDocsMaxRevs) || 10;
+var numDocs = 10;
 var timeoutReplication = 5000;
 var numRevs = parseInt(config.numRevs) * 3 || 100;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;

@@ -70,7 +70,7 @@ test("can write and read in admin server", function (t) {
     })
 })
 
-test("longpoll feed since_int", function (t) {
+test("longpoll feed since_int", test_conf, function (t) {
     var docInterval, db = coax([server, config.DbBucket])
     db.get(["_changes", {feed: "longpoll"}], function (err, changes) {
         t.false(err, "got changes")
@@ -90,9 +90,9 @@ test("longpoll feed since_int", function (t) {
                         }
                         t.end()
                     })
-                }, 300)
+                }, 500)
             })
-        }, 300)
+        }, 1000)
     })
     var docidCount = 0;
     docInterval = setInterval(function () {
@@ -103,10 +103,10 @@ test("longpoll feed since_int", function (t) {
             });
             docidCount++
         }
-    }, 100)
+    }, 300)
 })
 
-test("longpoll feed since_string", function (t) {
+test("longpoll feed since_string", test_conf, function (t) {
     var docInterval, db = coax([server, config.DbBucket])
     db.get(["_changes", {feed: "longpoll"}], function (err, changes) {
         t.false(err, "got changes");
@@ -142,7 +142,7 @@ test("longpoll feed since_string", function (t) {
             });
             docidCount++
         }
-    }, 100)
+    }, 300)
 })
 
 
