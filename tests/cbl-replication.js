@@ -217,7 +217,7 @@ test("verify local-replicated dbs changefeed after load databases", test_conf, f
     }
 })
 
-test("verify local-replicated num-docs=" + numDocs, function (t) {
+test("verify local-replicated num-docs=" + numDocs, test_conf, function (t) {
     if (config.provides == "android") {
         console.log("Skipping local replication on Android");
         t.end();
@@ -239,7 +239,7 @@ test("verify sg-replicated dbs loaded", test_conf, function (t) {
     }
 })
 
-test("verify sg-replicated num-docs", function (t) {
+test("verify sg-replicated num-docs", test_conf, function (t) {
     if (config.provides == "android") {
         console.log("Skipping local replication on Android");
         t.end();
@@ -319,7 +319,7 @@ test("verify local-replicated in dbs: 0", test_conf, function (t) {
 })
 
 // timing out and the compareDBSeqNums asserts are dubious so skipping for now
-test("verify local-replicated dbs changefeed", {timeout: 15000}, function (t) {
+test("verify local-replicated dbs changefeed", test_conf, function (t) {
     if (config.provides == "android") {
         console.log("Skipping local replication on Android");
         t.end();
