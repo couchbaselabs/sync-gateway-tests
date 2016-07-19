@@ -41,7 +41,6 @@ var numDocs = parseInt(config.numDocs) || 100;
  verify local-replicated in repdbs: #numDocs
  purge dbs
  verify local-replicated in dbs: 0
- verify local-replicated dbs changefeed
  cleanup cb bucket
  done
 
@@ -316,19 +315,6 @@ test("purge dbs", test_conf, function (t) {
 // check dbs
 test("verify local-replicated in dbs: 0", test_conf, function (t) {
     common.verifyNumDocs(t, dbs, 0);
-})
-
-// timing out and the compareDBSeqNums asserts are dubious so skipping for now
-test("verify local-replicated dbs changefeed", {timeout: 15000}, function (t) {
-    if (config.provides == "android") {
-        console.log("Skipping local replication on Android");
-        t.end();
-    } else {
-        common.compareDBSeqNums(t, {
-            sourcedbs: dbs,
-            targetdbs: repdbs
-        })
-    }
 })
 
 test("cleanup cb bucket", test_conf, function(t){
