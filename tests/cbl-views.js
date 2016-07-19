@@ -91,7 +91,7 @@ test("simple map function", function (t) {
     common.createDBDocs(t, {
         dbs: ["cbl_views"],
         docgen: 'foobar',
-        numdocs: 10,
+        numdocs: 10
     }, 'docs_created')
 
     eventEmitter.on('docs_created', function (err, json) {
@@ -117,14 +117,14 @@ test("total_rows attribute on view query result", function (t) {
     var view = db(['_design', 'test', '_view', 'basic']);
     // descending
     view({
-        descending: true,
+        descending: true
     }, function (e, js) {
         t.equals(js.total_rows, 10, "descending total_rows");
     })
 
     // key
     view({
-        key: "cbl_views_5",
+        key: "cbl_views_5"
     }, function (e, js) {
         t.equals(js.total_rows, 10, "key total_rows");
     })
@@ -138,7 +138,7 @@ test("total_rows attribute on view query result", function (t) {
 
     // startkey
     view({
-        startkey: "cbl_views_5",
+        startkey: "cbl_views_5"
     }, function (e, js) {
         t.equals(js.total_rows, 10, "startkey total_rows");
     })
@@ -146,21 +146,21 @@ test("total_rows attribute on view query result", function (t) {
     // endkey
     view({
         endkey: "cbl_views_5",
-        inclusive_end: false,
+        inclusive_end: false
     }, function (e, js) {
         t.equals(js.total_rows, 10, "endkey total_rows");
     })
 
     // limit
     view({
-        limit: "5",
+        limit: "5"
     }, function (e, js) {
         t.equals(js.total_rows, 10, "limit total_rows");
     })
 
     // include_docs
     view({
-        include_docs: true,
+        include_docs: true
     }, function (e, js) {
         t.equals(js.total_rows, 10, "include_docs total_rows");
     })
@@ -176,7 +176,7 @@ test("total_rows attribute on view query result", function (t) {
     view({
         update_seq: true,
         include_docs: false,
-        startkey: "cbl_views_5",
+        startkey: "cbl_views_5"
     }, function (e, js) {
         t.equals(js.total_rows, 10, "mixed total_rows");
         setTimeout(function () {
@@ -191,7 +191,7 @@ test("test query filters", function (t) {
 
     // descending
     view({
-        descending: true,
+        descending: true
     }, function (e, js) {
         t.equals(e, null);
         var oks = js.rows.filter(function (row, i) {
@@ -202,7 +202,7 @@ test("test query filters", function (t) {
 
     // key
     view({
-        key: "cbl_views_5",
+        key: "cbl_views_5"
     }, function (e, js) {
         t.equals(js.rows[0].key, "cbl_views_5", "key");
     })
@@ -218,7 +218,7 @@ test("test query filters", function (t) {
 
     // startkey
     view({
-        startkey: "cbl_views_5",
+        startkey: "cbl_views_5"
     }, function (e, js) {
         var oks = js.rows.filter(function (row, i) {
             return (row.key == "cbl_views_" + (i + 5));
@@ -229,7 +229,7 @@ test("test query filters", function (t) {
     // endkey
     view({
         endkey: "cbl_views_5",
-        inclusive_end: false,
+        inclusive_end: false
     }, function (e, js) {
         var oks = js.rows.filter(function (row, i) {
             return (row.key == "cbl_views_" + (i));
@@ -239,7 +239,7 @@ test("test query filters", function (t) {
 
     // limit
     view({
-        limit: "5",
+        limit: "5"
     }, function (e, js) {
         var oks = js.rows.filter(function (row, i) {
             return (row.key == "cbl_views_" + (i));
@@ -249,7 +249,7 @@ test("test query filters", function (t) {
 
     // include_docs
     view({
-        include_docs: true,
+        include_docs: true
     }, function (e, js) {
         var oks = js.rows.filter(function (row, i) {
             return (row.doc.foo == docgens.foobar().foo &&
@@ -260,9 +260,9 @@ test("test query filters", function (t) {
 
     // update_seq
     view({
-        update_seq: true,
+        update_seq: true
     }, function (e, js) {
-        t.equals(js.update_seq, 11, "update_seq");
+        t.equals(js.update_seq, 11, "update_seq:" + JSON.stringify(js));
     })
 
     // skip
@@ -277,7 +277,9 @@ test("test query filters", function (t) {
         } else {
             t.fail("skip: " + util.inspect(e));
         }
-        t.end();
+        setTimeout(function () {
+            t.end();
+        }, 5000);
     });
 
 })
