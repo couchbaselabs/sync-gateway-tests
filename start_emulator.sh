@@ -14,6 +14,8 @@ elif [ "$apiversion" == "19-armeabi-v7a" ]; then
     emulator @Nexus_5_API_19_armeabi-v7a &
     echo "Waiting 5 min ..."
     sleep 300
+elif [ "$apiversion" == "16" ]; then
+    emulator @Nexus_5_API_16_x86 &
 elif [ "$apiversion" == "15" ]; then
     emulator @Nexus_5_API_15_x86 &
 elif [ "$apiversion" == "15-armeabi-v7a" ]; then
