@@ -6,7 +6,7 @@ var cb_util = module.exports = {
 
 	createBucket : function(t, appBucket) {
 		var options = {
-			host : "s61405cnt72.sc.couchbase.com",
+			host : "s61406cnt72.sc.couchbase.com",
 			port : 8091,
 			path : '/pools/default/buckets',
 			method : 'POST',
@@ -26,7 +26,7 @@ var cb_util = module.exports = {
 	deleteBucket : function(t, bucket) {
 		var post_data = 'STR';
 		var options = {
-			host : "s61405cnt72.sc.couchbase.com",
+			host : "s61406cnt72.sc.couchbase.com",
 			port : 8091,
 			path : "/pools/default/buckets/" + bucket,
 			auth : "Administrator:password",
