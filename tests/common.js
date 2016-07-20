@@ -609,20 +609,20 @@ var common = module.exports = {
 	              } else {
                       // console.log(url, " : ", json)
 	                  confls = json._conflicts
-                      // console.log(url, confls)
+                      console.log(url, "conflicts", confls)
 	                  // delete conflicts
 	                  var docUrl = coax([server, db, localdocs + docid]).pax().toString()
-	                  // console.log(docUrl)
+	                  console.log("doc url to be deleted: " + docUrl)
 	                  async.mapSeries(confls, function (confl, nextConfl) {
 	                      coax.del([docUrl, {
 	                              rev: confl
 	                          }],
 	                          function (err, json) {
-                                  // console.log(json)
+                                  console.log(json)
                                   var rev_after_deletion =  json.rev.substring(0, json.rev.indexOf("-"));
                                   t.equals(parseInt(confl.substring(0, confl.indexOf("-"))) + 1 + "", rev_after_deletion,
                                   "Deleting a document adds a revision ('tombstone') that records the delete)" + rev_after_deletion)
-                                  t.equals(json.ok, true, "all conflict revisions deleted")
+                                  t.equals(json.ok, true, "all conflict revisions deleted in " + docid)
                                   cb(err, json)
 
 	                          }, nextConfl)
@@ -723,7 +723,7 @@ var common = module.exports = {
                       // Needed to validate pre 1.3.0 Mac OSX LiteServ && Android 1.3.0
                       // Remove when this is closed https://github.com/couchbase/couchbase-lite-java-core/issues/1269
                       console.log("Conflicts array returned!!");
-                      t.equals(0, json._conflicts.length, "Conflicts should be empty")
+                      t.equals(0, json._conflicts.length, "Conflicts should be empty " + json._conflicts)
                     } else {
                       // There should be no conflicts property
                       t.true(!(json._conflicts), "all conflict revisions deleted")
