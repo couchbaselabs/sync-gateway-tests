@@ -19,7 +19,7 @@ var numDocs = 10;
 var timeoutReplication = 5000;
 var numRevs = parseInt(config.numRevs) * 3 || 100;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) {
-    var numDocs = 8;
+    var numDocs = 5;
     timeoutReplication = 1200 * numDocs;
 }
 
