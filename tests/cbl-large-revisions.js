@@ -18,7 +18,10 @@ var server, sg, gateway,
 var numDocs = 10;
 var timeoutReplication = 5000;
 var numRevs = parseInt(config.numRevs) * 3 || 100;
-if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
+if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) {
+    var numDocs = 8;
+    timeoutReplication = 1200 * numDocs;
+}
 
 var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
         + 1, module.filename.length - 3) + '.js ' + new Date().toString()
