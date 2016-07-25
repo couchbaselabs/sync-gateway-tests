@@ -4,14 +4,16 @@
 
 apiversion=$1
 
-if [ "$apiversion" == "23" ]; then
+if [ "$apiversion" == "24" ]; then
+    emulator @Nexus_6_API_24_x86 &
+elif [ "$apiversion" == "23" ]; then
     emulator @Nexus_5_API_23_x86 &
-elif [ "$apiversion" == "21" ]; then
-    emulator @Nexus_5_API_21_x86 &
+elif [ "$apiversion" == "22" ]; then
+    emulator @Nexus_5_API_22_x86 &
 elif [ "$apiversion" == "19" ]; then
     emulator @Nexus_5_API_19_x86 &
 elif [ "$apiversion" == "19-armeabi-v7a" ]; then
-    emulator @Nexus_5_API_19_armeabi-v7a &
+    emulator @Nexus_4_API_19_armeabi-v7a &
     echo "Waiting 5 min ..."
     sleep 300
 elif [ "$apiversion" == "16" ]; then
