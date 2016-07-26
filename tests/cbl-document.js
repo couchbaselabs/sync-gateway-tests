@@ -303,13 +303,13 @@ test("multi inline attachments", test_conf, function (t) {
                     t.fail("read doc failed with exception:" + JSON.stringify(e))
                 }
 
+                // verify there are 2 attachemtns
+                var size = Object.keys(js._attachments).length;
+                t.equals(size, 2);
+
                 // verify text attachment
-                var attchid;
-                if (config.provides == "android") {
-                    attchid = Object.keys(js._attachments)[0] // we expect 2 attachments per doc here
-                } else {
-                    attchid = Object.keys(js._attachments)[1]
-                }
+                var attchid = "inline.txt";
+
                 coax([server, dbs[0], docid, attchid], function (err, response) {
                     var url = coax([server, dbs[0], docid, attchid]).pax().toString()
                     if (err) {
