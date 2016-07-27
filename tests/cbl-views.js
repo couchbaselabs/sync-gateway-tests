@@ -82,7 +82,7 @@ test("simple map function", function (t) {
         _id: "_design/test",
         views: {
             basic: {
-                map: "function(doc) { emit(doc._id, doc.foo) }",
+                map: "function(doc) { if (doc._id && doc.foo) emit(doc._id, doc.foo) }",
             }
         }
     };
@@ -302,7 +302,7 @@ test("update ddoc with player view", function (t) {
     var ddoc = db(['_design', 'test']);
     ddoc(function (err, js) {
         js.views['player'] = {
-            map: "function(doc) { emit(doc.joined, doc.points) }",
+            map: "function(doc) { if(doc.joined) emit(doc.joined, doc.points) }",
             reduce: "function(keys, values, rereduce) { result = 0; for (i=0;i<values.length;i++) { result += values[i] }; return result  }"
         };
         db.post(js, function (e, js) {
