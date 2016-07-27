@@ -76,6 +76,10 @@ Running against cb server
 $ export CONF_FILE=local_cb
 ```
 
+Set a storage type (SQLite, SQLCipher, ForestDB, ForestDB+Encryption)
+```
+export STORAGE_ENGINE=ForestDB+Encryption
+```
 
 **Run tests**
 NOTE: All tests must be run from the root directory
@@ -141,6 +145,11 @@ $ export CONF_FILE=local_android
 Running against cb server
 ```
 $ export CONF_FILE=local_android_cb
+```
+
+Set a storage type (SQLite, SQLCipher, ForestDB, ForestDB+Encryption)
+```
+export STORAGE_ENGINE=ForestDB+Encryption
 ```
 
 **Run tests**
