@@ -4,7 +4,7 @@
     "db": {
         "revs_limit" : 30,
         "rev_cache_size": 1000,
-        "server": "http://s61405cnt72.sc.couchbase.com:8091",
+        "server": "http://192.168.33.10:8091",
         "sync": `
       function(doc){
           channel(doc.channels);
