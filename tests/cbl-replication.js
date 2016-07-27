@@ -41,7 +41,6 @@ var numDocs = parseInt(config.numDocs) || 100;
  verify local-replicated in repdbs: #numDocs
  purge dbs
  verify local-replicated in dbs: 0
- verify local-replicated dbs changefeed
  cleanup cb bucket
  done
 
@@ -217,7 +216,7 @@ test("verify local-replicated dbs changefeed after load databases", test_conf, f
     }
 })
 
-test("verify local-replicated num-docs=" + numDocs, function (t) {
+test("verify local-replicated num-docs=" + numDocs, test_conf, function (t) {
     if (config.provides == "android") {
         console.log("Skipping local replication on Android");
         t.end();
@@ -239,7 +238,7 @@ test("verify sg-replicated dbs loaded", test_conf, function (t) {
     }
 })
 
-test("verify sg-replicated num-docs", function (t) {
+test("verify sg-replicated num-docs", test_conf, function (t) {
     if (config.provides == "android") {
         console.log("Skipping local replication on Android");
         t.end();
@@ -318,36 +317,16 @@ test("verify local-replicated in dbs: 0", test_conf, function (t) {
     common.verifyNumDocs(t, dbs, 0);
 })
 
-// timing out and the compareDBSeqNums asserts are dubious so skipping for now
-test("verify local-replicated dbs changefeed", {timeout: 15000}, function (t) {
-    if (config.provides == "android") {
-        console.log("Skipping local replication on Android");
-        t.end();
-    } else {
-        common.compareDBSeqNums(t, {
-            sourcedbs: dbs,
-            targetdbs: repdbs
-        })
-    }
-})
-
-test("cleanup cb bucket", test_conf, function (t) {
-    if (config.DbUrl.indexOf("http") > -1) {
+test("cleanup cb bucket", test_conf, function(t){
+    if (config.DbUrl.indexOf("http") > -1){
         coax.post([config.DbUrl + "/pools/default/buckets/" + config.DbBucket + "/controller/doFlush"],
-            {
-                "auth": {
-                    "passwordCredentials": {
-                        "username": "Administrator",
-                        "password": "password"
-                    }
-                }
-            }, function (err, js) {
+            {"auth":{"passwordCredentials":{"username":"Administrator", "password":"password"}}}, function (err, js){
                 t.false(err, "flush cb bucket")
             },
-            setTimeout(function () {
+            setTimeout(function(){
                 t.end();
             }, test_time * 2));
-    } else {
+    }else{
         t.end();
     }
 })

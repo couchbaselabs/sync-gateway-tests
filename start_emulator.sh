@@ -4,20 +4,20 @@
 
 apiversion=$1
 
-if [ "$apiversion" == "23" ]; then
-    emulator -scale 0.25 @Nexus_5_API_23_x86 &
-elif [ "$apiversion" == "21" ]; then
-    emulator -scale 0.25 @Nexus_5_API_21_x86_64 &
+if [ "$apiversion" == "24" ]; then
+    emulator @Nexus_6_API_24_x86 &
+elif [ "$apiversion" == "23" ]; then
+    emulator @Nexus_5_API_23_x86 &
+elif [ "$apiversion" == "22" ]; then
+    emulator @Nexus_5_API_22_x86 &
 elif [ "$apiversion" == "19" ]; then
-    emulator -scale 0.25 @Nexus_5_API_19_x86 &
+    emulator @Nexus_5_API_19_x86 &
 elif [ "$apiversion" == "19-armeabi-v7a" ]; then
-    emulator -scale 0.25 @Nexus_5_API_19_armeabi-v7a &
+    emulator @Nexus_4_API_19_armeabi-v7a &
     echo "Waiting 5 min ..."
     sleep 300
-elif [ "$apiversion" == "15" ]; then
-    emulator -scale 0.25 @Nexus_5_API_15_x86 &
-elif [ "$apiversion" == "15-armeabi-v7a" ]; then
-    emulator -scale 0.25 @Nexus_5_API_15_armeabi-v7a &
+elif [ "$apiversion" == "16" ]; then
+    emulator @Nexus_4_API_16_x86 &
 else
     echo "Unsupported API version. Did not launch emulator"
     echo "Usage: './start_emulator.sh 15'"

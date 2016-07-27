@@ -122,8 +122,12 @@ test("create docs with inline text attachments", test_conf, function (t) {
                         var options = {
                             host: config.LocalListenerIP,
                             port: port,
-                            path: dbs[0] + '/' + docid + "/" + attchid,
+                            path: "/" + dbs[0] + "/" + docid + "/" + attchid,
                             method: 'GET',
+                            headers: {
+                                'Accept': '*/*',
+                                'Content-Type': 'application/json'
+                            }
                         }
                         console.log(options)
                         common.http_get_api(t, options, 200, function (callback) {
@@ -163,7 +167,7 @@ test("verify post on doc without data. negative case", test_conf, function (t) {
             var options = {
                 host: config.LocalListenerIP,
                 port: port,
-                path: dbs[0] + '/' + docid,
+                path: "/" + dbs[0] + '/' + docid,
                 method: 'POST',
             }
 //                https://github.com/couchbase/couchbase-lite-ios/issues/499 ->
@@ -174,7 +178,15 @@ test("verify post on doc without data. negative case", test_conf, function (t) {
 //                  "error" : "method_not_allowed"
 //                }
             common.http_get_api(t, options, 405, function (callback) {
-                t.equals(JSON.stringify(callback), JSON.stringify({"status": 405, "error": "method_not_allowed"}))
+
+                var expectedError = ""
+                if (config.provides == "android") {
+                    expectedError = JSON.stringify({"error": "method_not_allowed", "status": 405})
+                } else {
+                    expectedError = JSON.stringify({"status": 405, "error": "method_not_allowed"})
+                }
+
+                t.equals(JSON.stringify(callback), expectedError)
             })
         })
     })
@@ -250,7 +262,7 @@ test("create docs with image attachments", test_conf, function (t) {
                         var options = {
                             host: config.LocalListenerIP,
                             port: port,
-                            path: dbs[0] + '/' + docid + "/" + attchid,
+                            path: "/" + dbs[0] + "/" + docid + "/" + attchid,
                             method: 'GET'
                         }
                         common.http_get_api(t, options, 200, function (callback) {
@@ -291,8 +303,13 @@ test("multi inline attachments", test_conf, function (t) {
                     t.fail("read doc failed with exception:" + JSON.stringify(e))
                 }
 
+                // verify there are 2 attachemtns
+                var size = Object.keys(js._attachments).length;
+                t.equals(size, 2);
+
                 // verify text attachment
-                var attchid = Object.keys(js._attachments)[1] // we expect 2 attachments per doc here
+                var attchid = "inline.txt";
+
                 coax([server, dbs[0], docid, attchid], function (err, response) {
                     var url = coax([server, dbs[0], docid, attchid]).pax().toString()
                     if (err) {
@@ -312,7 +329,7 @@ test("multi inline attachments", test_conf, function (t) {
                         var options = {
                             host: config.LocalListenerIP,
                             port: port,
-                            path: dbs[0] + '/' + docid + "/" + attchid,
+                            path: "/" + dbs[0] + '/' + docid + "/" + attchid,
                             method: 'GET'
                         }
                         common.http_get_api(t, options, 200, function (callback) {

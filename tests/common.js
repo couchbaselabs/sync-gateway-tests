@@ -276,7 +276,7 @@ var common = module.exports = {
           })
 
           response.on('end', function () {
-              logger.info(response.statusCode + " from http://" + options.host + ":" + options.port + "/" + options.path);
+              logger.info(response.statusCode + " from http://" + options.host + ":" + options.port + options.path);
               if (response.statusCode == '200' || response.statusCode == '201') {
                   t.equals(response.statusCode, expectedStatus, "wrong response status code " + response.statusCode + ". Expected: " + expectedStatus);
                   try {
@@ -607,22 +607,22 @@ var common = module.exports = {
 	              if (err) {
 	                  t.fail("unable to get doc " + url + " to delete conflicts", err)
 	              } else {
-                      // console.log(url, " : ", json)
+                      console.log(url, "response:", json)
 	                  confls = json._conflicts
-                      // console.log(url, confls)
+                      //console.log(url, "found conflicts:", confls)
 	                  // delete conflicts
 	                  var docUrl = coax([server, db, localdocs + docid]).pax().toString()
-	                  // console.log(docUrl)
+	                  console.log("doc url to be deleted: ", docUrl, "with confls", confls)
 	                  async.mapSeries(confls, function (confl, nextConfl) {
 	                      coax.del([docUrl, {
 	                              rev: confl
 	                          }],
 	                          function (err, json) {
-                                  // console.log(json)
+                                  console.log("doc", docUrl, "with confl", confl, "has been deleted:", json)
                                   var rev_after_deletion =  json.rev.substring(0, json.rev.indexOf("-"));
                                   t.equals(parseInt(confl.substring(0, confl.indexOf("-"))) + 1 + "", rev_after_deletion,
                                   "Deleting a document adds a revision ('tombstone') that records the delete)" + rev_after_deletion)
-                                  t.equals(json.ok, true, "all conflict revisions deleted")
+                                  t.equals(json.ok, true, "all conflict revisions deleted in " + docid)
                                   cb(err, json)
 
 	                          }, nextConfl)
@@ -723,7 +723,7 @@ var common = module.exports = {
                       // Needed to validate pre 1.3.0 Mac OSX LiteServ && Android 1.3.0
                       // Remove when this is closed https://github.com/couchbase/couchbase-lite-java-core/issues/1269
                       console.log("Conflicts array returned!!");
-                      t.equals(0, json._conflicts.length, "Conflicts should be empty")
+                      t.equals(0, json._conflicts.length, "Conflicts should be empty: " + json._conflicts)
                     } else {
                       // There should be no conflicts property
                       t.true(!(json._conflicts), "all conflict revisions deleted")
