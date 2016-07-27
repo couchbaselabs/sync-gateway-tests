@@ -65,8 +65,16 @@ test("kill LiteServ", function (t) {
 test("start test client", test_conf, function (t) {
     var i=1;
     (function loop() {
+        // Set deeper revs limit to avoid race condition
+        // where the client exceeds the rev depth before
+        // pushing to sync gateway
+        process.env.REVS_LIMIT = 5000;
         common.launchClient(t, function (_server) {
             server = _server
+
+            // Unset the environment variable
+            delete process.env.REVS_LIMIT;
+
             coax([server, "_session"], function (err, ok) {
                 try {
                     if (ok.ok == true) {
