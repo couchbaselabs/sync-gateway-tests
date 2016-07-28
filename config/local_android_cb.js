@@ -6,7 +6,7 @@ var config = module.exports = {
   SyncGatewayPath   : process.env.SYNCGATE_PATH,
   LocalListenerIP   : process.env.LOCAL_IP || "127.0.0.1",
   LocalListenerPort : 8189,
-  DbUrl             : "http://192.168.33.10:8091",
+  DbUrl             : "http://s61405cnt72.sc.couchbase.com:8091",
   DbBucket          : "db",
   provides          : "android",  // ios, android, pouchdb, couchdb
   numDocs           : process.env.NUM_DOCS || 10,
