@@ -1,0 +1,1 @@
+Configs used in server upgrade testing. Need to be manually uploaded to /etc/nginx/ if load balancer vm goes down
