@@ -14,8 +14,8 @@ var server, sg, gateway,
  dbs = ["local_db"];
 
 sg = new Object();
-sg.url = "http://lb.sc.couchbase.com:80"
-var sgdb = 'http://lb.sc.couchbase.com:80/db';
+sg.url = "http://172.23.108.186"
+var sgdb = 'http://172.23.108.186/db';
 
 var numDocs = 100;
 var numRevs = 1;
