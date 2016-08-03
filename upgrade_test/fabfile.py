@@ -196,7 +196,7 @@ def deploy_sg(user,password,version,platform):
 		run(wget_build)
 		if platform == 'centos':
 			run("rpm -i " + file_name)
-			run("initctl stop sync_gateway")
+			run("service sync_gateway stop")
 			run("iptables -F")
 		elif platform == 'macosx':
 			run(unzip_build)
