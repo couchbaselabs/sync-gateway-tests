@@ -1,13 +1,13 @@
 from __future__ import with_statement
 from fabric.api import env,roles,local, settings, abort, run, cd,put,get
 import urllib2
-from lxml import etree
+from xml import etree
 from io import StringIO, BytesIO
 
 #env.hosts = ['localhost']
 
 env.roledefs = {'mac': ['macbuild.hq.couchbase.com'],
-				'nginx': ['lb.sc.couchbase.com']}
+				'nginx': ['172.23.108.186']}
 
 
 c = {"base_url" : "http://latestbuilds.hq.couchbase.com",
