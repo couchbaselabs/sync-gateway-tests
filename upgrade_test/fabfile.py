@@ -223,7 +223,7 @@ def reload_nginx(file_name,user="root",password="couchbase"):
 	env.user = user
 	env.password = password
 	file_path = "/etc/nginx/" + file_name
-	run("/bin/cp " + file_path + " /etc/nginx/conf.d/sync_gateway.conf")
+	run("/bin/cp " + file_path + " /etc/nginx/nginx.conf")
 	run("nginx -s reload")
 	
 
