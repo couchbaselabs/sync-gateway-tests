@@ -144,7 +144,7 @@ test("set push replication to gateway", test_conf, function (t) {
 test("verify replicated num-docs=" + numDocs, test_conf, function (t) {
     common.verifySGNumDocs(t, [sg], numDocs)
 })
-/
+
 test("doc update on SG", test_conf, function (t) {
     // start updating docs
     console.log("start updating SG docs...", numRevs * 4, " numRevs")
