@@ -19,10 +19,10 @@ config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_rev_cache_siz
 if (config.DbUrl.indexOf("http") > -1) config.SyncGatewayAdminParty = __dirname + "/../config/admin_party_cb_rev_cache_size_revslimit.json"
 
 var numDocs = 10;
-var timeoutReplication = 5000;
+var timeoutReplication = 5500;
 var numRevs = parseInt(config.numRevs) || 20;
 
-if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 5000 * numDocs;
+if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 5500 * numDocs;
 
 var module_name = '\r\n\r\n>>>>>>>>>>>>>>>>>>>' + module.filename.slice(__filename.lastIndexOf(require('path').sep)
         + 1, module.filename.length - 3) + '.js ' + new Date().toString()
