@@ -12,7 +12,7 @@ var launcher = require("../lib/launcher"),
 
 var numDocs=(parseInt(config.numDocs) || 100)*5;
 
-var server, sg1, sg2, sgdb
+var server, sg1, sg2
   // local dbs
  dbs = ["mismatch-gateways-one", "mismatch-gateways-two"];
 
@@ -137,12 +137,15 @@ var sg_doc_ids;
 
 test("verify sync gateway changes feed has all docs in it", test_conf, function(t) {
   var db = coax(sgdb1)
-
   db("_changes", function (err, data) {
-    var changes = data.results.map(function(r){return r.id});
+      url=coax([sgdb1, "_changes"]).pax().toString();
+      console.log("_CHANGES", url, data)
+      var changes = data.results.map(function(r){return r.id});
     db("_all_docs", function(err, view){
-      var docs = view.rows;
-      var missing = [];
+        url=coax([sgdb1, "_all_docs"]).pax().toString();
+        console.log("_ALL_DOCS", url, view)
+        var docs = view.rows;
+        var missing = [];
 
       docs.forEach(function(d){
         if (changes.indexOf(d.id) == -1) {
@@ -164,16 +167,15 @@ test("verify sync gateway changes feed has all docs in it", test_conf, function(
         }
         changeSeqs[r.seq] = true
       })
+        console.log("missing " + missing.length + ", ids:", missing.join(', '));
+        console.log("duplicate change ids "+dupIds.length+", ids:", dupIds.join(', '));
+        console.log("duplicate change seqs "+dupSeqs.length+", seqs:", dupSeqs.join(', '));
 
       t.equals(docs.length, numDocs, "correct number of docs in _all_docs:" + docs.length )
       //t.equals(changes.length, numDocs + 1, "correct number of docs in _changes:" + changes.length)
       t.equals(dupIds.length, 0, "duplicate ids in changes:"+ dupIds.length)
       t.equals(dupSeqs.length, 0, "duplicate seqs in changes:" + dupSeqs.length)
-      t.equals(missing.length, 0, "missing changes:" + missing.length)
-
-      console.log("missing " + missing.length + ", ids:", missing.join(', '))
-      console.log("duplicate change ids "+dupIds.length+", ids:", dupIds.join(', '))
-      console.log("duplicate change seqs "+dupSeqs.length+", seqs:", dupSeqs.join(', '))
+      t.equals(missing.length, 0, "missing changes:" + missing.length + "; missing: " + missing)
       t.end()
     })
   })
