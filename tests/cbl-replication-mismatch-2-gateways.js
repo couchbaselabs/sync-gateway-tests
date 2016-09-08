@@ -133,7 +133,11 @@ test("verify dbs have same number of docs", test_conf, function(t) {
   common.verifyNumDocs(t, dbs, numDocs)
 })
 
-var sg_doc_ids;
+test("sleep in couple seconds", function(t) {
+    setTimeout(function(){
+        t.end();
+    }, test_time/5)
+})
 
 test("verify sync gateway changes feed has all docs in it", test_conf, function(t) {
   var db = coax(sgdb1)
