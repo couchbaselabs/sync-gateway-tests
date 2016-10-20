@@ -93,7 +93,12 @@ def compose_sg_url(product,version,platform):
 		build_url = build_url + url_append(['1.2.1' , version ])
 		build_name = c[product+'Build'] + version + "_x86_64" +"." + c[platform]
 		build_url = build_url + build_name
-			
+
+	elif version and '1.3.1' in version:
+        build_url = build_url + url_append(['1.3.1' , version ])
+        build_name = c[product+'Build'] + version + "_x86_64" +"." + c[platform]
+        build_url = build_url + build_name
+
 	else:
 		print "Error: Should not have landed here. No Sync Gateway version found"
 	
