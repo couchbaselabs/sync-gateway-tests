@@ -90,7 +90,7 @@ test("create test databases", function(t){
 
 
 // setup push/pull replication to gateway
-test("set push/pull replication to gateway", function(t){
+test("set push/pull replication to gateway", test_conf, function(t){
 
   var i = 0;
   var gatewayDB = coax([gateway, config.DbBucket]).pax().toString();
@@ -142,6 +142,11 @@ test("load databases", test_conf, function(t){
   common.createDBDocs(t, {numdocs : numDocs, dbs : dbs, docgen: 'inlinePngtBigAtt'});
 })
 
+// check dbs
+test("1 verify local-replicated in dbs: "+ numDocs, test_conf, function(t){
+    common.verifyNumDocs(t, dbs, numDocs);
+})
+
 
 test("delete db docs", test_conf, function(t){
   common.deleteDBDocs(t, dbs, numDocs);
@@ -154,7 +159,7 @@ test("load databases", test_conf, function(t){
 })
 
 // check dbs
-test("verify local-replicated in dbs: 0", test_conf, function(t){
+test("2 verify local-replicated in dbs: " + numDocs, test_conf, function(t){
   common.verifyNumDocs(t, dbs, numDocs);
 })
 
@@ -164,7 +169,7 @@ test("purge dbs", test_conf, function(t){
 });
 
 // check dbs
-test("verify local-replicated in dbs: 0", test_conf, function(t){
+test("3 verify local-replicated in dbs: 0", test_conf, function(t){
   common.verifyNumDocs(t, dbs, 0);
 })
 
@@ -183,7 +188,7 @@ test("cleanup cb bucket", test_conf, function(t){
 })
 
 // delete all dbs
-test("delete test databases", function(t){
+test("delete test databases", test_conf, function(t){
     common.deleteDBs(t, dbs.concat(sgdbs))
 })
 

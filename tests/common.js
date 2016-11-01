@@ -1049,6 +1049,7 @@ var common = module.exports = {
               } else if (json == undefined) {
                   t.fail("json is undefined requesting " + dburl + ": " + json)
               } else {
+                  console.log(json)
                   doc_count = json.doc_count
                   console.log(db + " has " + doc_count + " docs expecting " + numexpected)
               }
