@@ -192,7 +192,7 @@ test("cleanup cb bucket", test_conf, function (t) {
 })
 
 // delete all dbs
-test("delete test databases", function (t) {
+test("delete test databases", test_conf, function (t) {
   common.deleteDBs(t, dbs)
 })
 
