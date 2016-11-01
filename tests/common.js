@@ -34,7 +34,7 @@ var common = module.exports = {
 
     if(testendpoint == "ios"){
       coax.post([url, "start", "ios"], function(err, json){
-        t.false(json.error, "error launching LiteServe " + JSON.stringify([err, json]))
+        t.false(json.error, "error launching LiteServ " + JSON.stringify([err, json]))
         this.server = json.ok
         done(this.server)
       })
@@ -47,19 +47,20 @@ var common = module.exports = {
     } else if(testendpoint == "android"){
     // TODO: requires manual launch
         port = config.LiteServPort || 8081
+        logger.error("Launching ", config.LiteServPath)
         serve = launcher.launchLiteServ({
             port : port,
             dir : __dirname + "/../tmp/single",
             path : config.LiteServPath
         })
         serve.on("error", function(err){
-            t.fail("error launching LiteServe: " + JSON.stringify(err))
+            t.fail("error launching LiteServ: " + JSON.stringify(err))
             t.end()
         })
         serve.once("ready", function(err){
             t.false(err, "no error, LiteServe running on our port")
             coax(server, function(err, ok){
-                t.false(err, "no error, LiteServe reachable:" + err)
+                t.false(err, "no error, LiteServ reachable:" + err)
                 t.end()
             })
             this.server = "http://localhost:" + port

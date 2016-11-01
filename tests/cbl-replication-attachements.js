@@ -148,7 +148,7 @@ test("delete db docs", test_conf, function(t){
 })
 
 
-// load databaes
+// load databases
 test("load databases", test_conf, function(t){
   common.createDBDocs(t, {numdocs : numDocs, dbs : dbs, docgen: 'inlinePngtBigAtt'});
 })

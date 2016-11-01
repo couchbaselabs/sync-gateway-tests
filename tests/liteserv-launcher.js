@@ -18,8 +18,8 @@ test("can launch a LiteServ", {timeout : 60000}, function(t) {
     storageEngine : config.storageEngine
   })
   serve.on("error", function(e){
-    console.log("error launching LiteServe", e)
-    t.fail("error launching LiteServe")
+    console.log("error launching LiteServ", e)
+    t.fail("error launching LiteServ")
     t.end()
   })
   serve.once("ready", function(err){
