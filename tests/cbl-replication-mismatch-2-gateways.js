@@ -129,14 +129,14 @@ test("load databases", test_conf, function(t){
   common.createDBDocs(t, {numdocs : numDocs/2, dbs : dbs, docgen : "channels"})
 })
 
-test("verify dbs have same number of docs", test_conf, function(t) {
+test("verify dbs have same number of docs " + numDocs, test_conf, function(t) {
   common.verifyNumDocs(t, dbs, numDocs)
 })
 
 test("sleep in couple seconds", function(t) {
     setTimeout(function(){
         t.end();
-    }, test_time/5)
+    }, test_time/4)
 })
 
 test("verify sync gateway changes feed has all docs in it", test_conf, function(t) {
@@ -234,7 +234,7 @@ test("cleanup cb bucket", test_conf, function(t){
 })
 
 // delete all dbs
-test("delete test databases", function(t){
+test("delete test databases", test_conf, function(t){
   common.deleteDBs(t, dbs)
 })
 
