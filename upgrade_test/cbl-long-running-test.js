@@ -90,9 +90,6 @@ test("doc update on liteServ", test_conf, function (t) {
         console.log("timer value=", timer)
         timer = timer + 7000;
     }
-    setTimeout(function(){
-        t.end();
-    }, 100000);
     console.log("completed doc updates!")
 
 })
