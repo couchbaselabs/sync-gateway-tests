@@ -97,9 +97,10 @@ test("doc update on liteServ", test_conf, function (t) {
 
 test("sleep", test_conf, function (t) {
     setTimeout(function(){
-        console.log("sleep in test_time * 2: "  + test_time * 2)
+        console.log("sleep in test_time: "  + test_time * 2)
+        console.log("timer: "  + timer)
         t.end();
-    }, test_time * 2);
+    }, test_time);
 })
 
 
