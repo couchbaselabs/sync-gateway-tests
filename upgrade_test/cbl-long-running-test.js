@@ -86,23 +86,16 @@ test("doc update on liteServ", test_conf, function (t) {
     for (var i = 0; i < count; i++) {
         setTimeout(function () {
             common.updateDBDocs(t, {dbs: dbs, numrevs: numRevs, numdocs: numDocs});
-            console.log("timer value=", timer)
-            console.log("iteration #" + i)
         }, timer);
+        console.log("timer value=", timer)
         timer = timer + 7000;
     }
+    setTimeout(function(){
+        t.end();
+    }, 100000);
     console.log("completed doc updates!")
 
 })
-
-//test("sleep", test_conf, function (t) {
-//    setTimeout(function(){
-//        console.log("sleep in test_time: "  + test_time * 2)
-//        console.log("timer: "  + timer)
-//        t.end();
-//    }, test_time);
-//})
-
 
 // count * numRevs + 1
 test("verify doc revisions", test_conf, function (t) {
@@ -123,10 +116,9 @@ test("verify SG doc revisions", test_conf, function (t) {
 })
 
 test("verify SG Num docs", test_conf, function (t) {
-    //create, update on liteServ( delete & delete conflicts is not included)
     setTimeout(function () {
         common.verifySGNumDocs(t, [sg], numDocs)
-    }, timer + 5000)
+    }, 60000)
 
 })
 
@@ -137,7 +129,7 @@ test("done", test_conf, function (t) {
                 //sg.kill()
                 t.end()
             }, console.timeEnd(module.filename.slice(__filename.lastIndexOf(require('path').sep) + 1, module.filename.length - 3)));
-        }, timer + 10000)
+        },  60000)
     }
 );
 
