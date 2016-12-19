@@ -89,7 +89,7 @@ test("doc update on liteServ", test_conf, function (t) {
         }, timer);
 
         console.log("timer value=", timer)
-        timer = timer + 4000;
+        timer = timer + 6000;
     }
     console.log("completed doc updates!")
 
