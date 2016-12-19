@@ -95,20 +95,23 @@ test("doc update on liteServ", test_conf, function (t) {
 
 })
 
-test("sleep", test_conf, function (t) {
-    setTimeout(function(){
-        console.log("sleep in test_time: "  + test_time * 2)
-        console.log("timer: "  + timer)
-        t.end();
-    }, test_time);
-})
+//test("sleep", test_conf, function (t) {
+//    setTimeout(function(){
+//        console.log("sleep in test_time: "  + test_time * 2)
+//        console.log("timer: "  + timer)
+//        t.end();
+//    }, test_time);
+//})
 
 
 // count * numRevs + 1
 test("verify doc revisions", test_conf, function (t) {
     timeObject = setTimeout(function () {
         common.verifyDocsRevisions(t, dbs, numDocs, (count * numRevs) + 1 + "-")
-    }, timer + 5000);
+    }, timer + 5000),
+        setTimeout(function(){
+            t.end();
+        }, 100000);
 })
 
 test("verify SG doc revisions", test_conf, function (t) {
