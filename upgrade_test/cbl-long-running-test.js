@@ -95,6 +95,13 @@ test("doc update on liteServ", test_conf, function (t) {
 
 })
 
+test("sleep", test_conf, function (t) {
+    setTimeout(function(){
+        console.log("sleep in test_time * 2: "  + test_time * 2)
+        t.end();
+    }, test_time * 2);
+})
+
 
 // count * numRevs + 1
 test("verify doc revisions", test_conf, function (t) {
