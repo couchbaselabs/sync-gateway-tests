@@ -86,10 +86,10 @@ test("doc update on liteServ", test_conf, function (t) {
     for (var i = 0; i < count; i++) {
         setTimeout(function () {
             common.updateDBDocs(t, {dbs: dbs, numrevs: numRevs, numdocs: numDocs});
+            console.log("timer value=", timer)
+            console.log("iteration #" + i)
         }, timer);
-
-        console.log("timer value=", timer)
-        timer = timer + 6000;
+        timer = timer + 7000;
     }
     console.log("completed doc updates!")
 
