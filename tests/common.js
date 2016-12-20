@@ -753,7 +753,7 @@ var common = module.exports = {
                       t.fail("unable to get doc " + url + " to check revision", err)
                        cb(err, json)
                   } else {
-                          // console.log(json, rev_prefix)
+                      console.log(json, rev_prefix)
                       t.equals(json._rev.substring(0, json._rev.indexOf("-")) +"-", rev_prefix, "revision started from " + rev_prefix)
                       cb(err, json)
                   }
@@ -777,7 +777,7 @@ var common = module.exports = {
 		                  t.fail("unable to get doc " + url + " to check revision", err)
 		                   cb(err, json)
 		              } else {
-                          // console.log(json, rev_prefix)
+                          console.log(json, rev_prefix)
 		                  t.equals(json._rev.substring(0, json._rev.indexOf("-")) +"-", rev_prefix, "revision started from " + rev_prefix)
 		                  cb(err, json)
 		              }
