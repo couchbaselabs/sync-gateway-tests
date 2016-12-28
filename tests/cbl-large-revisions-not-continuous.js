@@ -15,7 +15,7 @@ var server, sg, gateway,
     dbs = ["large-revisions-not-continues"];
 
 var numDocs = 5;
-var timeoutReplication = 5000;
+var timeoutReplication = 6000;
 var numRevs = parseInt(config.numRevs)*2 || 60;
 if (config.provides == "android" || config.DbUrl.indexOf("http") > -1) timeoutReplication = 1000 * numDocs;
 
@@ -40,7 +40,7 @@ test("cleanup cb bucket", test_conf, function (t) {
                     }
                 }
             }, function (err, js) {
-                t.false(err, "flush cb bucket")
+                t.false(err, "flush cb bucket" + err)
             },
             setTimeout(function () {
                 t.end();
