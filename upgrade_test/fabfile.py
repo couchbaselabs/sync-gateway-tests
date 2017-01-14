@@ -192,7 +192,6 @@ def deploy_sg(user,password,version,platform):
 		output = ''
 		with settings(warn_only=True):
 			output = run('rpm -qa | grep couchbase-sync-gateway')
-			run('pkill -f sync_gateway')
 		if 'couchbase-sync-gateway' in output:
 			run('rpm -e couchbase-sync-gateway')
 	run("mkdir -p " + code_dir )
