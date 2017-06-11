@@ -6,7 +6,7 @@ var config = module.exports = {
   SyncGatewayPath   : process.env.SYNCGATE_PATH,
   LocalListenerIP   : process.env.LOCAL_IP || "127.0.0.1",
   LocalListenerPort : 8189,
-  DbUrl             : "http://Administrator:password@s61405cnt72.sc.couchbase.com:8091",
+  DbUrl             : "http://cbadminbucket:password@s61405cnt72.sc.couchbase.com:8091",
   DbBucket          : "db",
   provides          : "ios",  // ios, android, pouchdb, couchdb
   storageEngine     : process.env.STORAGE_ENGINE || "SQLite",
