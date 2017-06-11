@@ -1,8 +1,8 @@
 {
-    "log": ["CRUD", "REST+", "CHANGES"],
+    "log": ["REST+"],
 	"databases": {
 		"db": {
-			"server": "http://Administrator:password@s61405cnt72.sc.couchbase.com:8091",
+			"server": "http://cbadminbucket:password@s61405cnt72.sc.couchbase.com:8091",
 			"sync": `
 function(doc){
 	channel(doc.channels);

@@ -8,7 +8,6 @@ var launcher = require("../lib/launcher"),
     test_time = process.env.TAP_TIMEOUT || 30000,
     test_conf = {timeout: test_time * 1000};
 
-
 test("delete buckets", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
         cb_util.deleteBucket(t, config.DbBucket,
@@ -36,6 +35,16 @@ test("create buckets", test_conf, function (t) {
         cb_util.createBucket(t, config.DbBucket, setTimeout(function () {
             t.end();
         }, 40000));
+    } else {
+        t.end();
+    }
+});
+
+test("add cbadminbucket bucket", test_conf, function (t) {
+    if (config.DbUrl.indexOf("http") > -1) {
+        cb_util.createUserRBAC(t, 'cbadminbucket', setTimeout(function () {
+            t.end();
+        }, 10000));
     } else {
         t.end();
     }

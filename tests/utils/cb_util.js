@@ -40,4 +40,21 @@ var cb_util = module.exports = {
 		});
 	},
 
+	createUserRBAC : function(t, userID) {
+		var options = {
+			host : "s61405cnt72.sc.couchbase.com",
+			port : 8091,
+			path : '/settings/rbac/users/local/' + userID,
+			method : 'PUT',
+			auth : "Administrator:password",
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded',
+			}
+		};
+		var post_data = "name=cbadminbucket&roles=admin&password=password";
+
+		common.http_post_api(t, post_data, options, "OK", function(callback) {
+		})
+	},
+
 }
