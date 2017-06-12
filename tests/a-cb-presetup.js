@@ -42,7 +42,7 @@ test("create buckets", test_conf, function (t) {
 
 test("add cbadminbucket bucket", test_conf, function (t) {
     if (config.DbUrl.indexOf("http") > -1) {
-        cb_util.createUserRBAC(t, 'cbadminbucket', setTimeout(function () {
+        cb_util.createUserRBAC(t, 'db', setTimeout(function () {
             t.end();
         }, 10000));
     } else {
