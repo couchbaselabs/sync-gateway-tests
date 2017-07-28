@@ -5,6 +5,9 @@
         "revs_limit" : 30,
         "rev_cache_size": 1000,
         "server": "http://s61405cnt72.sc.couchbase.com:8091",
+        "password": "password",
+        "bucket": "db",
+        "username": "db",
         "sync": `
       function(doc){
           channel(doc.channels);
