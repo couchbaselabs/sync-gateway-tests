@@ -16,6 +16,7 @@ def install_local_sync_gateway(version):
             sys.exit(1)
 
         version_number = version_parts[0]
+        build_number = version_parts[1]
 
         print("Version: {}".format(version_number))
 
@@ -27,9 +28,9 @@ def install_local_sync_gateway(version):
                 version
             )
         else:
-            url = "http://latestbuilds.hq.couchbase.com/couchbase-sync-gateway/{}/{}/couchbase-sync-gateway-enterprise_{}_x86_64.tar.gz".format(
+            url = "http://latestbuilds.service.couchbase.com/builds/latestbuilds/sync_gateway/{0}/{1}/couchbase-sync-gateway-enterprise_{2}_x86_64.tar.gz".format(
                 version_number,
-                version,
+                build_number,
                 version
             )
 
