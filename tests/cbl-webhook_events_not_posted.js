@@ -35,26 +35,33 @@ test("kill LiteServ", function (t) {
 })
 
 // start client endpoint
-test("start test client", function (t) {
-  common.launchClient(t, function (_server) {
-    server = _server
-    coax([server, "_session"], function (err, ok) {
-      try {
-        console.error(ok)
-        t.equals(ok.ok, true, "api exists")
-        if (ok.ok == true) {
-          t.end()
-        }
-      } catch (err) {
-        console.error(err, "will restart LiteServ...")
+test("start test client", test_conf, function (t) {
+    var i=1;
+    (function loop() {
         common.launchClient(t, function (_server) {
-          server = _server
-          t.end()
-        }, setTimeout(function () {
-        }, 3000))
-      }
-    })
-  })
+            server = _server
+            coax([server, "_session"], function (err, ok) {
+                try {
+                    if (ok.ok == true) {
+                        t.end()
+                    } else {
+                        return new Error("LiteServ was not run?: " + ok)
+                    }
+                } catch (err) {
+                    console.error(err, "will restart LiteServ..." + i++ +" times")
+                    setTimeout(function () {
+                        console.log(i)
+                        if (i<6) {
+                            loop()
+                        } else {
+                            console.error("can't run LiteServ...")
+                            t.end()
+                        }
+                    }, 9000)
+                }
+            })
+        })
+    }());
 })
 
 // kill sync gateway
