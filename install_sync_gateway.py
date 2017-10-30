@@ -28,7 +28,7 @@ def install_local_sync_gateway(version):
                 version
             )
         else:
-            url = "http://latestbuilds.service.couchbase.com/builds/latestbuilds/sync_gateway/{0}/{1}/couchbase-sync-gateway-enterprise_{2}_x86_64.tar.gz".format(
+            url = "http://latestbuilds.service.couchbase.com/builds/latestbuilds/sync_gateway/{0}/{1}/couchbase-sync-gateway-centos_enterprise_{2}_x86_64.tar.gz".format(
                 version_number,
                 build_number,
                 version
