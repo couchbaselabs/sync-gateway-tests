@@ -1,3 +1,5 @@
+⚠️ This repo is obsolete.  It was used for testing Couchbase Lite 1.x.
+
 ## Sync Gateway REST API Functional Tests
 
 Since Couchbase Mobile relies on a REST protocol for sync, we can test it at the REST level.
